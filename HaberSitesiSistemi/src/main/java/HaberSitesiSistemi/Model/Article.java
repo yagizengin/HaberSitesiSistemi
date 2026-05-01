@@ -19,8 +19,16 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
 @Entity
 @Table(name = "articles")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Article {
     
     @Column(name = "article_id")
@@ -73,96 +81,4 @@ public class Article {
         this.view_count = 0;
         this.is_published = false;
     }
-
-    public Article() {
-    }
-
-    public Long getArticle_id() {
-        return article_id;
-    }
-
-    public void setArticle_id(Long article_id) {
-        this.article_id = article_id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Timestamp getPublished_at() {
-        return published_at;
-    }
-
-    public void setPublished_at(Timestamp published_at) {
-        this.published_at = published_at;
-    }
-
-    public int getView_count() {
-        return view_count;
-    }
-
-    public void setView_count(int view_count) {
-        this.view_count = view_count;
-    }
-
-    public boolean is_published() {
-        return is_published;
-    }
-
-    public void set_published(boolean is_published) {
-        this.is_published = is_published;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public Set<Media> getMediaFiles() {
-        return mediaFiles;
-    }
-
-    public void setMediaFiles(Set<Media> mediaFiles) {
-        this.mediaFiles = mediaFiles;
-    }
-    
 }

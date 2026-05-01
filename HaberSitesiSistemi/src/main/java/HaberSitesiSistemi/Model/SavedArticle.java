@@ -13,8 +13,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "saved_articles")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SavedArticle {
 
     @Id
@@ -38,40 +45,5 @@ public class SavedArticle {
         if (this.saved_at == null) {
             this.saved_at = Timestamp.valueOf(LocalDateTime.now());
         }
-    }
-
-    public SavedArticle() {
-    }
-
-    public Long getSave_id() {
-        return save_id;
-    }
-
-    public void setSave_id(Long save_id) {
-        this.save_id = save_id;
-    }
-
-    public Timestamp getSaved_at() {
-        return saved_at;
-    }
-
-    public void setSaved_at(Timestamp saved_at) {
-        this.saved_at = saved_at;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Article getArticle() {
-        return article;
-    }
-
-    public void setArticle(Article article) {
-        this.article = article;
     }
 }

@@ -10,8 +10,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "tags")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tag {
     
     @Id
@@ -24,31 +31,4 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags")
     private Set<Article> articles = new HashSet<>();
-
-    public Tag() {
-    }
-
-    public Long getTag_id() {
-        return tag_id;
-    }
-
-    public void setTag_id(Long tag_id) {
-        this.tag_id = tag_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Article> getArticles() {
-        return articles;
-    }
-
-    public void setArticles(Set<Article> articles) {
-        this.articles = articles;
-    }
 }

@@ -13,8 +13,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "comments")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
     
     @Column(name = "comment_id")
@@ -43,56 +50,5 @@ public class Comment {
     protected void prePersist() {
         this.created_at = Timestamp.valueOf(LocalDateTime.now());
         this.is_approved = false;
-    }
-
-    public Comment() {
-    }
-
-    public Long getComment_id() {
-        return comment_id;
-    }
-
-    public void setComment_id(Long comment_id) {
-        this.comment_id = comment_id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Timestamp getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(Timestamp created_at) {
-        this.created_at = created_at;
-    }
-
-    public boolean is_approved() {
-        return is_approved;
-    }
-
-    public void set_approved(boolean is_approved) {
-        this.is_approved = is_approved;
-    }
-
-    public Article getArticle() {
-        return article;
-    }
-
-    public void setArticle(Article article) {
-        this.article = article;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }
