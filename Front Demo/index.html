@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haber Portalı</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/anasayfa.css">
+</head>
+<body>
+   <header class="main-header">
+        <div class="header-top">
+            <div class="header-left">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="aramaInput" placeholder="Haberlerde ara...">
+                </div>
+                <span class="date-display">26 Mart 2026</span>
+            </div>
+            <div class="header-center">
+                <h1 class="logo">GÜNDEM TÜRKİYE</h1>
+            </div>
+           <div id="profile-btn" style="width: 40px; height: 40px; min-width: 40px; flex-shrink: 0; cursor: pointer; border-radius: 50%; overflow: hidden; border: 2px solid #1A1A1A; display: flex; align-items: center; justify-content: center; background-color: #FFF;">
+            
+            <img src="https://i.ibb.co/Nd8JkT2z/Ana-Sayfa-Profil-con.png " alt="Kullanıcı Profili" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="alert('SİSTEM HATASI: Verilen URL bir görsel dosyası değil veya geçersiz.');">
+            
+        </div>
+        </div>
+        
+        <nav class="header-bottom">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="#">TÜRKİYE</a></li>
+                <li class="nav-item"><a href="#">DÜNYA</a></li>
+                <li class="nav-item"><a href="#">BİLİM</a></li>
+                
+                <li class="nav-item mega-hover">
+                    <a href="#" class="active-link">KÜLTÜR ▾</a>
+                    <div class="mega-menu-full">
+                        <div class="mega-menu-inner">
+                            <div class="mega-col">
+                                <h4>BÖLÜMLER</h4>
+                                <div class="link-grid">
+                                    <a href="#">Tüm Kültür</a>
+                                    <a href="#">Sinema & TV</a>
+                                    <a href="#">Tiyatro</a>
+                                    <a href="#">Müzik</a>
+                                    <a href="#">Mimari</a>
+                                    <a href="#">Sergiler</a>
+                                </div>
+                            </div>
+                            <div class="mega-col">
+                                <h4>KÖŞELER</h4>
+                                <div class="link-grid">
+                                    <a href="#">Eleştiriler</a>
+                                    <a href="#">Röportajlar</a>
+                                    <a href="#">Kitap İncelemeleri</a>
+                                    <a href="#">Sanat Gündemi</a>
+                                </div>
+                            </div>
+                            <div class="mega-col">
+                                <h4>BÜLTENLER</h4>
+                                <a href="#" class="rich-card">
+                                    <div class="card-icon" style="background-color: #004d40;"></div>
+                                    <div class="card-info">
+                                        <h5>Hafta Sonu</h5>
+                                        <p>Kültür, sanat ve yaşam tarzı hikayeleriyle rahatlayın.</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="rich-card">
+                                    <div class="card-icon" style="background-color: #2e7d32;"></div>
+                                    <div class="card-info">
+                                        <h5>Rehber</h5>
+                                        <p>Sağlıklı ve verimli bir yaşam için temel haberler.</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="mega-col">
+                                <h4>PODCASTLER</h4>
+                                <a href="#" class="rich-card">
+                                    <img src="https://via.placeholder.com/40" alt="Podcast" class="card-img">
+                                    <div class="card-info">
+                                        <h5>Modern Aşk</h5>
+                                        <p>Gerçek insanların karmaşık aşk hayatları.</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="text-link-bottom">Tüm podcastleri gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                
+                <li class="nav-item"><a href="#">SPOR</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-container" id="news-container">
+        </main>
+
+    <main class="main-container" id="search-results-container" style="display: none;">
+        <h3 style="border-bottom: 2px solid #1A1A1A; padding-bottom: 10px; margin-bottom: 20px;">Arama Sonuçları</h3>
+        <div class="grid-4-bottom" id="search-results-grid">
+            </div>
+    </main>
+
+    <div id="panel-container"></div>
+    <div id="overlay" class="overlay"></div>
+
+    <script src="js/global.js"></script>
+</body>
+</html>

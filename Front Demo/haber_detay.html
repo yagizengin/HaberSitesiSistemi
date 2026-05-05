@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haber Detayı - Gündem Türkiye</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/anasayfa.css">
+</head>
+<body>
+
+    <header class="main-header" style="display: flex; justify-content: center; align-items: center; width: 100%; background-color: #ffffff; border-bottom: 2px solid #1A1A1A; min-height: 75px; box-sizing: border-box;">
+    
+    <div style="width: 100%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+        
+        <div class="logo" style="font-family: 'Roboto Slab', serif; font-size: 1.8rem; font-weight: 900; color: #1A1A1A;">
+            GÜNDEM TÜRKİYE
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 30px;">
+            <nav class="main-nav" style="display: flex; gap: 20px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.85rem;">
+                <a href="index.html" style="color: #D32F2F; text-decoration: none;">ANA SAYFA'YA DÖN</a>
+                <a href="#" style="color: #1A1A1A; text-decoration: none;">TÜRKİYE</a>
+                <a href="#" style="color: #1A1A1A; text-decoration: none;">DÜNYA</a>
+                <a href="#" style="color: #1A1A1A; text-decoration: none;">BİLİM</a>
+            </nav>
+            
+            <div id="profile-btn" style="width: 42px; height: 42px; min-width: 42px; border-radius: 50%; overflow: hidden; border: 2px solid #1A1A1A; cursor: pointer; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+                <img src="https://i.ibb.co/Nd8JkT2z/Ana-Sayfa-Profil-con.png" 
+                     alt="Profil" 
+                     style="width: 100%; height: 100%; object-fit: cover;"
+                     onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-weight:bold; font-size:12px; color:#1A1A1A;\'>GT</span>';">
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="panel-container"></div>
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-container" style="max-width: 900px; margin-top: 40px; min-height: 60vh;">
+        <article id="detay-icerik">
+            <h2 style="text-align: center; color: #555;">Haber Yükleniyor...</h2>
+        </article>
+    </main>
+
+    <script src="js/detay.js"></script>
+    <script src="js/global.js"></script>
+</body>
+</html>

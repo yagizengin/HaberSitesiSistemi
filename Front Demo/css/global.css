@@ -1,0 +1,212 @@
+:root {
+    --bg-color: #F7F7F7;
+    --text-color: #1A1A1A;
+    --font-heading: 'Roboto Slab', serif;
+    --font-body: 'Inter', sans-serif;
+    --border-color: #D3D3D3;
+}
+
+body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-body); overflow-x: hidden; }
+h1, h2, h3 { font-family: var(--font-heading); margin: 0; }
+a { text-decoration: none; color: var(--text-color); }
+
+/* HEADER MİMARİSİ */
+.main-header { 
+    border-bottom: 2px solid var(--text-color); 
+    position: relative; /* Mega menünün tam genişlikte açılması için ZORUNLU KÖK */
+    width: 100%;
+}
+
+.header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; }
+.header-left, .header-right {flex: 1; display: flex;align-items: center;}
+.header-left {
+    justify-content: flex-start; /* İçeriği sola yasla */
+    gap: 15px;
+}
+
+.header-right {
+    justify-content: flex-end; /* İçeriği sağa yasla */
+}
+
+.header-right img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Görseli ezmeden alanı doldurur */
+  display: block;
+}
+.header-center { 
+    flex: 2; /* Logoya geniş alan ver ama flex-grow ile ortalamayı koru */
+    text-align: center; 
+    display: flex; 
+    justify-content: center; 
+}
+.header-right .profile-icon {
+    width: 40px; 
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    display: block;
+}
+.logo { 
+    font-size: 2.5rem; 
+    letter-spacing: -1px; 
+    white-space: nowrap; 
+    margin: 0;
+}
+.search-container {    /*MOBİL İÇİN UYUM ALANI*/
+    display: flex; 
+    align-items: center; 
+    border: 1px solid var(--border-color); 
+    border-radius: 20px; 
+    padding: 5px 12px; 
+    background-color: #FFFFFF; 
+}
+
+
+.date-display { font-size: 0.9rem; font-weight: 600; color: #555; }
+.logo { font-size: 2.5rem; letter-spacing: -1px; white-space: nowrap; }
+
+/* Arama Çubuğu */
+.search-container { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 20px; padding: 5px 10px; background-color: #FFFFFF; transition: box-shadow 0.2s; }
+.search-container:focus-within { box-shadow: 0 0 5px rgba(26, 26, 26, 0.3); border-color: var(--text-color); }
+.search-input { border: none; outline: none; padding: 5px; font-family: var(--font-body); width: 120px; transition: width 0.3s; }
+.search-input:focus { width: 180px; }
+.profile-icon { width: 45px; height: 45px; cursor: pointer; border-radius: 50%; transition: opacity 0.2s; }
+.profile-icon:hover { opacity: 0.8; }
+
+/* MENÜ MİMARİSİ */
+.header-bottom { 
+    border-top: 1px solid var(--border-color); 
+    padding: 0; /* Padding kaldırıldı, item'lar yönetecek */
+    display: flex; 
+    justify-content: center; 
+    width: 100%;
+}
+
+.nav-list { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+    display: flex; 
+    gap: 40px; 
+}
+
+/* Her bir menü öğesi (KÜLTÜR, SPOR vb.) */
+.nav-item { 
+    padding: 15px 0; /* Hover alanını dikeyde genişletir */
+}
+
+.nav-item > a { 
+    font-weight: 600; 
+    font-size: 0.85rem; 
+    letter-spacing: 0.5px; 
+    transition: color 0.2s; 
+    padding-bottom: 15px; /* Alt çizgi için mesafe */
+}
+
+.nav-item > a:hover { color: #666; }
+.active-link { border-bottom: 2px solid var(--text-color); }
+
+/* MEGA MENÜ (TAM GENİŞLİK) */
+.mega-menu-full {
+    position: absolute;
+    top: 100%; /* Header'ın hemen altına yapışır */
+    left: 0;
+    width: 100vw; /* Ekranın tam genişliğini zorla */
+    background-color: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    z-index: 100;
+    
+    /* Hover olmadan önce gizli */
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease-out;
+}
+
+/* Hover tetikleyicisi */
+.nav-item.mega-hover:hover .mega-menu-full {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Mega Menü İçerik Sınırlandırması (Grid hizalaması için) */
+.mega-menu-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 2fr 2fr 3fr 3fr; /* 4 Kolon */
+    gap: 40px;
+}
+
+/* Mega Menü , konu başlıklarına mose ile gelince açılan Kolon ve Metin Stilleri */
+.mega-col h4 { font-size: 0.75rem; color: #666; margin-bottom: 20px; font-family: var(--font-body); font-weight: 600; }
+.link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.link-grid a { font-size: 0.85rem; color: var(--text-color); }
+.link-grid a:hover { text-decoration: underline; }
+.rich-card { display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start; }
+.rich-card:hover .card-info h5 { text-decoration: underline; }
+.card-icon, .card-img { width: 40px; height: 40px; border-radius: 4px; flex-shrink: 0; }
+.card-info h5 { font-family: var(--font-body); font-weight: 600; font-size: 0.9rem; margin: 0 0 5px 0; }
+.card-info p { margin: 0; font-size: 0.85rem; color: #555; line-height: 1.4; }
+.text-link-bottom { display: block; font-size: 0.85rem; color: #555; margin-top: 20px; }
+.text-link-bottom:hover { color: var(--text-color); }
+
+/* SAĞ PANEL MİMARİSİ */
+.side-panel { position: fixed; top: 0; right: 0; width: 320px; height: 100vh; background-color: var(--bg-color); box-shadow: -5px 0 15px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); z-index: 1000; overflow-y: auto; }
+.side-panel.active { transform: translateX(0); }
+.panel-header { padding: 15px 20px; text-align: right; }
+.close-btn { background: none; border: none; font-size: 2rem; font-weight: bold; cursor: pointer; color: var(--text-color); }
+.panel-content { padding: 0 25px 25px 25px; }
+.panel-desc { font-size: 0.9rem; line-height: 1.5; margin-top: 10px; }
+.subscribe-btn { width: 100%; padding: 12px; background-color: var(--text-color); color: var(--bg-color); border: none; font-family: var(--font-body); font-weight: 600; cursor: pointer; margin: 20px 0; }
+.panel-menu { list-style: none; padding: 0; margin: 0; }
+.panel-menu li { padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+.panel-menu a { display: flex; justify-content: space-between; font-size: 0.95rem; }
+.menu-section-title { font-size: 0.75rem; font-weight: 600; color: #666; margin-top: 20px; padding-bottom: 5px !important; border-bottom: none !important; }
+.logout-link { font-weight: 600; border-bottom: 2px solid var(--text-color); display: inline-block !important; }
+
+/* OVERLAY (KARARTMA)   Overlay : arka planı karartarak kullanıcının optik odağını (focus) panele yönlendirir. */ 
+.overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; backdrop-filter: blur(3px); visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease; }
+.overlay.active { visibility: visible; opacity: 1; }
+
+/* --- ARAMA ÇUBUĞU OPTİMİZASYONU --- */
+#aramaInput {
+    border: none;             /* Etrafındaki siyah dikdörtgen çizgiyi tamamen siler */
+    outline: none;            /* Tıklandığında ortaya çıkan odak çizgisini yok eder */
+    background: transparent;  /* Arka planı şeffaflaştırarak dış kapsayıcıyla bütünleştirir */
+    font-family: var(--font-body); /* Standart site fontuna eşitler */
+    width: 100%;              /* Dış kapsayıcının izin verdiği maksimum genişliği kullanır */
+}
+/* Giriş yapılmadığında elemanları kilitli ve soluk gösterir */
+.disabled-element {
+    opacity: 0.4 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+    filter: grayscale(100%);
+}
+
+/* Giriş yap butonu için vurgu */
+.login-btn-active {
+    background-color: #1A1A1A !important;
+    color: #FFF !important;
+}
+
+/* Giriş yapılmışken ABONE OL butonunun  görünümü */
+.subscribe-btn-active {
+    background-color: #1A1A1A !important; /* Siyah arkaplan */
+    color: #FFFFFF !important;           /* Beyaz yazı */
+    border: 1px solid #1A1A1A;
+    transition: all 0.2s ease;
+}
+
+.subscribe-btn-active:hover {
+    background-color: #333333 !important; /* Hafif griye geçiş */
+}

@@ -1,0 +1,46 @@
+
+
+[ 
+  {
+    "_comment1":"BURASI HABER BAŞLIKLARI VE FOTOĞRAFLARININ GEÇİCİ OLARAK GÖSTERİLDİĞİ LOCAL KISIMDIR",
+
+    "id": 1,
+    "ust_sol": [
+      {"gorsel": "https://picsum.photos/300/200?random=1", "kategori": "SİYASET", "baslik": "Meclis Gündemi Yoğun: Yeni Kararlar Yolda"},
+      {"gorsel": "", "kategori": "EKONOMİ", "baslik": "Merkez Bankası Faiz Kararını Açıkladı"}
+    ],
+    "ust_orta": {
+      "gorsel": "https://picsum.photos/800/450?random=9", "baslik": "Türkiye'nin Teknoloji Hamlesi: Yeni Çip Fabrikası Kuruluyor", "ozet": "Yerli imkanlarla üretilecek çipler için dev tesisin temeli atıldı. İlk üretim 2027'de."
+    },
+    "ust_sag": [
+      {"gorsel": "https://picsum.photos/300/200?random=2", "kategori": "ANALİZ", "baslik": "Ahmet Yılmaz: Yapay Zeka ve Geleceğimiz"},
+      {"gorsel": "", "kategori": "GÜNDEM", "baslik": "İstanbul'da Yeni Ulaşım Düzenlemesi Başladı"}
+    ],
+    "alt_dortlu": [
+      {"gorsel": "https://picsum.photos/300/200?random=3", "kategori": "DÜNYA", "baslik": "Avrupa Birliği'nden İklim Zirvesi Çağrısı"},
+      {"gorsel": "https://picsum.photos/300/200?random=4", "kategori": "SPOR", "baslik": "Milli Takım Şampiyona İçin Kampa Girdi"},
+      {"gorsel": "https://picsum.photos/300/200?random=5", "kategori": "BİLİM", "baslik": "Mars Görevinde Yeni Bir Aşama Kaydedildi"},
+      {"gorsel": "https://picsum.photos/300/200?random=6", "kategori": "KÜLTÜR", "baslik": "Uluslararası Film Festivali Ödülleri Sahiplerini Buldu"}
+    ]
+  },
+
+  {
+    "id": 2,
+    "ust_sol": [
+      {"gorsel": "https://picsum.photos/300/200?random=1", "kategori": "SİYASET", "baslik": "Meclis Gündemi Yoğun: Yeni Kararlar Yolda"},
+      {"gorsel": "", "kategori": "EKONOMİ", "baslik": "Merkez Bankası Faiz Kararını Açıkladı"}
+    ],
+    "ust_orta": {
+      "gorsel": "https://picsum.photos/800/450?random=9", "baslik": "Türkiye'nin Teknoloji Hamlesi: Yeni Çip Fabrikası Kuruluyor", "ozet": "Yerli imkanlarla üretilecek çipler için dev tesisin temeli atıldı. İlk üretim 2027'de."
+    },
+    "ust_sag": [
+      {"gorsel": "https://picsum.photos/300/200?random=2", "kategori": "ANALİZ", "baslik": "Ahmet Yılmaz: Yapay Zeka ve Geleceğimiz"},
+      {"gorsel": "", "kategori": "GÜNDEM", "baslik": "İstanbul'da Yeni Ulaşım Düzenlemesi Başladı"}
+    ],
+    "alt_dortlu": [
+      {"gorsel": "https://picsum.photos/300/200?random=3", "kategori": "DÜNYA", "baslik": "Avrupa Birliği'nden İklim Zirvesi Çağrısı"},
+      {"gorsel": "https://picsum.photos/300/200?random=4", "kategori": "SPOR", "baslik": "Milli Takım Şampiyona İçin Kampa Girdi"},
+      {"gorsel": "https://picsum.photos/300/200?random=5", "kategori": "BİLİM", "baslik": "Mars Görevinde Yeni Bir Aşama Kaydedildi"}
+    ]
+  }
+]
