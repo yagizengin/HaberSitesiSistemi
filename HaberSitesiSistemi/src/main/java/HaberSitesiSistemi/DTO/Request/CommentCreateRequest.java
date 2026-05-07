@@ -9,15 +9,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleCreateRequest {
-
-    @NotBlank(message = "Title is required")
-    private String title;
+public class CommentCreateRequest {
 
     @NotBlank(message = "Content is required")
     private String content;
 
-    @NotNull(message = "Category ID is required")
-    private Long categoryId;
+    @NotNull(message = "Article ID is required")
+    private Long articleId;
 
+    @NotNull(message = "User ID is required")
+    private Long userId;
 }

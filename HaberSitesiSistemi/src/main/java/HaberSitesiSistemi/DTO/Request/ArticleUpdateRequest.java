@@ -1,5 +1,7 @@
 package HaberSitesiSistemi.DTO.Request;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleCreateRequest {
+public class ArticleUpdateRequest {
 
     @NotBlank(message = "Title is required")
     private String title;
@@ -20,4 +22,5 @@ public class ArticleCreateRequest {
     @NotNull(message = "Category ID is required")
     private Long categoryId;
 
+    private List<Long> tagIds;
 }

@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserLoginRequest {
-    @NotBlank(message = "Username is required")
-    private String username;
+public class CategoryUpdateRequest {
 
-    @NotBlank(message = "Password is required")
-    private String password;
+    @NotBlank(message = "Name is required")
+    private String name;
+
+    private String description;
+
+    private Boolean active;
 }

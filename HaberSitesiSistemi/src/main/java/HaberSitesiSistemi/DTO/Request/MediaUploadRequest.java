@@ -9,15 +9,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleCreateRequest {
+public class MediaUploadRequest {
 
-    @NotBlank(message = "Title is required")
-    private String title;
+    @NotBlank(message = "File URL is required")
+    private String fileUrl;
 
-    @NotBlank(message = "Content is required")
-    private String content;
+    private String fileType;
 
-    @NotNull(message = "Category ID is required")
-    private Long categoryId;
-
+    @NotNull(message = "Article ID is required")
+    private Long articleId;
 }

@@ -1,7 +1,6 @@
 package HaberSitesiSistemi.DTO.Request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,15 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleCreateRequest {
-
-    @NotBlank(message = "Title is required")
-    private String title;
+public class CommentUpdateRequest {
 
     @NotBlank(message = "Content is required")
     private String content;
-
-    @NotNull(message = "Category ID is required")
-    private Long categoryId;
-
 }
