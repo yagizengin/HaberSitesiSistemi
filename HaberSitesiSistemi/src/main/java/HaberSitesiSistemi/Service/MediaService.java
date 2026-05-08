@@ -111,6 +111,18 @@ public class MediaService {
         mediaRepository.delete(media);
         log.info("Media {} deleted successfully", mediaId);
     }
+    public void deleteMediaByArticleId(Long articleId) {
+        log.info("Deleting media for article ID: {}", articleId);
+
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+
+        List<Media> mediaList = mediaRepository.findByArticle(article);
+        
+        for (Media media : mediaList) {
+            deleteMedia(media.getMedia_id());
+        }
+    }
 
     public Media addMediaToArticle(Long mediaId, Long articleId) {
         log.info("Associating media {} with article {}", mediaId, articleId);

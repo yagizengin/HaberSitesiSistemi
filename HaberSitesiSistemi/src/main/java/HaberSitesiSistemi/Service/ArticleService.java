@@ -35,6 +35,8 @@ public class ArticleService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
+    private final MediaService mediaService;
+
 
     public Article createArticle(ArticleCreateRequest request, Long authorId) {
         log.info("Creating article with title: '{}' by author ID: {}", request.getTitle(), authorId);
@@ -112,7 +114,7 @@ public class ArticleService {
             log.warn("Delete denied: User {} is not the author of article {}", userId, articleId);
             throw new IllegalArgumentException("You are not authorized to delete this article");
         }
-
+        mediaService.deleteMediaByArticleId(articleId);
         articleRepository.delete(article);
         log.info("Article {} deleted successfully", articleId);
     }
