@@ -126,6 +126,19 @@ public class CommentService {
         return commentRepository.findByArticleAndIsApproved(article, true, pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Comment> getCommentsByUser(Long userId, Pageable pageable) {
+        log.info("Fetching comments for user ID: {}", userId);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.warn("User not found with ID: {}", userId);
+                    return new IllegalArgumentException("User not found");
+                });
+
+        return commentRepository.findByUser(user, pageable);
+    }
+
     private Comment getCommentEntityById(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> {
