@@ -10,4 +10,6 @@ import HaberSitesiSistemi.Model.Media;
 public interface MediaRepository extends JpaRepository<Media, Long> {
 
     List<Media> findByArticle(Article article);
+
+    java.util.Optional<Media> findByFileUrl(String fileUrl);
 }

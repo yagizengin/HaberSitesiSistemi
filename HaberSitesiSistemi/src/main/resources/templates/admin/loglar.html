@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loglar - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/global.css}"><link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div th:replace="~{fragments/admin-layout :: adminLayout('Sistem Logları', ~{::content})}">
+    <div th:fragment="content">
+        <div class="admin-card">
+            <h2>Denetim Logları</h2>
+            <table class="data-table">
+                <thead><tr><th>ID</th><th>Kullanıcı</th><th>İşlem</th><th>Tablo</th><th>Zaman</th></tr></thead>
+                <tbody>
+                    <tr th:each="log : ${logs}">
+                        <td th:text="${log.logId}">1</td>
+                        <td th:text="${log.user != null ? log.user.username : '-'}">user</td>
+                        <td><span class="badge badge-info" th:text="${log.actionType}">INSERT</span></td>
+                        <td th:text="${log.tableName}">users</td>
+                        <td th:text="${#temporals.format(log.actionDate, 'dd/MM/yyyy HH:mm')}">Tarih</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p th:if="${logs.isEmpty()}" style="color:#888; text-align:center; padding:20px;">Henüz log kaydı bulunmuyor.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

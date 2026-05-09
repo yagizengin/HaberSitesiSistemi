@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="tr">
+<head th:replace="~{fragments/layout :: head(${article.title})}"></head>
+<link rel="stylesheet" th:href="@{/css/anasayfa.css}">
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div th:replace="~{fragments/layout :: sidePanel}"></div>
+
+    <main class="main-container" style="max-width: 900px;">
+        <article>
+            <span style="color: #D32F2F; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;"
+                  th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
+
+            <h1 style="font-family: var(--font-heading); font-size: 2.6rem; line-height: 1.2; margin: 15px 0 20px;"
+                th:text="${article.title}">Haber Başlığı</h1>
+
+            <div style="font-size: 0.85rem; color: #888; margin-bottom: 25px; display: flex; gap: 15px; align-items: center;">
+                <span th:text="'Yazar: ' + ${article.author.username}">Yazar</span>
+                <span>·</span>
+                <span th:text="${#temporals.format(article.publishedAt, 'dd MMM yyyy HH:mm')}">Tarih</span>
+                <span>·</span>
+                <span th:text="${article.viewCount} + ' görüntülenme'">0 görüntülenme</span>
+            </div>
+
+            <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/900/500'}" alt="Makale Görseli"
+                 style="width: 100%; border-radius: 6px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+
+            <div style="font-size: 1.15rem; line-height: 1.85; color: #333;" th:utext="${article.content}">
+                Makale içeriği...
+            </div>
+
+            <!-- Tags -->
+            <div th:if="${!article.tags.isEmpty()}" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                <span style="font-size: 0.8rem; color: #888; margin-right: 8px;">Etiketler:</span>
+                <span th:each="tag : ${article.tags}" class="badge badge-dark" style="margin-right: 6px;" th:text="${tag.name}">Etiket</span>
+            </div>
+
+            <!-- Save button -->
+            <div sec:authorize="isAuthenticated()" style="margin-top: 20px; padding: 20px 0; border-top: 2px solid #1A1A1A;">
+                <form th:action="@{/haber/{id}/kaydet(id=${article.articleId})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-primary" th:text="${isSaved != null && isSaved} ? '✓ Kaydedildi' : '💾 Kaydet'"
+                            th:style="${isSaved != null && isSaved} ? 'background:#2e7d32' : ''">💾 Kaydet</button>
+                </form>
+            </div>
+        </article>
+
+        <!-- Comments Section -->
+        <section style="margin-top: 40px;">
+            <h3 class="section-header">Yorumlar</h3>
+
+            <!-- Flash messages -->
+            <div th:if="${successMsg}" class="alert-msg success" th:text="${successMsg}"></div>
+            <div th:if="${infoMsg}" class="alert-msg info" th:text="${infoMsg}"></div>
+
+            <!-- Comment form (authenticated only) -->
+            <div sec:authorize="isAuthenticated()" style="margin-bottom: 30px;">
+                <form th:action="@{/haber/{id}/yorum(id=${article.articleId})}" method="post">
+                    <div class="form-group">
+                        <label>Yorumunuz</label>
+                        <textarea name="content" rows="4" placeholder="Düşüncelerinizi paylaşın..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Yorumu Yayınla</button>
+                </form>
+            </div>
+            <div sec:authorize="!isAuthenticated()" style="margin-bottom:20px; color:#888; font-size:0.9rem;">
+                <a th:href="@{/giris}" style="color:#D32F2F; font-weight:600;">Giriş yapın</a> yorum bırakmak için.
+            </div>
+
+            <!-- Comments list -->
+            <div th:if="${comments.isEmpty()}" style="color:#888; font-size:0.9rem;">Henüz onaylanmış yorum yok. İlk yorumu siz yapın.</div>
+            <div th:each="comment : ${comments}" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width:32px; height:32px; border-radius:50%; background:#1A1A1A; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold;"
+                             th:text="${#strings.substring(comment.user.username, 0, 1).toUpperCase()}">U</div>
+                        <strong th:text="${comment.user.username}">Kullanıcı</strong>
+                    </div>
+                    <span style="font-size: 0.8rem; color: #888;" th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy HH:mm')}">Tarih</span>
+                </div>
+                <p style="margin: 10px 0 0 42px; color: #444;" th:text="${comment.content}">Yorum metni</p>
+            </div>
+        </section>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

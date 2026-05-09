@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="tr">
+<head th:replace="~{fragments/layout :: head('Profil')}"></head>
+<style>
+    .profile-container { display: flex; max-width: 1100px; margin: 40px auto; gap: 30px; padding: 0 20px; }
+    .profile-sidebar { width: 260px; background: #fff; border: 1px solid #ddd; padding: 20px; height: fit-content; }
+    .profile-sidebar h2 { font-size: 1rem; border-bottom: 2px solid #1A1A1A; padding-bottom: 10px; margin-bottom: 15px; }
+    .side-menu { list-style: none; padding: 0; margin: 0; }
+    .side-menu li { border-bottom: 1px solid #eee; cursor: pointer; color: #444; font-weight: 500; font-size: 0.9rem; }
+    .side-menu li:hover { background: #f9f9f9; color: #D32F2F; }
+    .side-menu li.active { color: #D32F2F; border-left: 4px solid #D32F2F; background: #fcfcfc; }
+    .side-menu li a { color: inherit; display: block; padding: 12px; }
+    .profile-main { flex: 1; background: #fff; border: 1px solid #ddd; padding: 40px; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid #eee; }
+    .info-label strong { display: block; font-size: 0.88rem; color: #1A1A1A; }
+    .info-label span { color: #666; font-size: 0.85rem; }
+    .saved-item { padding: 14px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 4px; background: #fafafa; }
+    .saved-item a { color: #1A1A1A; font-weight: bold; font-size: 1rem; }
+    .saved-item a:hover { color: #D32F2F; }
+</style>
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div th:replace="~{fragments/layout :: sidePanel}"></div>
+
+    <div class="profile-container">
+        <aside class="profile-sidebar">
+            <h2>HESAP AYARLARI</h2>
+            <ul class="side-menu">
+                <li th:classappend="${activeTab == 'personal'} ? 'active'"><a th:href="@{/profil(tab=personal)}">Kişisel Bilgiler</a></li>
+                <li th:classappend="${activeTab == 'saved'} ? 'active'"><a th:href="@{/profil(tab=saved)}">Kaydedilen Makaleler</a></li>
+                <li th:classappend="${activeTab == 'password'} ? 'active'"><a th:href="@{/profil(tab=password)}">Şifre Değiştir</a></li>
+            </ul>
+        </aside>
+
+        <main class="profile-main">
+            <div th:if="${successMsg}" class="alert-msg success" th:text="${successMsg}"></div>
+            <div th:if="${errorMsg}" class="alert-msg error" th:text="${errorMsg}"></div>
+
+            <!-- Personal Info -->
+            <div th:if="${activeTab == 'personal'}">
+                <h1 style="font-size: 1.6rem; margin-bottom: 25px; font-family: serif;">Kişisel Bilgiler</h1>
+                <form th:action="@{/profil/guncelle}" method="post">
+                    <div class="form-group">
+                        <label>Kullanıcı Adı</label>
+                        <input type="text" name="username" th:value="${user.username}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-posta Adresi</label>
+                        <input type="email" name="email" th:value="${user.email}" required>
+                    </div>
+                    <div class="info-row" style="border-bottom:none;">
+                        <div class="info-label">
+                            <strong>Kayıt Tarihi</strong>
+                            <span th:text="${#temporals.format(user.createdAt, 'dd MMM yyyy')}">Tarih</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top:10px;">Güncelle</button>
+                </form>
+            </div>
+
+            <!-- Saved Articles -->
+            <div th:if="${activeTab == 'saved'}">
+                <h1 style="font-size: 1.6rem; margin-bottom: 25px; font-family: serif;">Kaydedilen Makaleler</h1>
+                <p th:if="${savedArticles.isEmpty()}" style="color:#666;">Henüz kaydedilmiş bir makaleniz bulunmuyor.</p>
+                <div th:each="saved : ${savedArticles}" class="saved-item">
+                    <a th:href="@{/haber/{id}(id=${saved.article.articleId})}" th:text="${saved.article.title}">Makale Başlığı</a>
+                    <div style="font-size:0.8rem; color:#888; margin-top:4px;" th:text="'Kaydedildi: ' + ${#temporals.format(saved.savedAt, 'dd MMM yyyy')}"></div>
+                </div>
+            </div>
+
+            <!-- Password Change -->
+            <div th:if="${activeTab == 'password'}">
+                <h1 style="font-size: 1.6rem; margin-bottom: 25px; font-family: serif;">Şifre Değiştir</h1>
+                <form th:action="@{/profil/sifre-degistir}" method="post">
+                    <div class="form-group">
+                        <label>Mevcut Şifre</label>
+                        <input type="password" name="oldPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Yeni Şifre</label>
+                        <input type="password" name="newPassword" required minlength="8">
+                    </div>
+                    <div class="form-group">
+                        <label>Yeni Şifre (Tekrar)</label>
+                        <input type="password" name="confirmPassword" required minlength="8">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Şifreyi Değiştir</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

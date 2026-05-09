@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ══════════════ ADMIN LAYOUT ══════════════ -->
+<body>
+<div th:fragment="adminLayout(pageTitle, content)" class="admin-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-logo"><a th:href="@{/}">GÜNDEM TÜRKİYE</a></div>
+        <div class="sidebar-label">Yönetim</div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/admin}" th:classappend="${activePage == 'dashboard'} ? 'active'"><span class="nav-icon">📊</span> Dashboard</a></li>
+            <li><a th:href="@{/admin/kullanicilar}" th:classappend="${activePage == 'users'} ? 'active'"><span class="nav-icon">👥</span> Kullanıcılar</a></li>
+            <li><a th:href="@{/admin/kategoriler}" th:classappend="${activePage == 'categories'} ? 'active'"><span class="nav-icon">📁</span> Kategoriler</a></li>
+            <li><a th:href="@{/admin/etiketler}" th:classappend="${activePage == 'tags'} ? 'active'"><span class="nav-icon">🏷️</span> Etiketler</a></li>
+            <li><a th:href="@{/admin/makaleler}" th:classappend="${activePage == 'articles'} ? 'active'"><span class="nav-icon">📰</span> Makaleler</a></li>
+            <li><a th:href="@{/admin/yorumlar}" th:classappend="${activePage == 'comments'} ? 'active'"><span class="nav-icon">💬</span> Yorumlar</a></li>
+            <li><a th:href="@{/admin/loglar}" th:classappend="${activePage == 'logs'} ? 'active'"><span class="nav-icon">📋</span> Loglar</a></li>
+        </ul>
+        <div class="sidebar-label">Editör</div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/editor}"><span class="nav-icon">✍️</span> Editör Paneli</a></li>
+            <li><a th:href="@{/editor/yeni-makale}"><span class="nav-icon">➕</span> Yeni Makale</a></li>
+        </ul>
+    </aside>
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <h1 th:text="${pageTitle}">Sayfa Başlığı</h1>
+            <div class="topbar-right">
+                <a th:href="@{/}">← Siteye Dön</a>
+                <span>|</span>
+                <span sec:authentication="name">Admin</span>
+            </div>
+        </div>
+        <div th:replace="${content}">İçerik</div>
+    </main>
+    <script>
+        document.addEventListener('submit', async function(e) {
+            if (e.target && e.target.classList.contains('ajax-form')) {
+                e.preventDefault();
+                const form = e.target;
+                if (form.hasAttribute('data-confirm')) {
+                    if (!confirm(form.getAttribute('data-confirm'))) return;
+                }
+                const formData = new FormData(form);
+                const csrfToken = form.querySelector('input[name="_csrf"]');
+                if (csrfToken) formData.append('_csrf', csrfToken.value);
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: form.method || 'POST',
+                        body: formData,
+                        redirect: 'manual'
+                    });
+                    
+                    if (form.classList.contains('ajax-reload')) {
+                        // Remember scroll position
+                        sessionStorage.setItem('scrollPos', window.scrollY);
+                        window.location.reload();
+                    } else {
+                        // Default remove row
+                        const tr = form.closest('tr');
+                        if (tr) {
+                            tr.style.transition = 'opacity 0.3s';
+                            tr.style.opacity = '0';
+                            setTimeout(() => tr.remove(), 300);
+                        }
+                    }
+                } catch (err) {
+                    console.error('AJAX Error:', err);
+                    alert('Bir hata oluştu.');
+                }
+            }
+        });
+        
+        window.onload = function() {
+            const scrollPos = sessionStorage.getItem('scrollPos');
+            if (scrollPos) {
+                window.scrollTo(0, parseInt(scrollPos));
+                sessionStorage.removeItem('scrollPos');
+            }
+        };
+    </script>
+</div>
+</body>
+</html>

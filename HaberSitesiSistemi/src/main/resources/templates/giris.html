@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap - Gündem Türkiye</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <style>
+        body { background-color: #F7F7F7; min-height: 100vh; display: flex; flex-direction: column; }
+        .auth-header { width: 100%; background: #fff; border-bottom: 2px solid #1A1A1A; display: flex; justify-content: center; align-items: center; padding: 18px 30px; position: relative; }
+        .auth-header .logo { font-family: 'Roboto Slab', serif; font-size: 2rem; font-weight: 900; color: #1A1A1A; text-decoration: none; }
+        .auth-header .back-link { position: absolute; left: 30px; font-size: 0.8rem; font-weight: 600; color: #D32F2F; text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; }
+        .auth-header-bottom { width: 100%; text-align: center; padding: 10px; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; background: #fff; }
+        .auth-page { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 60px 20px; }
+        .auth-card { background: #fff; border: 1px solid #ddd; border-top: 4px solid #1A1A1A; width: 100%; max-width: 420px; padding: 40px 40px 50px; }
+        .auth-tabs { display: flex; border-bottom: 2px solid #1A1A1A; margin-bottom: 36px; }
+        .tab-btn { flex: 1; background: none; border: none; font-family: 'Roboto Slab', serif; font-size: 1rem; font-weight: 700; cursor: pointer; padding: 0 0 14px 0; color: #bbb; letter-spacing: 0.3px; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 0.2s, border-color 0.2s; }
+        .tab-btn.active { color: #1A1A1A; border-bottom-color: #D32F2F; }
+        .tab-btn:not(.active):hover { color: #666; }
+        .auth-note { margin-top: 22px; font-size: 0.75rem; color: #999; text-align: center; line-height: 1.6; }
+        .auth-note a { color: #D32F2F; text-decoration: none; font-weight: 600; }
+        .auth-form-flex { display: flex; flex-direction: column; gap: 14px; }
+    </style>
+</head>
+<body>
+    <header class="auth-header">
+        <a th:href="@{/}" class="back-link">← Ana Sayfa</a>
+        <a th:href="@{/}" class="logo">GÜNDEM TÜRKİYE</a>
+    </header>
+    <div class="auth-header-bottom">OKUYUCU GİRİŞİ</div>
+
+    <div class="auth-page">
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button class="tab-btn" id="login-tab" th:classappend="${activeTab != 'register'} ? ' active'" onclick="showTab('login')">Giriş Yap</button>
+                <button class="tab-btn" id="register-tab" th:classappend="${activeTab == 'register'} ? ' active'" onclick="showTab('register')">Kayıt Ol</button>
+            </div>
+
+            <!-- Messages -->
+            <div th:if="${errorMsg}" class="alert-msg error" th:text="${errorMsg}"></div>
+            <div th:if="${successMsg}" class="alert-msg success" th:text="${successMsg}"></div>
+
+            <!-- Login Form -->
+            <form id="login-form" th:action="@{/giris}" method="post" class="auth-form-flex"
+                  th:style="${activeTab == 'register'} ? 'display:none' : 'display:flex'">
+                <div class="form-group">
+                    <label for="login-username">Kullanıcı Adı</label>
+                    <input type="text" id="login-username" name="username" placeholder="kullanici_adi" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-pass">Şifre</label>
+                    <input type="password" id="login-pass" name="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Oturum Aç</button>
+                <div class="auth-note">
+                    Hesabınız yok mu? <a href="#" onclick="showTab('register'); return false;">Kayıt olun</a>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" th:action="@{/kayit}" method="post" class="auth-form-flex"
+                  th:style="${activeTab == 'register'} ? 'display:flex' : 'display:none'">
+                <div class="form-group">
+                    <label for="reg-username">Kullanıcı Adı</label>
+                    <input type="text" id="reg-username" name="username" placeholder="kullanici_adi" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">E-posta Adresi</label>
+                    <input type="email" id="reg-email" name="email" placeholder="ornek@mail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-pass">Şifre</label>
+                    <input type="password" id="reg-pass" name="password" placeholder="En az 8 karakter" required minlength="8">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Hesap Oluştur</button>
+                <div class="auth-note">
+                    Zaten hesabınız var mı? <a href="#" onclick="showTab('login'); return false;">Giriş yapın</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            if (tab === 'login') {
+                loginTab.classList.add('active'); registerTab.classList.remove('active');
+                loginForm.style.display = 'flex'; registerForm.style.display = 'none';
+            } else {
+                registerTab.classList.add('active'); loginTab.classList.remove('active');
+                registerForm.style.display = 'flex'; loginForm.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

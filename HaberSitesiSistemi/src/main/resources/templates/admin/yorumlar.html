@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yorumlar - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/global.css}"><link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div th:replace="~{fragments/admin-layout :: adminLayout('Yorum Moderasyonu', ~{::content})}">
+    <div th:fragment="content">
+        <div th:if="${successMsg}" class="alert-msg success" th:text="${successMsg}"></div>
+        <div th:if="${errorMsg}" class="alert-msg error" th:text="${errorMsg}"></div>
+        <div class="admin-card">
+            <h2>Yorum Yönetimi</h2>
+            <p style="color:#888;">Yorum moderasyonu sayfası. Onay bekleyen yorumlar burada listelenir.</p>
+            <div th:if="${comments.isEmpty()}">
+                <p style="color:#666; font-style:italic;">Onay bekleyen yorum bulunmuyor.</p>
+            </div>
+            <table class="data-table" th:unless="${comments.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kullanıcı</th>
+                        <th>Makale</th>
+                        <th>Yorum</th>
+                        <th>Tarih</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="comment : ${comments}">
+                        <td th:text="${comment.commentId}">1</td>
+                        <td th:text="${comment.user.username}">user</td>
+                        <td>
+                            <a th:href="@{/haber/{id}(id=${comment.article.articleId})}" th:text="${comment.article.title}" target="_blank">Makale</a>
+                        </td>
+                        <td th:text="${comment.content}">Yorum...</td>
+                        <td th:text="${#temporals.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}">Tarih</td>
+                        <td>
+                            <form th:action="@{/admin/yorum-onayla/{id}(id=${comment.commentId})}" method="post" class="ajax-form" style="display:inline;">
+                                <button type="submit" class="btn btn-sm" style="background:#4CAF50;color:#fff;">Onayla</button>
+                            </form>
+                            <form th:action="@{/admin/yorum-sil/{id}(id=${comment.commentId})}" method="post" class="ajax-form" style="display:inline;" data-confirm="Emin misiniz?">
+                                <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Pagination could be added here if needed -->
+        </div>
+    </div>
+</div>
+</body>
+</html>

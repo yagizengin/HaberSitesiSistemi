@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="tr">
+<head th:replace="~{fragments/layout :: head('Ana Sayfa')}"></head>
+<link rel="stylesheet" th:href="@{/css/anasayfa.css}">
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div th:replace="~{fragments/layout :: sidePanel}"></div>
+
+    <main class="main-container">
+        <!-- No articles state -->
+        <div th:if="${heroArticle == null}" class="empty-state">
+            <h2>Henüz yayınlanmış haber yok</h2>
+            <p>Yakında haberler burada görünecek.</p>
+        </div>
+
+        <!-- News Module -->
+        <section th:if="${heroArticle != null}" class="news-module">
+            <div class="grid-3-6-3">
+                <!-- Left Column -->
+                <div class="left-col">
+                    <article th:each="article : ${leftArticles}" class="news-item" th:onclick="|window.location.href='@{/haber/{id}(id=${article.articleId})}'|">
+                        <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/200/120'}" class="news-img news-img-small" alt="Haber">
+                        <span class="category-label" th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
+                        <h4 th:text="${article.title}">Haber Başlığı</h4>
+                    </article>
+                </div>
+
+                <!-- Center - Hero -->
+                <div class="center-col">
+                    <article class="hero-item">
+                        <a th:href="@{/haber/{id}(id=${heroArticle.articleId})}">
+                            <img th:src="${heroArticle.coverImage != null ? heroArticle.coverImage.fileUrl : 'https://picsum.photos/seed/' + heroArticle.articleId + '/800/450'}" alt="Manşet">
+                        </a>
+                        <a th:href="@{/haber/{id}(id=${heroArticle.articleId})}">
+                            <h2 th:text="${heroArticle.title}">Manşet Başlığı</h2>
+                        </a>
+                        <p th:text="${#strings.abbreviate(heroArticle.content.replaceAll('<[^>]*>', ''), 200)}">Özet metin...</p>
+                        <span class="hero-meta">
+                            <span th:text="${heroArticle.author.username}">Yazar</span> ·
+                            <span th:text="${#temporals.format(heroArticle.publishedAt, 'dd MMM yyyy')}">Tarih</span>
+                        </span>
+                    </article>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-col">
+                    <article th:each="article : ${rightArticles}" class="news-item" th:onclick="|window.location.href='@{/haber/{id}(id=${article.articleId})}'|">
+                        <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/200/120'}" class="news-img news-img-small" alt="Haber">
+                        <span class="category-label" th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
+                        <h4 th:text="${article.title}">Haber Başlığı</h4>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Bottom 4-grid -->
+            <div id="infinite-grid" th:if="${!bottomArticles.isEmpty()}" class="grid-4-bottom" style="margin-top: 30px;">
+                <article th:each="article : ${bottomArticles}" class="news-item" th:onclick="|window.location.href='@{/haber/{id}(id=${article.articleId})}'|">
+                    <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/400/250'}" class="news-img" alt="Haber">
+                    <span class="category-label" th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
+                    <h4 th:text="${article.title}">Haber Başlığı</h4>
+                </article>
+            </div>
+            
+            <div id="load-more-trigger" style="height: 20px; margin-bottom: 20px;"></div>
+            <div id="loading-spinner" style="display:none; text-align:center; padding: 20px; color: #888;">Yükleniyor...</div>
+
+            <div class="module-divider"></div>
+        </section>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const trigger = document.getElementById('load-more-trigger');
+            const grid = document.getElementById('infinite-grid');
+            const spinner = document.getElementById('loading-spinner');
+            
+            if (!trigger || !grid) return;
+            
+            let currentPage = 1; // page 0 is already loaded via controller (first 13 items)
+            let isLoading = false;
+            let hasMore = true;
+            
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && !isLoading && hasMore) {
+                    loadMoreArticles();
+                }
+            }, { rootMargin: '100px' });
+            
+            observer.observe(trigger);
+            
+            async function loadMoreArticles() {
+                isLoading = true;
+                spinner.style.display = 'block';
+                try {
+                    // size 12 to match the grid rows beautifully
+                    const res = await fetch(`/api/articles?page=${currentPage}&size=12&sort=publishedAt,desc`);
+                    if (res.ok) {
+                        const json = await res.json();
+                        if (json.success && json.data.articles) {
+                            const articles = json.data.articles;
+                            if (articles.length === 0) {
+                                hasMore = false;
+                                observer.disconnect();
+                            } else {
+                                articles.forEach(article => {
+                                    const imgUrl = article.coverImage ? article.coverImage.fileUrl : `https://picsum.photos/seed/${article.articleId}/400/250`;
+                                    const categoryName = article.category ? article.category.name : 'GENEL';
+                                    
+                                    const articleHtml = `
+                                        <article class="news-item" onclick="window.location.href='/haber/${article.articleId}'">
+                                            <img src="${imgUrl}" class="news-img" alt="Haber">
+                                            <span class="category-label">${categoryName}</span>
+                                            <h4>${article.title}</h4>
+                                        </article>
+                                    `;
+                                    grid.insertAdjacentHTML('beforeend', articleHtml);
+                                });
+                                currentPage++;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('Infinite scroll error', e);
+                } finally {
+                    isLoading = false;
+                    spinner.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

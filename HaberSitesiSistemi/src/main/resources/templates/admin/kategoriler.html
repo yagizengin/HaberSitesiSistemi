@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategoriler - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/global.css}"><link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div th:replace="~{fragments/admin-layout :: adminLayout('Kategori Yönetimi', ~{::content})}">
+    <div th:fragment="content">
+        <div th:if="${successMsg}" class="alert-msg success" th:text="${successMsg}"></div>
+        <div th:if="${errorMsg}" class="alert-msg error" th:text="${errorMsg}"></div>
+        <div class="admin-card">
+            <h2>Yeni Kategori Ekle</h2>
+            <form th:action="@{/admin/kategori-ekle}" method="post" class="inline-form">
+                <div class="form-group"><label>Kategori Adı</label><input type="text" name="name" required></div>
+                <div class="form-group"><label>Açıklama</label><input type="text" name="description" placeholder="İsteğe bağlı"></div>
+                <button type="submit" class="btn btn-primary">Ekle</button>
+            </form>
+        </div>
+        <div class="admin-card">
+            <h2>Mevcut Kategoriler</h2>
+            <table class="data-table">
+                <thead><tr><th>ID</th><th>Kategori Adı</th><th>Açıklama</th><th>Makale Sayısı</th><th>Durum</th><th>İşlem</th></tr></thead>
+                <tbody>
+                    <tr th:each="cat : ${allCategories}">
+                        <td th:text="${cat.categoryId}">1</td>
+                        <td th:text="${cat.name}">Kategori</td>
+                        <td th:text="${cat.description ?: '-'}">Açıklama</td>
+                        <td th:text="${cat.articles.size()}">0</td>
+                        <td><span th:if="${cat.isActive()}" class="badge badge-success">Aktif</span><span th:unless="${cat.isActive()}" class="badge badge-danger">Pasif</span></td>
+                        <td class="action-btns">
+                            <form th:action="@{/admin/kategori-sil/{id}(id=${cat.categoryId})}" method="post" class="ajax-form" data-confirm="Kategoriyi devre dışı bırakmak istediğinize emin misiniz?">
+                                <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

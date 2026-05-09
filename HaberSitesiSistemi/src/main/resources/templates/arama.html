@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="tr">
+<head th:replace="~{fragments/layout :: head('Arama Sonuçları')}"></head>
+<link rel="stylesheet" th:href="@{/css/anasayfa.css}">
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div th:replace="~{fragments/layout :: sidePanel}"></div>
+    <main class="main-container">
+        <h2 class="section-header" th:if="${query != ''}" th:text="'&quot;' + ${query} + '&quot; için sonuçlar'">Arama Sonuçları</h2>
+        <p th:if="${totalResults != null}" style="color:#888; margin-bottom:20px;" th:text="${totalResults} + ' sonuç bulundu'"></p>
+
+        <div th:if="${query == ''}" class="empty-state">
+            <h2>Arama</h2>
+            <p>Aramak istediğiniz kelimeyi üst çubuktan girin.</p>
+        </div>
+        <div th:if="${query != '' && (articles == null || articles.isEmpty())}" class="empty-state">
+            <p>Aramanızla eşleşen sonuç bulunamadı.</p>
+        </div>
+
+        <div th:if="${articles != null && !articles.isEmpty()}" class="grid-4-bottom">
+            <article th:each="article : ${articles}" class="news-item" th:onclick="|window.location.href='@{/haber/{id}(id=${article.articleId})}'|">
+                <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/400/250'}" class="news-img" alt="Haber">
+                <span class="category-label" th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
+                <h4 th:text="${article.title}">Başlık</h4>
+            </article>
+        </div>
+
+        <div th:if="${totalPages != null && totalPages > 1}" class="pagination">
+            <a th:if="${currentPage > 0}" th:href="@{/ara(q=${query}, page=${currentPage - 1})}">&laquo; Önceki</a>
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a th:href="@{/ara(q=${query}, page=${i})}" th:text="${i + 1}">1</a>
+            </span>
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{/ara(q=${query}, page=${currentPage + 1})}">Sonraki &raquo;</a>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

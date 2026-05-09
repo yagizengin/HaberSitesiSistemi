@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="tr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editör Paneli - Gündem Türkiye</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/global.css}"><link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div style="max-width:1100px; margin:40px auto; padding:0 30px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+        <h1 style="font-family:'Roboto Slab',serif; font-size:1.8rem;">Editör Paneli</h1>
+        <div style="display:flex; gap:12px;">
+            <a th:href="@{/}" class="btn btn-outline btn-sm">← Siteye Dön</a>
+            <a th:href="@{/editor/yeni-makale}" class="btn btn-primary">➕ Yeni Makale</a>
+        </div>
+    </div>
+
+    <div th:if="${successMsg}" class="alert-msg success" th:text="${successMsg}"></div>
+    <div th:if="${errorMsg}" class="alert-msg error" th:text="${errorMsg}"></div>
+
+    <div class="admin-card">
+        <h2>Makalelerim</h2>
+        <p th:if="${articles.isEmpty()}" style="color:#888;">Henüz bir makaleniz bulunmuyor. <a th:href="@{/editor/yeni-makale}" style="color:#D32F2F; font-weight:600;">İlk makalenizi oluşturun.</a></p>
+        <div th:each="article : ${articles}" class="editor-article-item">
+            <div class="article-info">
+                <h4><a th:href="@{/haber/{id}(id=${article.articleId})}" th:text="${article.title}">Makale Başlığı</a></h4>
+                <div class="article-meta">
+                    <span th:text="${article.category != null ? article.category.name : 'Kategorisiz'}">Kategori</span> ·
+                    <span th:text="${#temporals.format(article.publishedAt, 'dd MMM yyyy')}">Tarih</span> ·
+                    <span th:text="${article.viewCount} + ' görüntülenme'">0</span>
+                </div>
+            </div>
+            <div class="article-status">
+                <span th:if="${article.isPublished()}" class="badge badge-success">Yayında</span>
+                <span th:unless="${article.isPublished()}" class="badge badge-warning">Taslak</span>
+                <div class="action-btns">
+                    <a th:href="@{/editor/makale-duzenle/{id}(id=${article.articleId})}" class="btn btn-outline btn-sm">✏️ Düzenle</a>
+                    <form th:unless="${article.isPublished()}" th:action="@{/editor/makale-yayinla/{id}(id=${article.articleId})}" method="post" style="margin:0;">
+                        <button type="submit" class="btn btn-primary btn-sm">Yayınla</button>
+                    </form>
+                    <form th:action="@{/editor/makale-sil/{id}(id=${article.articleId})}" method="post" style="margin:0;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Makaleyi silmek istediğinize emin misiniz?')">🗑️</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

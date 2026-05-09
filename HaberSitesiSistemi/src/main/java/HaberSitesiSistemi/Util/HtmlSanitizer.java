@@ -9,7 +9,8 @@ public final class HtmlSanitizer {
     }
 
     private static final Safelist RICH_TEXT_SAFELIST = Safelist.relaxed()
-            .removeTags("img")
+            .addAttributes("img", "class", "style")
+            .preserveRelativeLinks(true)
             .addEnforcedAttribute("a", "rel", "nofollow");
 
 

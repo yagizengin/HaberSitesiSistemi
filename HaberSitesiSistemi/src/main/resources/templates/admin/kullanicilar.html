@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcılar - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/global.css}"><link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div th:replace="~{fragments/admin-layout :: adminLayout('Kullanıcı Yönetimi', ~{::content})}">
+    <div th:fragment="content">
+        <div th:if="${successMsg}" class="alert-msg success" th:text="${successMsg}"></div>
+        <div th:if="${errorMsg}" class="alert-msg error" th:text="${errorMsg}"></div>
+        <div class="admin-card">
+            <h2>Kullanıcılar</h2>
+            <table class="data-table">
+                <thead><tr><th>ID</th><th>Kullanıcı Adı</th><th>E-posta</th><th>Roller</th><th>Durum</th><th>Kayıt Tarihi</th><th>İşlem</th></tr></thead>
+                <tbody>
+                    <tr th:each="u : ${users}">
+                        <td th:text="${u.userId}">1</td>
+                        <td th:text="${u.username}">user</td>
+                        <td th:text="${u.email}">email</td>
+                        <td><span th:each="role : ${u.roles}" class="badge badge-info" style="margin-right:4px;" th:text="${role.name}">ROLE</span></td>
+                        <td><span th:if="${u.isActive()}" class="badge badge-success">Aktif</span><span th:unless="${u.isActive()}" class="badge badge-danger">Pasif</span></td>
+                        <td th:text="${#temporals.format(u.createdAt, 'dd/MM/yyyy')}">01/01/2026</td>
+                        <td class="action-btns">
+                            <form th:action="@{/admin/kullanici/{id}/durum(id=${u.userId})}" method="post" class="ajax-form ajax-reload">
+                                <button type="submit" class="btn btn-sm" th:classappend="${u.isActive()} ? 'btn-danger' : 'btn-primary'" th:text="${u.isActive()} ? 'Devre Dışı' : 'Aktifleştir'">Toggle</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

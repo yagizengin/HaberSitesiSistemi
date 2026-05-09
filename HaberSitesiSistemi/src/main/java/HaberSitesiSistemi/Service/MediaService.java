@@ -153,4 +153,10 @@ public class MediaService {
         return mediaRepository.findById(mediaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Media", "id", mediaId));
     }
+
+    @Transactional(readOnly = true)
+    public java.util.Optional<Media> getMediaByUrl(String fileUrl) {
+        log.info("Fetching media by URL: {}", fileUrl);
+        return mediaRepository.findByFileUrl(fileUrl);
+    }
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makaleler - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/global.css}"><link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div th:replace="~{fragments/admin-layout :: adminLayout('Makale Yönetimi', ~{::content})}">
+    <div th:fragment="content">
+        <div th:if="${successMsg}" class="alert-msg success" th:text="${successMsg}"></div>
+        <div class="admin-card">
+            <h2>Tüm Makaleler</h2>
+            <table class="data-table" id="articles-table">
+                <thead><tr><th>ID</th><th>Başlık</th><th>Yazar</th><th>Kategori</th><th>Durum</th><th>Görüntülenme</th><th>Tarih</th><th>İşlem</th></tr></thead>
+                <tbody>
+                    <tr th:each="article : ${articles}" th:id="'row-article-' + ${article.articleId}">
+                        <td th:text="${article.articleId}">1</td>
+                        <td><a th:href="@{/haber/{id}(id=${article.articleId})}" th:text="${#strings.abbreviate(article.title, 50)}">Başlık</a></td>
+                        <td th:text="${article.author.username}">yazar</td>
+                        <td th:text="${article.category != null ? article.category.name : '-'}">Kategori</td>
+                        <td><span th:if="${article.isPublished()}" class="badge badge-success">Yayında</span><span th:unless="${article.isPublished()}" class="badge badge-warning">Taslak</span></td>
+                        <td th:text="${article.viewCount}">0</td>
+                        <td th:text="${#temporals.format(article.publishedAt, 'dd/MM/yyyy')}">Tarih</td>
+                        <td class="action-btns">
+                            <a th:href="@{/editor/makale-duzenle/{id}(id=${article.articleId})}" class="btn btn-sm btn-outline">Düzenle</a>
+                            <form th:action="@{/admin/makale-sil/{id}(id=${article.articleId})}" method="post" class="ajax-form" data-confirm="Makaleyi silmek istediğinize emin misiniz?">
+                                <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p th:if="${articles.isEmpty()}" style="color:#888; text-align:center; padding:20px;">Henüz makale bulunmuyor.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

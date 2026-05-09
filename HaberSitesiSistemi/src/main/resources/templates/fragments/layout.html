@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ══════════════ HEAD FRAGMENT ══════════════ -->
+
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title th:text="${title} + ' - Gündem Türkiye'">Gündem Türkiye</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+</head>
+
+<body>
+
+    <!-- ══════════════ HEADER FRAGMENT ══════════════ -->
+    <header th:fragment="header" class="main-header">
+        <div class="header-top">
+            <div class="header-left">
+                <form th:action="@{/ara}" method="get" class="search-container" id="global-search-form" style="position:relative;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" name="q" id="global-search-input" placeholder="Ara..." autocomplete="off">
+                    <div id="search-results-overlay" class="search-results-dropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ddd; border-top:none; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:1000; max-height:400px; overflow-y:auto;"></div>
+                </form>
+                <span class="date-display" id="date-display"></span>
+            </div>
+            <div class="header-center">
+                <h1 class="logo"><a th:href="@{/}">GÜNDEM TÜRKİYE</a></h1>
+            </div>
+            <div class="header-right">
+                <!-- Not authenticated -->
+                <div sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/giris}" class="header-auth-btn">Giriş Yap</a>
+                </div>
+                <!-- Authenticated -->
+                <div sec:authorize="isAuthenticated()" id="profile-btn" class="profile-icon-wrapper">
+                    <span class="profile-initials" sec:authentication="name"
+                        th:text="${#strings.substring(#authentication.name, 0, 2).toUpperCase()}">GT</span>
+                </div>
+            </div>
+        </div>
+        <nav class="header-bottom">
+            <ul class="nav-list">
+                <li class="nav-item"><a th:href="@{/}">ANA SAYFA</a></li>
+                <li class="nav-item" th:each="cat : ${categories}">
+                    <a th:href="@{/kategori/{id}(id=${cat.categoryId})}"
+                        th:text="${#strings.toUpperCase(cat.name)}">KATEGORİ</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ══════════════ SIDE PANEL FRAGMENT ══════════════ -->
+    <div th:fragment="sidePanel">
+        <div id="side-panel" class="side-panel">
+            <div class="panel-header">
+                <button id="close-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="panel-content">
+                <h2 sec:authorize="isAuthenticated()">Hoş Geldin, <span sec:authentication="name">Kullanıcı</span></h2>
+                <h2 sec:authorize="!isAuthenticated()">Gündem Türkiye</h2>
+                <p class="panel-desc" sec:authorize="!isAuthenticated()">Haberleri takip etmek için giriş yapın.</p>
+                <hr class="panel-divider">
+                <ul class="panel-menu">
+                    <li sec:authorize="isAuthenticated()"><a th:href="@{/profil}">Profil <span>&gt;</span></a></li>
+                    <li sec:authorize="hasRole('EDITOR') or hasRole('ADMIN')"><a th:href="@{/editor}">Editör
+                            Paneli <span>&gt;</span></a></li>
+                    <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Yönetim Paneli
+                            <span>&gt;</span></a></li>
+                    <li><a th:href="@{/}">Ana Sayfa <span>&gt;</span></a></li>
+                    <li sec:authorize="isAuthenticated()">
+                        <form th:action="@{/cikis}" method="post" style="margin:0;">
+                            <button type="submit" class="logout-link"
+                                style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:0.9rem;padding:14px 0;width:100%;text-align:left;">Çıkış
+                                Yap</button>
+                        </form>
+                    </li>
+                    <li sec:authorize="!isAuthenticated()"><a th:href="@{/giris}" class="logout-link">Giriş Yap / Kayıt
+                            Ol</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="overlay" class="overlay"></div>
+    </div>
+
+    <!-- ══════════════ FOOTER FRAGMENT ══════════════ -->
+    <footer th:fragment="footer" class="main-footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <h4>Gündem Türkiye</h4>
+                <a th:href="@{/}">Ana Sayfa</a>
+                <a href="#">Hakkımızda</a>
+                <a href="#">İletişim</a>
+            </div>
+            <div class="footer-col">
+                <h4>Kategoriler</h4>
+                <a th:each="cat : ${categories}" th:href="@{/kategori/{id}(id=${cat.categoryId})}"
+                    th:text="${cat.name}">Kategori</a>
+            </div>
+            <div class="footer-col">
+                <h4>Hesap</h4>
+                <a th:href="@{/giris}" sec:authorize="!isAuthenticated()">Giriş Yap</a>
+                <a th:href="@{/profil}" sec:authorize="isAuthenticated()">Profilim</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Gündem Türkiye. Tüm hakları saklıdır.
+        </div>
+    </footer>
+
+    <!-- ══════════════ SCRIPTS FRAGMENT ══════════════ -->
+    <div th:fragment="scripts">
+        <script th:src="@{/js/global.js}"></script>
+    </div>
+
+</body>
+
+</html>

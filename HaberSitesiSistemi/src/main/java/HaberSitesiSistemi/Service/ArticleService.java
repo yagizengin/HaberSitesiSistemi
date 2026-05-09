@@ -76,6 +76,7 @@ public class ArticleService {
         }
 
         Article savedArticle = articleRepository.save(article);
+        associateEmbeddedImages(savedArticle);
         log.info("Article created successfully with ID: {}", savedArticle.getArticleId());
         return savedArticle;
     }
@@ -120,6 +121,7 @@ public class ArticleService {
         }
 
         Article updatedArticle = articleRepository.save(article);
+        associateEmbeddedImages(updatedArticle);
         log.info("Article {} updated successfully", articleId);
         return updatedArticle;
     }
@@ -237,5 +239,21 @@ public class ArticleService {
     public long countAllPublishedArticles() {
         log.info("Counting total published articles");
         return articleRepository.countByPublished(true);
+    }
+
+    private void associateEmbeddedImages(Article article) {
+        if (article.getContent() == null || article.getContent().isBlank()) {
+            return;
+        }
+        org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(article.getContent());
+        org.jsoup.select.Elements imgs = doc.select("img");
+        for (org.jsoup.nodes.Element img : imgs) {
+            String src = img.attr("src");
+            if (src != null && src.startsWith("/uploads/media/")) {
+                mediaService.getMediaByUrl(src).ifPresent(media -> {
+                    mediaService.addMediaToArticle(media.getMediaId(), article.getArticleId());
+                });
+            }
+        }
     }
 }

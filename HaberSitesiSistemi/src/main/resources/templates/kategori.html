@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="tr">
+<head th:replace="~{fragments/layout :: head(${category.name})}"></head>
+<link rel="stylesheet" th:href="@{/css/anasayfa.css}">
+<body>
+    <header th:replace="~{fragments/layout :: header}"></header>
+    <div th:replace="~{fragments/layout :: sidePanel}"></div>
+    <main class="main-container">
+        <h2 class="section-header" th:text="${category.name}">Kategori Adı</h2>
+        <p th:if="${category.description != null}" th:text="${category.description}" class="category-description" style="margin-bottom: 20px; color: #666;"></p>
+        <div th:if="${articles.isEmpty()}" class="empty-state">
+            <p>Bu kategoride henüz haber bulunmuyor.</p>
+        </div>
+        <div class="grid-4-bottom">
+            <article th:each="article : ${articles}" class="news-item" th:onclick="|window.location.href='@{/haber/{id}(id=${article.articleId})}'|">
+                <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/400/250'}" class="news-img" alt="Haber">
+                <span class="category-label" th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
+                <h4 th:text="${article.title}">Başlık</h4>
+            </article>
+        </div>
+        <!-- Pagination -->
+        <div th:if="${totalPages > 1}" class="pagination">
+            <a th:if="${currentPage > 0}" th:href="@{/kategori/{id}(id=${category.categoryId}, page=${currentPage - 1})}">&laquo; Önceki</a>
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a th:href="@{/kategori/{id}(id=${category.categoryId}, page=${i})}" th:text="${i + 1}">1</a>
+            </span>
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{/kategori/{id}(id=${category.categoryId}, page=${currentPage + 1})}">Sonraki &raquo;</a>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
