@@ -147,7 +147,7 @@
 
     var contentInput = document.getElementById('content-input');
     if (contentInput.value) {
-        quill.root.innerHTML = contentInput.value;
+        quill.clipboard.dangerouslyPasteHTML(contentInput.value);
     }
 
     // Custom Image Handler for Quill

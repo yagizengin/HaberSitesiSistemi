@@ -67,10 +67,12 @@ public class MediaService {
                     .orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
         }
 
-        String originalFilename = file.getOriginalFilename();
         String extension = "";
-        if (originalFilename != null && originalFilename.contains(".")) {
-            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        switch (contentType.toLowerCase()) {
+            case "image/jpeg": extension = ".jpg"; break;
+            case "image/png":  extension = ".png"; break;
+            case "image/gif":  extension = ".gif"; break;
+            case "image/webp": extension = ".webp"; break;
         }
         String safeFilename = UUID.randomUUID().toString() + extension;
 

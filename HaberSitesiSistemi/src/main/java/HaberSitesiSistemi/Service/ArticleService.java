@@ -76,6 +76,9 @@ public class ArticleService {
         }
 
         Article savedArticle = articleRepository.save(article);
+        if (request.getCoverImageId() != null) {
+            mediaService.addMediaToArticle(request.getCoverImageId(), savedArticle.getArticleId());
+        }
         associateEmbeddedImages(savedArticle);
         log.info("Article created successfully with ID: {}", savedArticle.getArticleId());
         return savedArticle;
@@ -121,6 +124,9 @@ public class ArticleService {
         }
 
         Article updatedArticle = articleRepository.save(article);
+        if (request.getCoverImageId() != null) {
+            mediaService.addMediaToArticle(request.getCoverImageId(), updatedArticle.getArticleId());
+        }
         associateEmbeddedImages(updatedArticle);
         log.info("Article {} updated successfully", articleId);
         return updatedArticle;

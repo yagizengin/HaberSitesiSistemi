@@ -25,7 +25,7 @@ public final class HtmlSanitizer {
         if (input == null) {
             return "";
         }
-        return Jsoup.clean(input, RICH_TEXT_SAFELIST).trim();
+        return Jsoup.clean(input, "http://localhost", RICH_TEXT_SAFELIST).trim();
     }
 
     public static String trim(String input) {
