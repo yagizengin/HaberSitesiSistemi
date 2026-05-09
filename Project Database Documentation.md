@@ -36,11 +36,13 @@ Primary Key (PK): category_id
 ## 5. Articles (Haberler)
 
 ```
-Sütunlar: article_id, title, content, published_at, view_count, is_published, category_id, author_id
+Sütunlar: article_id, title, content, published_at, view_count, is_published, category_id, author_id, cover_image_id
 Primary Key (PK): article_id
 Foreign Key (FK) 1: category_id -> Categories.category_id
 Foreign Key (FK) 2: author_id -> Users.user_id
+Foreign Key (FK) 3: cover_image_id -> Media.media_id (ALTER TABLE ile eklenir)
 ```
+**Not:** `cover_image_id` FK'sı, Articles ve Media arasındaki döngüsel bağımlılık nedeniyle `ALTER TABLE` ile eklenmektedir.
 
 ## 6. Comments (Yorumlar)
 
@@ -104,3 +106,17 @@ Foreign Key (FK) 1: user_id -> Users.user_id
 Foreign Key (FK) 2: article_id -> Articles.article_id
 ```
 **Not:** Standart kullanıcıların haberleri "daha sonra oku" listesine eklemesi için tasarlandı.
+
+## Index Tanımları (Performans Optimizasyonu)
+
+```
+idx_articles_published_date  -> articles(is_published, published_at DESC)
+idx_articles_author          -> articles(author_id)
+idx_articles_category        -> articles(category_id)
+idx_articles_title           -> articles(title)
+idx_comments_article_approved -> comments(article_id, is_approved)
+idx_media_article            -> media(article_id)
+idx_session_ip_success       -> session_logs(ip_address, is_success)
+idx_saved_user               -> saved_articles(user_id)
+```
+**Not:** Sık kullanılan sorguların performansını artırmak için eklendi. Composite index'ler (birden fazla sütun içerenler) ilgili sorguların her iki koşulunu da hızlandırır.

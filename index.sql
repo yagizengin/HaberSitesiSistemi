@@ -29,7 +29,7 @@ CREATE TABLE categories (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- 5. Articles Tablosu
+-- 5. Articles Tablosu (cover_image_id FK aşağıda ALTER TABLE ile eklenir)
 CREATE TABLE articles (
     article_id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
@@ -38,7 +38,8 @@ CREATE TABLE articles (
     view_count INT DEFAULT 0,
     is_published BOOLEAN DEFAULT FALSE,
     category_id BIGINT REFERENCES categories(category_id) ON DELETE SET NULL,
-    author_id BIGINT REFERENCES users(user_id) ON DELETE CASCADE
+    author_id BIGINT REFERENCES users(user_id) ON DELETE CASCADE,
+    cover_image_id BIGINT
 );
 
 -- 6. Comments Tablosu (user_id NOT NULL yapılarak anonim yorum engellendi)
@@ -73,6 +74,10 @@ CREATE TABLE media (
     article_id BIGINT REFERENCES articles(article_id) ON DELETE CASCADE
 );
 
+-- Articles <-> Media döngüsel bağımlılık çözümü: cover_image_id FK burada ekleniyor
+ALTER TABLE articles ADD CONSTRAINT fk_articles_cover_image
+    FOREIGN KEY (cover_image_id) REFERENCES media(media_id) ON DELETE SET NULL;
+
 -- 10. Audit_Logs Tablosu (Admin Paneli İşlem Logları)
 CREATE TABLE audit_logs (
     log_id BIGSERIAL PRIMARY KEY,
@@ -103,3 +108,31 @@ CREATE TABLE saved_articles (
 
 -- Backend geliştiricisi için varsayılan roller:
 INSERT INTO roles (role_name) VALUES ('ROLE_ADMIN'), ('ROLE_EDITOR'), ('ROLE_USER');
+
+-- =============================================
+-- INDEX TANIMLARI (Performans Optimizasyonu)
+-- =============================================
+
+-- Articles: Yayınlanmış haberleri tarihe göre sıralama (en sık kullanılan sorgu)
+CREATE INDEX idx_articles_published_date ON articles(is_published, published_at DESC);
+
+-- Articles: Yazara göre haberleri listeleme
+CREATE INDEX idx_articles_author ON articles(author_id);
+
+-- Articles: Kategoriye göre haberleri listeleme
+CREATE INDEX idx_articles_category ON articles(category_id);
+
+-- Articles: Başlığa göre arama
+CREATE INDEX idx_articles_title ON articles(title);
+
+-- Comments: Bir haberin onaylı yorumlarını çekme
+CREATE INDEX idx_comments_article_approved ON comments(article_id, is_approved);
+
+-- Media: Bir habere ait görselleri çekme
+CREATE INDEX idx_media_article ON media(article_id);
+
+-- Session_Logs: Brute-force kontrolü (IP + başarı durumu)
+CREATE INDEX idx_session_ip_success ON session_logs(ip_address, is_success);
+
+-- Saved_Articles: Kullanıcının kaydettiği haberleri listeleme
+CREATE INDEX idx_saved_user ON saved_articles(user_id);
