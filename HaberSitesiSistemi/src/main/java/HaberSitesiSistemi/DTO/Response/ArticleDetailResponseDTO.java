@@ -1,6 +1,6 @@
 package HaberSitesiSistemi.DTO.Response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class ArticleDetailResponseDTO {
     private String content;
     private boolean published;
     private int viewCount;
-    private Timestamp publishedAt;
+    private LocalDateTime publishedAt;
     private CategoryResponseDTO category;
     private UserResponseDTO author;
     private List<TagResponseDTO> tags;

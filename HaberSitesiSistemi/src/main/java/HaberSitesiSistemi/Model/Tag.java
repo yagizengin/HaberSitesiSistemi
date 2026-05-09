@@ -26,7 +26,7 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     @Column(name = "tag_id")
-    private Long tag_id;
+    private Long tagId;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;

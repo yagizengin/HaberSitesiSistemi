@@ -23,4 +23,6 @@ public class ArticleUpdateRequest {
     private Long categoryId;
 
     private List<Long> tagIds;
+
+    private Long coverImageId;
 }

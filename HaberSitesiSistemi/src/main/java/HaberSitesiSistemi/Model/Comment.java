@@ -1,6 +1,5 @@
 package HaberSitesiSistemi.Model;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -25,20 +24,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
-    
+
     @Column(name = "comment_id")
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private Long comment_id;
+    private Long commentId;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "is_approved", nullable = false)
-    private boolean is_approved;
+    private boolean approved;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", nullable = false)
@@ -50,7 +49,8 @@ public class Comment {
 
     @PrePersist
     protected void prePersist() {
-        this.created_at = Timestamp.valueOf(LocalDateTime.now());
-        this.is_approved = false;
+        this.createdAt = LocalDateTime.now();
+        this.approved = false;
     }
+
 }

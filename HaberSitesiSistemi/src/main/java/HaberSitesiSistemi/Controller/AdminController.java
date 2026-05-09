@@ -75,9 +75,9 @@ public class AdminController {
         @GetMapping("/statistics")
         public ResponseEntity<ApiResponse<Map<String, Object>>> getStatistics() {
                 Map<String, Object> stats = new HashMap<>();
-                stats.put("totalUsers", userService.getAllUsers(Pageable.unpaged()).getTotalElements());
-                stats.put("totalArticles", articleService.getAllArticles(Pageable.unpaged()).getTotalElements());
-                stats.put("totalCategories", categoryService.getAllCategories().size());
+                stats.put("totalUsers", userService.countAllUsers());
+                stats.put("totalArticles", articleService.countAllPublishedArticles());
+                stats.put("totalCategories", categoryService.countAllCategories());
 
                 return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
                                 .success(true).message("Statistics retrieved successfully")

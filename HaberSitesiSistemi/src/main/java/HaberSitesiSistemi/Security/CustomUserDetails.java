@@ -21,12 +21,15 @@ public class CustomUserDetails implements UserDetails {
     private final Set<GrantedAuthority> authorities;
 
     public CustomUserDetails(User user) {
-        this.userId = user.getUser_id();
+        this.userId = user.getUserId();
         this.username = user.getUsername();
-        this.password = user.getPassword_hash();
-        this.active = user.is_active();
+        this.password = user.getPasswordHash();
+        this.active = user.isActive();
         this.authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()))
+                .map(role -> {
+                    String roleName = role.getName().toUpperCase();
+                    return new SimpleGrantedAuthority(roleName.startsWith("ROLE_") ? roleName : "ROLE_" + roleName);
+                })
                 .collect(Collectors.toSet());
     }
 

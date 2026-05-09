@@ -1,5 +1,5 @@
 package HaberSitesiSistemi.Model;
-import java.sql.Timestamp;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long user_id;
+    private Long userId;
 
     @Column(name = "username", nullable = false, unique = true)
     @NotBlank(message = "Username cannot be blank")
@@ -43,7 +43,7 @@ public class User {
 
     @Column(name = "password_hash", nullable = false)
     @NotBlank(message = "Password cannot be blank")
-    private String password_hash;
+    private String passwordHash;
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email cannot be blank")
@@ -51,17 +51,13 @@ public class User {
     private String email;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Timestamp created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "is_active", nullable = false)
-    private boolean is_active;
+    private boolean active;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
@@ -70,12 +66,11 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Comment> comments = new HashSet<>();
 
-    
     @PrePersist
     public void prePersist() {
-        if (this.created_at == null) {
-            this.created_at = Timestamp.valueOf(LocalDateTime.now());
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
         }
-        this.is_active = true;
+        this.active = true;
     }
 }

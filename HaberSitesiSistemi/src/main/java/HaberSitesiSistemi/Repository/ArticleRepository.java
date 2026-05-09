@@ -12,7 +12,7 @@ import HaberSitesiSistemi.Model.User;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    Page<Article> findByIsPublished(boolean isPublished, Pageable pageable);
+    Page<Article> findByPublished(boolean published, Pageable pageable);
 
     Page<Article> findByCategory(Category category, Pageable pageable);
 
@@ -20,7 +20,9 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     Page<Article> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
-    List<Article> findByIsPublishedOrderByPublishedAtDesc(boolean isPublished);
+    List<Article> findByPublishedOrderByPublishedAtDesc(boolean published);
 
     Page<Article> findByTags_TagId(Long tagId, Pageable pageable);
+
+    long countByPublished(boolean published);
 }

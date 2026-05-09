@@ -1,6 +1,5 @@
 package HaberSitesiSistemi.Model;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -29,10 +28,10 @@ public class SavedArticle {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     @Column(name = "save_id")
-    private Long save_id;
+    private Long saveId;
 
     @Column(name = "saved_at", nullable = false)
-    private Timestamp saved_at;
+    private LocalDateTime savedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -44,8 +43,8 @@ public class SavedArticle {
 
     @PrePersist
     protected void prePersist() {
-        if (this.saved_at == null) {
-            this.saved_at = Timestamp.valueOf(LocalDateTime.now());
+        if (this.savedAt == null) {
+            this.savedAt = LocalDateTime.now();
         }
     }
 }

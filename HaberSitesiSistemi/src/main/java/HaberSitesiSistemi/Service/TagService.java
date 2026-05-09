@@ -12,6 +12,8 @@ import HaberSitesiSistemi.Model.Tag;
 import HaberSitesiSistemi.Repository.ArticleRepository;
 import HaberSitesiSistemi.Repository.TagRepository;
 import HaberSitesiSistemi.Util.HtmlSanitizer;
+import HaberSitesiSistemi.Exception.ResourceNotFoundException;
+import HaberSitesiSistemi.Exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,12 +29,12 @@ public class TagService {
     public Tag createTag(TagCreateRequest request) {
         log.info("Creating tag: '{}'", request.getName());
         if (tagRepository.existsByNameIgnoreCase(request.getName())) {
-            throw new IllegalArgumentException("Tag name already exists");
+            throw new ConflictException("Tag name already exists");
         }
         Tag tag = new Tag();
         tag.setName(HtmlSanitizer.sanitize(request.getName()));
         Tag saved = tagRepository.save(tag);
-        log.info("Tag created with ID: {}", saved.getTag_id());
+        log.info("Tag created with ID: {}", saved.getTagId());
         return saved;
     }
 
@@ -44,24 +46,24 @@ public class TagService {
     @Transactional(readOnly = true)
     public Set<Tag> getTagsByArticle(Long articleId) {
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
         return article.getTags();
     }
 
     public Article addTagToArticle(Long articleId, Long tagId) {
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
         Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new IllegalArgumentException("Tag not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tag", "id", tagId));
         article.getTags().add(tag);
         return articleRepository.save(article);
     }
 
     public Article removeTagFromArticle(Long articleId, Long tagId) {
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
         Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new IllegalArgumentException("Tag not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tag", "id", tagId));
         article.getTags().remove(tag);
         return articleRepository.save(article);
     }

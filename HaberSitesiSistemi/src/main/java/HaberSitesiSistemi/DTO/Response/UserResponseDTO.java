@@ -1,6 +1,6 @@
 package HaberSitesiSistemi.DTO.Response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +18,6 @@ public class UserResponseDTO {
     private String username;
     private String email;
     private boolean active;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
     private Set<String> roles;
 }

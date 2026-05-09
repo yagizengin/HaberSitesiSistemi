@@ -36,7 +36,7 @@ public class TagController {
     public ResponseEntity<ApiResponse<TagResponseDTO>> getTagById(@PathVariable Long id) {
         // Tags don't have a dedicated getById in service, use findAll and filter
         Tag tag = tagService.getAllTags().stream()
-                .filter(t -> t.getTag_id().equals(id))
+                .filter(t -> t.getTagId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Tag not found"));
         return ResponseEntity.ok(ApiResponse.<TagResponseDTO>builder()

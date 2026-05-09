@@ -1,6 +1,6 @@
 package HaberSitesiSistemi.DTO.Response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +19,7 @@ public class UserDetailResponseDTO {
     private String username;
     private String email;
     private boolean active;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
     private Set<String> roles;
     private long articleCount;
     private long commentCount;

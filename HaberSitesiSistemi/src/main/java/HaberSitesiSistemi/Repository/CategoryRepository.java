@@ -9,9 +9,11 @@ import HaberSitesiSistemi.Model.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    List<Category> findByIsActive(boolean isActive);
+    List<Category> findByActive(boolean active);
 
     Optional<Category> findByNameIgnoreCase(String name);
 
     boolean existsByNameIgnoreCase(String name);
+
+    long countByActive(boolean active);
 }

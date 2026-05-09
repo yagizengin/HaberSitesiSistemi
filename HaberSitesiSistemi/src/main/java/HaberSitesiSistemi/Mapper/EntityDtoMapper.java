@@ -73,11 +73,11 @@ public final class EntityDtoMapper {
         }
 
         return UserResponseDTO.builder()
-                .userId(user.getUser_id())
+                .userId(user.getUserId())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .active(user.is_active())
-                .createdAt(user.getCreated_at())
+                .active(user.isActive())
+                .createdAt(user.getCreatedAt())
                 .roles(mapRoleNames(user.getRoles()))
                 .build();
     }
@@ -88,11 +88,11 @@ public final class EntityDtoMapper {
         }
 
         return UserDetailResponseDTO.builder()
-                .userId(user.getUser_id())
+                .userId(user.getUserId())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .active(user.is_active())
-                .createdAt(user.getCreated_at())
+                .active(user.isActive())
+                .createdAt(user.getCreatedAt())
                 .roles(mapRoleNames(user.getRoles()))
                 .articleCount(sizeOf(user.getArticles()))
                 .commentCount(sizeOf(user.getComments()))
@@ -108,11 +108,11 @@ public final class EntityDtoMapper {
         }
 
         return UserProfileResponseDTO.builder()
-                .userId(user.getUser_id())
+                .userId(user.getUserId())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .active(user.is_active())
-                .createdAt(user.getCreated_at())
+                .active(user.isActive())
+                .createdAt(user.getCreatedAt())
                 .roles(mapRoleNames(user.getRoles()))
                 .recentArticles(mapArticleSummaries(user.getArticles()))
                 .recentComments(mapComments(user.getComments()))
@@ -138,7 +138,7 @@ public final class EntityDtoMapper {
         category.setName(request.getName());
         category.setDescription(request.getDescription());
         if (request.getActive() != null) {
-            category.set_active(request.getActive());
+            category.setActive(request.getActive());
         }
     }
 
@@ -148,10 +148,10 @@ public final class EntityDtoMapper {
         }
 
         return CategoryResponseDTO.builder()
-                .categoryId(category.getCategory_id())
+                .categoryId(category.getCategoryId())
                 .name(category.getName())
                 .description(category.getDescription())
-                .active(category.is_active())
+                .active(category.isActive())
                 .articleCount(sizeOf(category.getArticles()))
                 .build();
     }
@@ -162,10 +162,10 @@ public final class EntityDtoMapper {
         }
 
         return CategoryWithArticlesDTO.builder()
-                .categoryId(category.getCategory_id())
+                .categoryId(category.getCategoryId())
                 .name(category.getName())
                 .description(category.getDescription())
-                .active(category.is_active())
+                .active(category.isActive())
                 .articleCount(sizeOf(category.getArticles()))
                 .articles(mapArticleSummaries(category.getArticles()))
                 .build();
@@ -187,7 +187,7 @@ public final class EntityDtoMapper {
         }
 
         return TagResponseDTO.builder()
-                .tagId(tag.getTag_id())
+                .tagId(tag.getTagId())
                 .name(tag.getName())
                 .articleCount(sizeOf(tag.getArticles()))
                 .build();
@@ -199,7 +199,7 @@ public final class EntityDtoMapper {
         }
 
         Media media = new Media();
-        media.setFile_type(request.getFileType());
+        media.setFileType(request.getFileType());
         return media;
     }
 
@@ -209,11 +209,11 @@ public final class EntityDtoMapper {
         }
 
         return MediaResponseDTO.builder()
-                .mediaId(media.getMedia_id())
-                .fileUrl(media.getFile_url())
-                .fileType(media.getFile_type())
-                .uploadedAt(media.getUploaded_at())
-                .articleId(media.getArticle() != null ? media.getArticle().getArticle_id() : null)
+                .mediaId(media.getMediaId())
+                .fileUrl(media.getFileUrl())
+                .fileType(media.getFileType())
+                .uploadedAt(media.getUploadedAt())
+                .articleId(media.getArticle() != null ? media.getArticle().getArticleId() : null)
                 .build();
     }
 
@@ -241,12 +241,12 @@ public final class EntityDtoMapper {
         }
 
         return CommentResponseDTO.builder()
-                .commentId(comment.getComment_id())
+                .commentId(comment.getCommentId())
                 .content(comment.getContent())
-                .createdAt(comment.getCreated_at())
-                .approved(comment.is_approved())
-                .articleId(comment.getArticle() != null ? comment.getArticle().getArticle_id() : null)
-                .userId(comment.getUser() != null ? comment.getUser().getUser_id() : null)
+                .createdAt(comment.getCreatedAt())
+                .approved(comment.isApproved())
+                .articleId(comment.getArticle() != null ? comment.getArticle().getArticleId() : null)
+                .userId(comment.getUser() != null ? comment.getUser().getUserId() : null)
                 .username(comment.getUser() != null ? comment.getUser().getUsername() : null)
                 .build();
     }
@@ -277,15 +277,15 @@ public final class EntityDtoMapper {
         }
 
         return ArticleResponseDTO.builder()
-                .articleId(article.getArticle_id())
+                .articleId(article.getArticleId())
                 .title(article.getTitle())
                 .content(article.getContent())
-                .published(article.is_published())
-                .viewCount(article.getView_count())
-                .publishedAt(article.getPublished_at())
-                .categoryId(article.getCategory() != null ? article.getCategory().getCategory_id() : null)
+                .published(article.isPublished())
+                .viewCount(article.getViewCount())
+                .publishedAt(article.getPublishedAt())
+                .categoryId(article.getCategory() != null ? article.getCategory().getCategoryId() : null)
                 .categoryName(article.getCategory() != null ? article.getCategory().getName() : null)
-                .authorId(article.getAuthor() != null ? article.getAuthor().getUser_id() : null)
+                .authorId(article.getAuthor() != null ? article.getAuthor().getUserId() : null)
                 .authorUsername(article.getAuthor() != null ? article.getAuthor().getUsername() : null)
                 .build();
     }
@@ -296,13 +296,13 @@ public final class EntityDtoMapper {
         }
 
         return ArticleSummaryDTO.builder()
-                .articleId(article.getArticle_id())
+                .articleId(article.getArticleId())
                 .title(article.getTitle())
                 .excerpt(buildExcerpt(article.getContent()))
                 .categoryName(article.getCategory() != null ? article.getCategory().getName() : null)
                 .authorUsername(article.getAuthor() != null ? article.getAuthor().getUsername() : null)
-                .publishedAt(article.getPublished_at())
-                .viewCount(article.getView_count())
+                .publishedAt(article.getPublishedAt())
+                .viewCount(article.getViewCount())
                 .firstMediaUrl(firstMediaUrl(article.getMediaFiles()))
                 .build();
     }
@@ -313,12 +313,12 @@ public final class EntityDtoMapper {
         }
 
         return ArticleDetailResponseDTO.builder()
-                .articleId(article.getArticle_id())
+                .articleId(article.getArticleId())
                 .title(article.getTitle())
                 .content(article.getContent())
-                .published(article.is_published())
-                .viewCount(article.getView_count())
-                .publishedAt(article.getPublished_at())
+                .published(article.isPublished())
+                .viewCount(article.getViewCount())
+                .publishedAt(article.getPublishedAt())
                 .category(toCategoryResponseDTO(article.getCategory()))
                 .author(toUserResponseDTO(article.getAuthor()))
                 .tags(mapTags(article.getTags()))
@@ -333,10 +333,10 @@ public final class EntityDtoMapper {
         }
 
         return SavedArticleResponseDTO.builder()
-                .saveId(savedArticle.getSave_id())
-                .savedAt(savedArticle.getSaved_at())
-                .userId(savedArticle.getUser() != null ? savedArticle.getUser().getUser_id() : null)
-                .articleId(savedArticle.getArticle() != null ? savedArticle.getArticle().getArticle_id() : null)
+                .saveId(savedArticle.getSaveId())
+                .savedAt(savedArticle.getSavedAt())
+                .userId(savedArticle.getUser() != null ? savedArticle.getUser().getUserId() : null)
+                .articleId(savedArticle.getArticle() != null ? savedArticle.getArticle().getArticleId() : null)
                 .article(toArticleSummaryDTO(savedArticle.getArticle()))
                 .build();
     }
@@ -350,7 +350,7 @@ public final class EntityDtoMapper {
                 .token(token)
                 .tokenType("Bearer")
                 .expiresIn(expiresIn)
-                .userId(user.getUser_id())
+                .userId(user.getUserId())
                 .username(user.getUsername())
                 .roles(mapRoleNames(user.getRoles()))
                 .build();
@@ -430,7 +430,7 @@ public final class EntityDtoMapper {
 
         return mediaFiles.stream()
                 .filter(Objects::nonNull)
-                .map(Media::getFile_url)
+                .map(Media::getFileUrl)
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);

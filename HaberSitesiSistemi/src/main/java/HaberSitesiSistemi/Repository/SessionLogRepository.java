@@ -13,7 +13,7 @@ public interface SessionLogRepository extends JpaRepository<SessionLog, Long> {
 
     Page<SessionLog> findByUser(User user, Pageable pageable);
 
-    long countByIpAddressAndIsSuccessAndLoginTimeAfter(String ipAddress, boolean isSuccess, Timestamp loginTime);
+    long countByIpAddressAndSuccessAndLoginTimeAfter(String ipAddress, boolean success, Timestamp loginTime);
 
     Page<SessionLog> findByIpAddressOrderByLoginTimeDesc(String ipAddress, Pageable pageable);
 }

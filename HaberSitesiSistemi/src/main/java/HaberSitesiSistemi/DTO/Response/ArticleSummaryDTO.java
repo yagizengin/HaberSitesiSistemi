@@ -1,6 +1,6 @@
 package HaberSitesiSistemi.DTO.Response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ public class ArticleSummaryDTO {
     private String excerpt;
     private String categoryName;
     private String authorUsername;
-    private Timestamp publishedAt;
+    private LocalDateTime publishedAt;
     private int viewCount;
     private String firstMediaUrl;
 }

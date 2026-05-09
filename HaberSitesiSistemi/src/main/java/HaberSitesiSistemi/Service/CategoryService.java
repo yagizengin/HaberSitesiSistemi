@@ -10,6 +10,8 @@ import HaberSitesiSistemi.DTO.Request.CategoryUpdateRequest;
 import HaberSitesiSistemi.Model.Category;
 import HaberSitesiSistemi.Repository.CategoryRepository;
 import HaberSitesiSistemi.Util.HtmlSanitizer;
+import HaberSitesiSistemi.Exception.ResourceNotFoundException;
+import HaberSitesiSistemi.Exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +28,7 @@ public class CategoryService {
 
         if (categoryRepository.existsByNameIgnoreCase(request.getName())) {
             log.warn("Category creation failed: Name '{}' already exists", request.getName());
-            throw new IllegalArgumentException("Category name already exists");
+            throw new ConflictException("Category name already exists");
         }
 
         Category category = new Category();
@@ -34,7 +36,7 @@ public class CategoryService {
         category.setDescription(HtmlSanitizer.sanitize(request.getDescription()));
 
         Category savedCategory = categoryRepository.save(category);
-        log.info("Category created successfully with ID: {}", savedCategory.getCategory_id());
+        log.info("Category created successfully with ID: {}", savedCategory.getCategoryId());
         return savedCategory;
     }
 
@@ -46,14 +48,14 @@ public class CategoryService {
         if (!category.getName().equalsIgnoreCase(request.getName())
                 && categoryRepository.existsByNameIgnoreCase(request.getName())) {
             log.warn("Category update failed: Name '{}' already exists", request.getName());
-            throw new IllegalArgumentException("Category name already exists");
+            throw new ConflictException("Category name already exists");
         }
 
         category.setName(HtmlSanitizer.sanitize(request.getName()));
         category.setDescription(HtmlSanitizer.sanitize(request.getDescription()));
 
         if (request.getActive() != null) {
-            category.set_active(request.getActive());
+            category.setActive(request.getActive());
         }
 
         Category updatedCategory = categoryRepository.save(category);
@@ -66,12 +68,12 @@ public class CategoryService {
 
         Category category = getCategoryEntityById(categoryId);
 
-        if (!category.is_active()) {
+        if (!category.isActive()) {
             log.warn("Category {} is already deactivated", categoryId);
-            throw new IllegalArgumentException("Category is already deactivated");
+            throw new ConflictException("Category is already deactivated");
         }
 
-        category.set_active(false);
+        category.setActive(false);
 
         Category deactivatedCategory = categoryRepository.save(category);
         log.info("Category {} deactivated successfully", categoryId);
@@ -81,7 +83,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public List<Category> getAllCategories() {
         log.info("Fetching all active categories");
-        return categoryRepository.findByIsActive(true);
+        return categoryRepository.findByActive(true);
     }
 
     @Transactional(readOnly = true)
@@ -94,7 +96,13 @@ public class CategoryService {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> {
                     log.warn("Category not found with ID: {}", categoryId);
-                    return new IllegalArgumentException("Category not found");
+                    return new ResourceNotFoundException("Category", "id", categoryId);
                 });
+    }
+
+    @Transactional(readOnly = true)
+    public long countAllCategories() {
+        log.info("Counting total active categories");
+        return categoryRepository.countByActive(true);
     }
 }

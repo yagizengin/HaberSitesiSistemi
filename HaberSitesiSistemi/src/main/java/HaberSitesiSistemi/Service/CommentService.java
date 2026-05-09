@@ -14,6 +14,9 @@ import HaberSitesiSistemi.Repository.ArticleRepository;
 import HaberSitesiSistemi.Repository.CommentRepository;
 import HaberSitesiSistemi.Repository.UserRepository;
 import HaberSitesiSistemi.Util.HtmlSanitizer;
+import HaberSitesiSistemi.Exception.ResourceNotFoundException;
+import HaberSitesiSistemi.Exception.ForbiddenException;
+import HaberSitesiSistemi.Exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,13 +36,13 @@ public class CommentService {
         Article article = articleRepository.findById(request.getArticleId())
                 .orElseThrow(() -> {
                     log.warn("Comment creation failed: Article not found with ID: {}", request.getArticleId());
-                    return new IllegalArgumentException("Article not found");
+                    return new ResourceNotFoundException("Article", "id", request.getArticleId());
                 });
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.warn("Comment creation failed: User not found with ID: {}", userId);
-                    return new IllegalArgumentException("User not found");
+                    return new ResourceNotFoundException("User", "id", userId);
                 });
 
         Comment comment = new Comment();
@@ -48,7 +51,7 @@ public class CommentService {
         comment.setUser(user);
 
         Comment savedComment = commentRepository.save(comment);
-        log.info("Comment created successfully with ID: {}", savedComment.getComment_id());
+        log.info("Comment created successfully with ID: {}", savedComment.getCommentId());
         return savedComment;
     }
 
@@ -57,9 +60,9 @@ public class CommentService {
 
         Comment comment = getCommentEntityById(commentId);
 
-        if (!comment.getUser().getUser_id().equals(userId)) {
+        if (!comment.getUser().getUserId().equals(userId)) {
             log.warn("Update denied: User {} is not the owner of comment {}", userId, commentId);
-            throw new IllegalArgumentException("You are not authorized to update this comment");
+            throw new ForbiddenException("You are not authorized to update this comment");
         }
 
         comment.setContent(HtmlSanitizer.sanitize(request.getContent()));
@@ -74,12 +77,12 @@ public class CommentService {
 
         Comment comment = getCommentEntityById(commentId);
 
-        if (comment.is_approved()) {
+        if (comment.isApproved()) {
             log.warn("Comment {} is already approved", commentId);
-            throw new IllegalArgumentException("Comment is already approved");
+            throw new ConflictException("Comment is already approved");
         }
 
-        comment.set_approved(true);
+        comment.setApproved(true);
 
         Comment approvedComment = commentRepository.save(comment);
         log.info("Comment {} approved successfully", commentId);
@@ -91,9 +94,9 @@ public class CommentService {
 
         Comment comment = getCommentEntityById(commentId);
 
-        if (!comment.getUser().getUser_id().equals(userId)) {
+        if (!comment.getUser().getUserId().equals(userId)) {
             log.warn("Delete denied: User {} is not the owner of comment {}", userId, commentId);
-            throw new IllegalArgumentException("You are not authorized to delete this comment");
+            throw new ForbiddenException("You are not authorized to delete this comment");
         }
 
         commentRepository.delete(comment);
@@ -107,7 +110,7 @@ public class CommentService {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> {
                     log.warn("Article not found with ID: {}", articleId);
-                    return new IllegalArgumentException("Article not found");
+                    return new ResourceNotFoundException("Article", "id", articleId);
                 });
 
         return commentRepository.findByArticle(article, pageable);
@@ -120,10 +123,16 @@ public class CommentService {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> {
                     log.warn("Article not found with ID: {}", articleId);
-                    return new IllegalArgumentException("Article not found");
+                    return new ResourceNotFoundException("Article", "id", articleId);
                 });
 
-        return commentRepository.findByArticleAndIsApproved(article, true, pageable);
+        return commentRepository.findByArticleAndApproved(article, true, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Comment> getUnapprovedComments(Pageable pageable) {
+        log.info("Fetching unapproved comments");
+        return commentRepository.findByApproved(false, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -133,7 +142,7 @@ public class CommentService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.warn("User not found with ID: {}", userId);
-                    return new IllegalArgumentException("User not found");
+                    return new ResourceNotFoundException("User", "id", userId);
                 });
 
         return commentRepository.findByUser(user, pageable);
@@ -143,7 +152,7 @@ public class CommentService {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> {
                     log.warn("Comment not found with ID: {}", commentId);
-                    return new IllegalArgumentException("Comment not found");
+                    return new ResourceNotFoundException("Comment", "id", commentId);
                 });
     }
 }

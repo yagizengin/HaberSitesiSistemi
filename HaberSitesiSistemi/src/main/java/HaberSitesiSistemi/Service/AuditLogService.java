@@ -9,6 +9,7 @@ import HaberSitesiSistemi.Model.AuditLog;
 import HaberSitesiSistemi.Model.User;
 import HaberSitesiSistemi.Repository.AuditLogRepository;
 import HaberSitesiSistemi.Repository.UserRepository;
+import HaberSitesiSistemi.Exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,9 +26,9 @@ public class AuditLogService {
         log.info("Logging audit action: {} on {}.{} by user {}", actionType, tableName, recordId, userId);
 
         AuditLog auditLog = new AuditLog();
-        auditLog.setAction_type(actionType);
-        auditLog.setTable_name(tableName);
-        auditLog.setRecord_id(recordId);
+        auditLog.setActionType(actionType);
+        auditLog.setTableName(tableName);
+        auditLog.setRecordId(recordId);
 
         if (userId != null) {
             User user = userRepository.findById(userId).orElse(null);
@@ -47,7 +48,7 @@ public class AuditLogService {
     public Page<AuditLog> getAuditLogsByUser(Long userId, Pageable pageable) {
         log.info("Fetching audit logs for user {}", userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         return auditLogRepository.findByUser(user, pageable);
     }
 

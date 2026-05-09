@@ -18,6 +18,8 @@ import HaberSitesiSistemi.Model.Article;
 import HaberSitesiSistemi.Model.Media;
 import HaberSitesiSistemi.Repository.ArticleRepository;
 import HaberSitesiSistemi.Repository.MediaRepository;
+import HaberSitesiSistemi.Exception.ResourceNotFoundException;
+import HaberSitesiSistemi.Exception.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -30,8 +32,7 @@ public class MediaService {
     private final Path uploadDir;
 
     private static final Set<String> ALLOWED_TYPES = Set.of(
-            "image/jpeg", "image/png", "image/gif", "image/webp"
-    );
+            "image/jpeg", "image/png", "image/gif", "image/webp");
 
     public MediaService(
             MediaRepository mediaRepository,
@@ -51,17 +52,20 @@ public class MediaService {
         log.info("Uploading media for article ID: {}", articleId);
 
         if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("File is empty");
+            throw new BadRequestException("File is empty");
         }
 
         String contentType = file.getContentType();
         if (contentType == null || !ALLOWED_TYPES.contains(contentType.toLowerCase())) {
-            throw new IllegalArgumentException(
+            throw new BadRequestException(
                     "File type not allowed. Allowed types: jpg, png, gif, webp");
         }
 
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+        Article article = null;
+        if (articleId != null) {
+            article = articleRepository.findById(articleId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
+        }
 
         String originalFilename = file.getOriginalFilename();
         String extension = "";
@@ -73,7 +77,7 @@ public class MediaService {
         try {
             Path targetPath = uploadDir.resolve(safeFilename).normalize();
             if (!targetPath.startsWith(uploadDir)) {
-                throw new IllegalArgumentException("Invalid file path");
+                throw new BadRequestException("Invalid file path");
             }
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -83,21 +87,21 @@ public class MediaService {
 
         String fileUrl = "/uploads/media/" + safeFilename;
         Media media = new Media();
-        media.setFile_url(fileUrl);
-        media.setFile_type(contentType);
+        media.setFileUrl(fileUrl);
+        media.setFileType(contentType);
         media.setArticle(article);
 
         Media saved = mediaRepository.save(media);
-        log.info("Media uploaded: ID={}, URL={}", saved.getMedia_id(), fileUrl);
+        log.info("Media uploaded: ID={}, URL={}", saved.getMediaId(), fileUrl);
         return saved;
     }
 
     public void deleteMedia(Long mediaId) {
         log.info("Deleting media ID: {}", mediaId);
         Media media = mediaRepository.findById(mediaId)
-                .orElseThrow(() -> new IllegalArgumentException("Media not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Media", "id", mediaId));
 
-        String fileUrl = media.getFile_url();
+        String fileUrl = media.getFileUrl();
         if (fileUrl != null) {
             String filename = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
             try {
@@ -111,25 +115,26 @@ public class MediaService {
         mediaRepository.delete(media);
         log.info("Media {} deleted successfully", mediaId);
     }
+
     public void deleteMediaByArticleId(Long articleId) {
         log.info("Deleting media for article ID: {}", articleId);
 
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
 
         List<Media> mediaList = mediaRepository.findByArticle(article);
-        
+
         for (Media media : mediaList) {
-            deleteMedia(media.getMedia_id());
+            deleteMedia(media.getMediaId());
         }
     }
 
     public Media addMediaToArticle(Long mediaId, Long articleId) {
         log.info("Associating media {} with article {}", mediaId, articleId);
         Media media = mediaRepository.findById(mediaId)
-                .orElseThrow(() -> new IllegalArgumentException("Media not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Media", "id", mediaId));
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
         media.setArticle(article);
         return mediaRepository.save(media);
     }
@@ -138,7 +143,14 @@ public class MediaService {
     public List<Media> getArticleMedia(Long articleId) {
         log.info("Fetching media for article ID: {}", articleId);
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", articleId));
         return mediaRepository.findByArticle(article);
+    }
+
+    @Transactional(readOnly = true)
+    public Media getMediaById(Long mediaId) {
+        log.info("Fetching media by ID: {}", mediaId);
+        return mediaRepository.findById(mediaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Media", "id", mediaId));
     }
 }

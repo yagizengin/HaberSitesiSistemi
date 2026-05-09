@@ -1,6 +1,6 @@
 package HaberSitesiSistemi.DTO.Response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +16,6 @@ public class MediaResponseDTO {
     private Long mediaId;
     private String fileUrl;
     private String fileType;
-    private Timestamp uploadedAt;
+    private LocalDateTime uploadedAt;
     private Long articleId;
 }

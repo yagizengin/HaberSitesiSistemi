@@ -29,19 +29,19 @@ public class SessionLog {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     @Column(name = "session_id")
-    private Long session_id;
+    private Long sessionId;
 
     @Column(name = "ip_address")
-    private String ip_address;
+    private String ipAddress;
 
     @Column(name = "login_time", nullable = false)
-    private Timestamp login_time;
+    private Timestamp loginTime;
 
     @Column(name = "logout_time")
-    private Timestamp logout_time;
+    private Timestamp logoutTime;
 
     @Column(name = "is_success", nullable = false)
-    private boolean is_success;
+    private boolean success;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -49,8 +49,8 @@ public class SessionLog {
 
     @PrePersist
     protected void prePersist() {
-        if (this.login_time == null) {
-            this.login_time = Timestamp.valueOf(LocalDateTime.now());
+        if (this.loginTime == null) {
+            this.loginTime = Timestamp.valueOf(LocalDateTime.now());
         }
     }
 }

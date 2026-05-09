@@ -29,7 +29,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
-    private Long category_id;
+    private Long categoryId;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -38,13 +38,13 @@ public class Category {
     private String description;
 
     @Column(name = "is_active", nullable = false)
-    private boolean is_active;
+    private boolean active;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private Set<Article> articles = new HashSet<>();
 
     @PrePersist
     protected void prePersist() {
-        this.is_active = true;
+        this.active = true;
     }
 }

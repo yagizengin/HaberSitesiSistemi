@@ -1,6 +1,6 @@
 package HaberSitesiSistemi.DTO.Response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ public class CommentResponseDTO {
 
     private Long commentId;
     private String content;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
     private boolean approved;
     private Long articleId;
     private Long userId;

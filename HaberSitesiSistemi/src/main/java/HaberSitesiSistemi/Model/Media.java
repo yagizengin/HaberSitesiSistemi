@@ -1,6 +1,6 @@
 package HaberSitesiSistemi.Model;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,16 +28,16 @@ public class Media {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     @Id
     @Column(name = "media_id")
-    private Long media_id;
+    private Long mediaId;
 
     @Column(name = "file_url", nullable = false)
-    private String file_url;
+    private String fileUrl;
 
     @Column(name = "file_type")
-    private String file_type;
+    private String fileType;
 
     @Column(name = "uploaded_at", nullable = false)
-    private Timestamp uploaded_at;
+    private LocalDateTime uploadedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
@@ -45,6 +45,6 @@ public class Media {
     
     @PrePersist
     protected void prePersist() {
-        this.uploaded_at = Timestamp.valueOf(java.time.LocalDateTime.now());
+        this.uploadedAt = LocalDateTime.now();
     }
 }

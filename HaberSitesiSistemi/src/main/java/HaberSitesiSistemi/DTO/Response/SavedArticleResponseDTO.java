@@ -1,6 +1,6 @@
 package HaberSitesiSistemi.DTO.Response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class SavedArticleResponseDTO {
 
     private Long saveId;
-    private Timestamp savedAt;
+    private LocalDateTime savedAt;
     private Long userId;
     private Long articleId;
     private ArticleSummaryDTO article;

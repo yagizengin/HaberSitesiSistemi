@@ -12,6 +12,7 @@ import HaberSitesiSistemi.Model.SessionLog;
 import HaberSitesiSistemi.Model.User;
 import HaberSitesiSistemi.Repository.SessionLogRepository;
 import HaberSitesiSistemi.Repository.UserRepository;
+import HaberSitesiSistemi.Exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,8 +32,8 @@ public class SessionLogService {
         log.info("Logging login attempt from IP: {} for user: {} success: {}", ipAddress, userId, success);
 
         SessionLog sessionLog = new SessionLog();
-        sessionLog.setIp_address(ipAddress);
-        sessionLog.set_success(success);
+        sessionLog.setIpAddress(ipAddress);
+        sessionLog.setSuccess(success);
 
         if (userId != null) {
             User user = userRepository.findById(userId).orElse(null);
@@ -46,9 +47,9 @@ public class SessionLogService {
         log.info("Logging logout for session ID: {}", sessionId);
 
         SessionLog sessionLog = sessionLogRepository.findById(sessionId)
-                .orElseThrow(() -> new IllegalArgumentException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("SessionLog", "id", sessionId));
 
-        sessionLog.setLogout_time(Timestamp.valueOf(LocalDateTime.now()));
+        sessionLog.setLogoutTime(Timestamp.valueOf(LocalDateTime.now()));
         return sessionLogRepository.save(sessionLog);
     }
 
@@ -56,7 +57,7 @@ public class SessionLogService {
     public Page<SessionLog> getSessionHistory(Long userId, Pageable pageable) {
         log.info("Fetching session history for user {}", userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         return sessionLogRepository.findByUser(user, pageable);
     }
 
@@ -65,7 +66,7 @@ public class SessionLogService {
         Timestamp threshold = Timestamp.valueOf(
                 LocalDateTime.now().minusMinutes(BLOCK_DURATION_MINUTES));
         long count = sessionLogRepository
-                .countByIpAddressAndIsSuccessAndLoginTimeAfter(ipAddress, false, threshold);
+                .countByIpAddressAndSuccessAndLoginTimeAfter(ipAddress, false, threshold);
         log.info("Brute force check for IP {}: {} failed attempts in last {} min",
                 ipAddress, count, BLOCK_DURATION_MINUTES);
         return count;

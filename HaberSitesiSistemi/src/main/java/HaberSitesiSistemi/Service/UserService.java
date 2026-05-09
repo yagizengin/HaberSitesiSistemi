@@ -12,6 +12,11 @@ import HaberSitesiSistemi.DTO.Request.UserRegisterRequest;
 import HaberSitesiSistemi.DTO.Request.UserUpdateRequest;
 import HaberSitesiSistemi.Model.User;
 import HaberSitesiSistemi.Repository.UserRepository;
+import HaberSitesiSistemi.Exception.ResourceNotFoundException;
+import HaberSitesiSistemi.Exception.ConflictException;
+import HaberSitesiSistemi.Exception.UnauthorizedException;
+import HaberSitesiSistemi.Exception.ForbiddenException;
+import HaberSitesiSistemi.Exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,18 +34,18 @@ public class UserService {
 
         if (userRepository.existsByUsername(request.getUsername())) {
             log.warn("Registration failed: Username {} already exists", request.getUsername());
-            throw new IllegalArgumentException("Username already exists");
+            throw new ConflictException("Username already exists");
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
             log.warn("Registration failed: Email {} already exists", request.getEmail());
-            throw new IllegalArgumentException("Email already exists");
+            throw new ConflictException("Email already exists");
         }
 
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword_hash(passwordEncoder.encode(request.getPassword()));
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 
         User registeredUser = userRepository.save(user);
         log.info("User successfully registered with username: {}", request.getUsername());
@@ -54,17 +59,17 @@ public class UserService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> {
                     log.warn("Login failed: User not found with username: {}", request.getUsername());
-                    return new IllegalArgumentException("Invalid username or password");
+                    return new UnauthorizedException("Invalid username or password");
                 });
 
-        if (!user.is_active()) {
+        if (!user.isActive()) {
             log.warn("Login failed: User {} is deactivated", request.getUsername());
-            throw new IllegalArgumentException("User account is deactivated");
+            throw new ForbiddenException("User account is deactivated");
         }
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword_hash())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             log.warn("Login failed: Incorrect password for username: {}", request.getUsername());
-            throw new IllegalArgumentException("Invalid username or password");
+            throw new UnauthorizedException("Invalid username or password");
         }
 
         log.info("User successfully logged in: {}", request.getUsername());
@@ -78,7 +83,7 @@ public class UserService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.warn("User not found with ID: {}", userId);
-                    return new IllegalArgumentException("User not found");
+                    return new ResourceNotFoundException("User", "id", userId);
                 });
     }
 
@@ -89,12 +94,12 @@ public class UserService {
 
         if (!user.getUsername().equals(request.getUsername()) && userRepository.existsByUsername(request.getUsername())) {
             log.warn("Profile update failed: Username {} already exists", request.getUsername());
-            throw new IllegalArgumentException("Username already exists");
+            throw new ConflictException("Username already exists");
         }
 
         if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
             log.warn("Profile update failed: Email {} already exists", request.getEmail());
-            throw new IllegalArgumentException("Email already exists");
+            throw new ConflictException("Email already exists");
         }
 
         user.setUsername(request.getUsername());
@@ -111,17 +116,17 @@ public class UserService {
 
         User user = getUserById(userId);
 
-        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword_hash())) {
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
             log.warn("Password change failed: Old password incorrect for user ID: {}", userId);
-            throw new IllegalArgumentException("Old password is incorrect");
+            throw new BadRequestException("Old password is incorrect");
         }
 
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             log.warn("Password change failed: New passwords do not match for user ID: {}", userId);
-            throw new IllegalArgumentException("New password and confirm password do not match");
+            throw new BadRequestException("New password and confirm password do not match");
         }
 
-        user.setPassword_hash(passwordEncoder.encode(request.getNewPassword()));
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         User updatedUser = userRepository.save(user);
 
         log.info("Password changed successfully for user ID: {}", userId);
@@ -130,7 +135,11 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<User> getAllUsers(Pageable pageable) {
-        log.info("Fetching all users with pagination - Page: {}, Size: {}", pageable.getPageNumber(), pageable.getPageSize());
+        if (pageable.isPaged()) {
+            log.info("Fetching all users with pagination - Page: {}, Size: {}", pageable.getPageNumber(), pageable.getPageSize());
+        } else {
+            log.info("Fetching all users without pagination");
+        }
         return userRepository.findAll(pageable);
     }
 
@@ -139,12 +148,12 @@ public class UserService {
 
         User user = getUserById(userId);
 
-        if (!user.is_active()) {
+        if (!user.isActive()) {
             log.warn("User ID: {} is already deactivated", userId);
-            throw new IllegalArgumentException("User is already deactivated");
+            throw new ConflictException("User is already deactivated");
         }
 
-        user.set_active(false);
+        user.setActive(false);
         User deactivatedUser = userRepository.save(user);
 
         log.info("User ID: {} successfully deactivated", userId);
@@ -156,15 +165,21 @@ public class UserService {
 
         User user = getUserById(userId);
 
-        if (user.is_active()) {
+        if (user.isActive()) {
             log.warn("User ID: {} is already active", userId);
-            throw new IllegalArgumentException("User is already active");
+            throw new ConflictException("User is already active");
         }
 
-        user.set_active(true);
+        user.setActive(true);
         User reactivatedUser = userRepository.save(user);
 
         log.info("User ID: {} successfully reactivated", userId);
         return reactivatedUser;
+    }
+
+    @Transactional(readOnly = true)
+    public long countAllUsers() {
+        log.info("Counting total users");
+        return userRepository.count();
     }
 }
