@@ -127,10 +127,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/giris?logout=true")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
-                .permitAll())
-
-            .exceptionHandling(ex -> ex
-                .accessDeniedPage("/error/403"));
+                .permitAll());
 
         return http.build();
     }
