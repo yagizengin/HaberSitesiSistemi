@@ -11,14 +11,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import HaberSitesiSistemi.Security.JwtAuthenticationEntryPoint;
 import HaberSitesiSistemi.Security.JwtAuthenticationFilter;
+import HaberSitesiSistemi.Security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -31,6 +35,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -91,7 +96,9 @@ public class SecurityConfig {
             .securityMatcher("/**")
 
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(5)
+                .sessionRegistry(sessionRegistry()))
 
             .authorizeHttpRequests(auth -> auth
                 // Static resources
@@ -122,12 +129,18 @@ public class SecurityConfig {
                 .passwordParameter("password")
                 .permitAll())
 
+            .rememberMe(remember -> remember
+                .key("ATATÜRK")
+                .userDetailsService(customUserDetailsService)
+                .tokenValiditySeconds(7 * 24 * 60 * 60)
+                .rememberMeParameter("remember-me"))
+
             .logout(logout -> logout
                 .logoutUrl("/cikis")
                 .logoutSuccessUrl("/giris?logout=true")
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll());
+                .deleteCookies("JSESSIONID", "remember-me")
+                .permitAll());     
 
         return http.build();
     }
@@ -145,5 +158,15 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 }

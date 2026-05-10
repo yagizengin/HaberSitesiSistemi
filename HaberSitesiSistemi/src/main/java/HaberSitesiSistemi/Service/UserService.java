@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +47,7 @@ public class UserService {
     private final EmailService emailService;
     private final RoleRepository roleRepository;
     private final EditorRequestRepository editorRequestRepository;
+    private final SessionRegistry sessionRegistry;
 
     public User register(UserRegisterRequest request) {
         log.info("Attempting to register new user with username: {}", request.getUsername());
@@ -265,7 +269,30 @@ public class UserService {
             });
         }
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        invalidateUserSessions(user.getUsername());
+        log.info("All sessions invalidated for user ID: {} after role change", userId);
+
+        return savedUser;
+    }
+
+    private void invalidateUserSessions(String username) {
+        for (Object principal : sessionRegistry.getAllPrincipals()) {
+            String principalName;
+            if (principal instanceof UserDetails ud) {
+                principalName = ud.getUsername();
+            } else {
+                principalName = principal.toString();
+            }
+
+            if (principalName.equals(username)) {
+                for (SessionInformation session : sessionRegistry.getAllSessions(principal, false)) {
+                    session.expireNow();
+                    log.info("Expired session {} for user {}", session.getSessionId(), username);
+                }
+            }
+        }
     }
 
     public User reactivateUser(Long userId) {
