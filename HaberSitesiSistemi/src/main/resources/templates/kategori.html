@@ -5,28 +5,44 @@
 <body>
     <header th:replace="~{fragments/layout :: header}"></header>
     <div th:replace="~{fragments/layout :: sidePanel}"></div>
+
     <main class="main-container">
-        <h2 class="section-header" th:text="${category.name}">Kategori Adı</h2>
-        <p th:if="${category.description != null}" th:text="${category.description}" class="category-description" style="margin-bottom: 20px; color: #666;"></p>
+        
+        <div class="section-header">
+            <h3 th:text="${category.name}">Kategori Adı</h3>
+        </div>
+        
+        <p th:if="${category.description != null}" th:text="${category.description}" class="category-description" style="margin-top: -10px; margin-bottom: 25px; color: var(--mid-gray);"></p>
+        
         <div th:if="${articles.isEmpty()}" class="empty-state">
             <p>Bu kategoride henüz haber bulunmuyor.</p>
         </div>
-        <div class="grid-4-bottom">
-            <article th:each="article : ${articles}" class="news-item" th:onclick="|window.location.href='@{/haber/{id}(id=${article.articleId})}'|">
-                <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/400/250'}" class="news-img" alt="Haber">
-                <span class="category-label" th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
-                <h4 th:text="${article.title}">Başlık</h4>
+
+        <div class="grid-4-col" style="grid-template-columns: repeat(4, 1fr);">
+            <article th:each="article : ${articles}" class="news-card" th:onclick="|window.location.href='@{/haber/{id}(id=${article.articleId})}'|">
+                <span class="cat-badge" th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
+                <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/300/200'}" alt="Haber">
+                <div class="news-card-content">
+                    <h4 th:text="${article.title}">Başlık</h4>
+                </div>
+                <div class="news-card-meta">
+                    <span th:text="${#temporals.format(article.publishedAt, 'dd MMM yyyy')}">Tarih</span>
+                    <span>📰</span>
+                </div>
             </article>
         </div>
+
         <!-- Pagination -->
         <div th:if="${totalPages > 1}" class="pagination">
             <a th:if="${currentPage > 0}" th:href="@{/kategori/{id}(id=${category.categoryId}, page=${currentPage - 1})}">&laquo; Önceki</a>
-            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active' : ''">
                 <a th:href="@{/kategori/{id}(id=${category.categoryId}, page=${i})}" th:text="${i + 1}">1</a>
             </span>
             <a th:if="${currentPage < totalPages - 1}" th:href="@{/kategori/{id}(id=${category.categoryId}, page=${currentPage + 1})}">Sonraki &raquo;</a>
         </div>
+
     </main>
+
     <footer th:replace="~{fragments/layout :: footer}"></footer>
     <div th:replace="~{fragments/layout :: scripts}"></div>
 </body>

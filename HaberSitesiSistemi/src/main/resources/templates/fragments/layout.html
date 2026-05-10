@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<!-- ══════════════ HEAD FRAGMENT ══════════════ -->
-
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:,">
     <title th:text="${title} + ' - Marmara Times'">Marmara Times</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <link rel="stylesheet" th:href="@{/css/global.css}">
@@ -18,39 +16,94 @@
 
     <!-- ══════════════ HEADER FRAGMENT ══════════════ -->
     <header th:fragment="header" class="main-header">
-        <div class="header-top">
+        
+        <!-- TIER 1: Data Bar (Weather & Exchange) -->
+        <div class="header-data-bar">
+            <div class="weather-widget" id="weather-widget">
+                <span class="weather-icon">☁️</span>
+                <span class="weather-info"><span id="weather-temp">--</span>°C</span>
+                <select id="weather-city" class="weather-city-select">
+                    <option value="41.01,28.98" data-city="Istanbul">İSTANBUL</option>
+                    <option value="41.67,26.55" data-city="Edirne">EDİRNE</option>
+                    <option value="40.18,29.06" data-city="Bursa">BURSA</option>
+                    <option value="40.80,29.43" data-city="Kocaeli">KOCAELİ</option>
+                    <option value="40.97,27.51" data-city="Tekirdağ">TEKİRDAĞ</option>
+                    <option value="40.14,26.40" data-city="Çanakkale">ÇANAKKALE</option>
+                    <option value="41.73,27.23" data-city="Kırklareli">KIRKLARELİ</option>
+                    <option value="40.61,29.30" data-city="Yalova">YALOVA</option>
+                    <option value="39.64,27.88" data-city="Balıkesir">BALIKESİR</option>
+                    <option value="40.75,30.33" data-city="Sakarya">SAKARYA</option>
+                    <option value="40.15,29.98" data-city="Bilecik">BİLECİK</option>
+
+                    <option value="auto" id="auto-location-option">📍 Konumum</option>
+                </select>
+            </div>
+            <div class="exchange-widget" id="exchange-widget">
+                <div class="exchange-item">
+                    <span class="exchange-label">DOLAR</span>
+                    <span id="rate-usd">--</span>
+                    <span id="trend-usd" class="exchange-trend flat">−</span>
+                </div>
+                <div class="exchange-item">
+                    <span class="exchange-label">EURO</span>
+                    <span id="rate-eur">--</span>
+                    <span id="trend-eur" class="exchange-trend flat">−</span>
+                </div>
+                <div class="exchange-item">
+                    <span class="exchange-label">STERLİN</span>
+                    <span id="rate-gbp">--</span>
+                    <span id="trend-gbp" class="exchange-trend flat">−</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIER 2: Brand Bar -->
+        <div class="header-brand-bar">
             <div class="header-left">
                 <form th:action="@{/ara}" method="get" class="search-container" id="global-search-form" style="position:relative;">
                     <span class="search-icon">🔍</span>
-                    <input type="text" name="q" id="global-search-input" placeholder="Ara..." autocomplete="off">
-                    <div id="search-results-overlay" class="search-results-dropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ddd; border-top:none; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:1000; max-height:400px; overflow-y:auto;"></div>
+                    <input type="text" name="q" id="global-search-input" placeholder="Haber ara..." autocomplete="off">
+                    <div id="search-results-overlay" class="search-results-dropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ddd; border-top:none; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:1000; max-height:400px; overflow-y:auto; border-radius: 0 0 8px 8px;"></div>
                 </form>
-                <span class="date-display" id="date-display"></span>
             </div>
             <div class="header-center">
                 <h1 class="logo"><a th:href="@{/}">MARMARA TIMES</a></h1>
             </div>
             <div class="header-right">
-                <!-- Not authenticated -->
+                <span class="date-display" id="date-display"></span>
                 <div sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/giris}" class="header-auth-btn">Giriş Yap</a>
+                    <a th:href="@{/giris}" class="header-auth-btn">GİRİŞ YAP</a>
                 </div>
-                <!-- Authenticated -->
                 <div sec:authorize="isAuthenticated()" id="profile-btn" class="profile-icon-wrapper">
                     <span class="profile-initials" sec:authentication="name"
                         th:text="${#strings.substring(#authentication.name, 0, 2).toUpperCase()}">GT</span>
                 </div>
             </div>
         </div>
-        <nav class="header-bottom">
+
+        <!-- TIER 3: Nav Bar -->
+        <nav class="header-nav-bar">
             <ul class="nav-list">
-                <li class="nav-item"><a th:href="@{/}">ANA SAYFA</a></li>
+                <li class="nav-item"><a th:href="@{/}" th:class="${activeCategory == null} ? 'active' : ''">SON DAKİKA</a></li>
                 <li class="nav-item" th:each="cat : ${categories}">
                     <a th:href="@{/kategori/{id}(id=${cat.categoryId})}"
-                        th:text="${#strings.toUpperCase(cat.name)}">KATEGORİ</a>
+                        th:text="${#strings.toUpperCase(cat.name)}"
+                        th:class="${activeCategory != null and activeCategory.categoryId == cat.categoryId} ? 'active' : ''">KATEGORİ</a>
                 </li>
             </ul>
         </nav>
+
+        <!-- BREAKING NEWS TICKER -->
+        <div class="breaking-ticker">
+            <div class="ticker-label">SON DAKİKA</div>
+            <div class="ticker-content" id="ticker-container">
+                <div class="ticker-wrap" id="ticker-wrap">
+                    <!-- Loaded via JS -->
+                    <span class="ticker-item">Haberler yükleniyor...</span>
+                </div>
+            </div>
+        </div>
+
     </header>
 
     <!-- ══════════════ SIDE PANEL FRAGMENT ══════════════ -->
@@ -65,21 +118,16 @@
                 <p class="panel-desc" sec:authorize="!isAuthenticated()">Haberleri takip etmek için giriş yapın.</p>
                 <hr class="panel-divider">
                 <ul class="panel-menu">
-                    <li sec:authorize="isAuthenticated()"><a th:href="@{/profil}">Profil <span>&gt;</span></a></li>
-                    <li sec:authorize="hasRole('EDITOR') or hasRole('ADMIN')"><a th:href="@{/editor}">Editör
-                            Paneli <span>&gt;</span></a></li>
-                    <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Yönetim Paneli
-                            <span>&gt;</span></a></li>
+                    <li sec:authorize="isAuthenticated()"><a th:href="@{/profil}">Hesabım <span>&gt;</span></a></li>
+                    <li sec:authorize="hasRole('EDITOR') or hasRole('ADMIN')"><a th:href="@{/editor}">Editör Masası <span>&gt;</span></a></li>
+                    <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Sistem Yönetimi <span>&gt;</span></a></li>
                     <li><a th:href="@{/}">Ana Sayfa <span>&gt;</span></a></li>
                     <li sec:authorize="isAuthenticated()">
                         <form th:action="@{/cikis}" method="post" style="margin:0;">
-                            <button type="submit" class="logout-link"
-                                style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:0.9rem;padding:14px 0;width:100%;text-align:left;">Çıkış
-                                Yap</button>
+                            <button type="submit" class="logout-link">Güvenli Çıkış <span>&gt;</span></button>
                         </form>
                     </li>
-                    <li sec:authorize="!isAuthenticated()"><a th:href="@{/giris}" class="logout-link">Giriş Yap / Kayıt
-                            Ol</a></li>
+                    <li sec:authorize="!isAuthenticated()"><a th:href="@{/giris}" class="logout-link">Giriş Yap / Kayıt Ol <span>&gt;</span></a></li>
                 </ul>
             </div>
         </div>
@@ -90,24 +138,26 @@
     <footer th:fragment="footer" class="main-footer">
         <div class="footer-inner">
             <div class="footer-col">
-                <h4>Marmara Times</h4>
+                <h4>Kurumsal</h4>
                 <a th:href="@{/}">Ana Sayfa</a>
                 <a href="#">Hakkımızda</a>
+                <a href="#">Künye</a>
                 <a href="#">İletişim</a>
             </div>
             <div class="footer-col">
                 <h4>Kategoriler</h4>
-                <a th:each="cat : ${categories}" th:href="@{/kategori/{id}(id=${cat.categoryId})}"
-                    th:text="${cat.name}">Kategori</a>
+                <a th:each="cat : ${categories}" th:href="@{/kategori/{id}(id=${cat.categoryId})}" th:text="${cat.name}">Kategori</a>
             </div>
             <div class="footer-col">
-                <h4>Hesap</h4>
-                <a th:href="@{/giris}" sec:authorize="!isAuthenticated()">Giriş Yap</a>
+                <h4>Kullanıcı İşlemleri</h4>
+                <a th:href="@{/giris}" sec:authorize="!isAuthenticated()">Giriş Yap / Üye Ol</a>
                 <a th:href="@{/profil}" sec:authorize="isAuthenticated()">Profilim</a>
+                <a href="#">Gizlilik Politikası</a>
+                <a href="#">Kullanım Koşulları</a>
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2026 Marmara Times. Tüm hakları saklıdır.
+            &copy; 2026 Marmara Times Tüm Hakları Saklıdır.
         </div>
     </footer>
 
@@ -117,5 +167,4 @@
     </div>
 
 </body>
-
 </html>

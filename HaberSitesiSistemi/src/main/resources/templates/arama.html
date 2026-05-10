@@ -5,34 +5,49 @@
 <body>
     <header th:replace="~{fragments/layout :: header}"></header>
     <div th:replace="~{fragments/layout :: sidePanel}"></div>
+
     <main class="main-container">
-        <h2 class="section-header" th:if="${query != ''}" th:text="'&quot;' + ${query} + '&quot; için sonuçlar'">Arama Sonuçları</h2>
-        <p th:if="${totalResults != null}" style="color:#888; margin-bottom:20px;" th:text="${totalResults} + ' sonuç bulundu'"></p>
+        
+        <div class="section-header" th:if="${query != ''}">
+            <h3 th:text="'&quot;' + ${query} + '&quot; için sonuçlar'">Arama Sonuçları</h3>
+        </div>
+        
+        <p th:if="${totalResults != null}" style="color: var(--mid-gray); margin-top: -10px; margin-bottom: 25px;" th:text="${totalResults} + ' sonuç bulundu'"></p>
 
         <div th:if="${query == ''}" class="empty-state">
             <h2>Arama</h2>
             <p>Aramak istediğiniz kelimeyi üst çubuktan girin.</p>
         </div>
+        
         <div th:if="${query != '' && (articles == null || articles.isEmpty())}" class="empty-state">
             <p>Aramanızla eşleşen sonuç bulunamadı.</p>
         </div>
 
-        <div th:if="${articles != null && !articles.isEmpty()}" class="grid-4-bottom">
-            <article th:each="article : ${articles}" class="news-item" th:onclick="|window.location.href='@{/haber/{id}(id=${article.articleId})}'|">
-                <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/400/250'}" class="news-img" alt="Haber">
-                <span class="category-label" th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
-                <h4 th:text="${article.title}">Başlık</h4>
+        <div th:if="${articles != null && !articles.isEmpty()}" class="grid-4-col" style="grid-template-columns: repeat(4, 1fr);">
+            <article th:each="article : ${articles}" class="news-card" th:onclick="|window.location.href='@{/haber/{id}(id=${article.articleId})}'|">
+                <span class="cat-badge" th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
+                <img th:src="${article.coverImage != null ? article.coverImage.fileUrl : 'https://picsum.photos/seed/' + article.articleId + '/300/200'}" alt="Haber">
+                <div class="news-card-content">
+                    <h4 th:text="${article.title}">Başlık</h4>
+                </div>
+                <div class="news-card-meta">
+                    <span th:text="${#temporals.format(article.publishedAt, 'dd MMM yyyy')}">Tarih</span>
+                    <span>📰</span>
+                </div>
             </article>
         </div>
 
+        <!-- Pagination -->
         <div th:if="${totalPages != null && totalPages > 1}" class="pagination">
             <a th:if="${currentPage > 0}" th:href="@{/ara(q=${query}, page=${currentPage - 1})}">&laquo; Önceki</a>
-            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active' : ''">
                 <a th:href="@{/ara(q=${query}, page=${i})}" th:text="${i + 1}">1</a>
             </span>
             <a th:if="${currentPage < totalPages - 1}" th:href="@{/ara(q=${query}, page=${currentPage + 1})}">Sonraki &raquo;</a>
         </div>
+
     </main>
+
     <footer th:replace="~{fragments/layout :: footer}"></footer>
     <div th:replace="~{fragments/layout :: scripts}"></div>
 </body>

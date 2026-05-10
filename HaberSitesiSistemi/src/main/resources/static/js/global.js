@@ -62,12 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                         </li>
                                     `;
                                 });
-                                html += `<li style="text-align:center; padding:10px;"><a href="/ara?q=${encodeURIComponent(query)}" style="font-size:0.8rem; color:#D32F2F; font-weight:bold; text-decoration:none;">Tüm Sonuçları Gör</a></li>`;
+                                html += `<li style="text-align:center; padding:10px; background: #f8f9fa;"><a href="/ara?q=${encodeURIComponent(query)}" style="font-size:0.8rem; color:#E2001A; font-weight:bold; text-decoration:none;">Tüm Sonuçları Gör</a></li>`;
                                 html += '</ul>';
                                 searchOverlay.innerHTML = html;
                                 searchOverlay.style.display = 'block';
                             } else {
-                                searchOverlay.innerHTML = '<div style="padding:10px; color:#888; text-align:center; font-size:0.9rem;">Sonuç bulunamadı</div>';
+                                searchOverlay.innerHTML = '<div style="padding:15px; color:#888; text-align:center; font-size:0.9rem;">Sonuç bulunamadı</div>';
                                 searchOverlay.style.display = 'block';
                             }
                         }
@@ -86,12 +86,153 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchOverlay.style.display = 'none';
             }
         });
-        
-        // Show overlay on focus if length >= 3
+
+        // Show overlay on focus if length >= 3 
         searchInput.addEventListener('focus', () => {
             if (searchInput.value.trim().length >= 3 && searchOverlay.innerHTML !== '') {
                 searchOverlay.style.display = 'block';
             }
         });
     }
+
+    // WEATHER WIDGET (Open-Meteo) WITH CITY DROPDOWN & GEOLOCATION
+    const tempSpan = document.getElementById('weather-temp');
+    const citySelect = document.getElementById('weather-city');
+
+    if (tempSpan && citySelect) {
+        async function fetchWeather(lat, lon) {
+            try {
+                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                const data = await response.json();
+                if (data && data.current_weather) {
+                    tempSpan.textContent = Math.round(data.current_weather.temperature);
+                }
+            } catch (err) {
+                console.error("Weather fetch failed:", err);
+            }
+        }
+
+        function loadLocationWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(2);
+                        const lon = position.coords.longitude.toFixed(2);
+
+                        // Try to find if coords match an existing option (roughly)
+                        let matched = false;
+                        for (let i = 0; i < citySelect.options.length; i++) {
+                            const opt = citySelect.options[i];
+                            if (opt.value !== 'auto') {
+                                const [olat, olon] = opt.value.split(',');
+                                // Simple proximity check
+                                if (Math.abs(parseFloat(olat) - lat) < 1 && Math.abs(parseFloat(olon) - lon) < 1) {
+                                    citySelect.selectedIndex = i;
+                                    matched = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        // If no match, change the "Auto" option text to show we found location
+                        if (!matched) {
+                            const autoOpt = document.getElementById('auto-location-option');
+                            autoOpt.text = "📍 Bulunduğum Yer";
+                            citySelect.value = "auto";
+                        }
+
+                        fetchWeather(lat, lon);
+                    },
+                    (error) => {
+                        console.warn("Geolocation denied or failed, falling back to Istanbul");
+                        citySelect.value = "41.01,28.98"; // Istanbul default
+                        fetchWeather("41.01", "28.98");
+                    }
+                );
+            } else {
+                citySelect.value = "41.01,28.98"; // Istanbul default
+                fetchWeather("41.01", "28.98");
+            }
+        }
+
+        // On change
+        citySelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'auto') {
+                tempSpan.textContent = "...";
+                loadLocationWeather();
+            } else {
+                const [lat, lon] = val.split(',');
+                fetchWeather(lat, lon);
+            }
+        });
+
+        // Initial load
+        loadLocationWeather();
+    }
+
+    // EXCHANGE RATES WIDGET (Free Currency API)
+    const usdEl = document.getElementById('rate-usd');
+    const eurEl = document.getElementById('rate-eur');
+    const gbpEl = document.getElementById('rate-gbp');
+
+    if (usdEl && eurEl && gbpEl) {
+        async function fetchExchange() {
+            try {
+                const res = await fetch('https://open.er-api.com/v6/latest/USD');
+                if (!res.ok) throw new Error("API failed");
+                const data = await res.json();
+                
+                if (data && data.rates && data.rates.TRY) {
+                    const tryRate = data.rates.TRY;
+                    
+                    // USD
+                    usdEl.textContent = tryRate.toFixed(2);
+                    document.getElementById('trend-usd').className = 'exchange-trend up';
+                    document.getElementById('trend-usd').textContent = '▲';
+
+                    // EUR (Calculate from cross-rate: TRY / EUR)
+                    if (data.rates.EUR) {
+                        eurEl.textContent = (tryRate / data.rates.EUR).toFixed(2);
+                        document.getElementById('trend-eur').className = 'exchange-trend up';
+                        document.getElementById('trend-eur').textContent = '▲';
+                    }
+
+                    // GBP (Calculate from cross-rate: TRY / GBP)
+                    if (data.rates.GBP) {
+                        gbpEl.textContent = (tryRate / data.rates.GBP).toFixed(2);
+                        document.getElementById('trend-gbp').className = 'exchange-trend up';
+                        document.getElementById('trend-gbp').textContent = '▲';
+                    }
+                }
+            } catch (err) {
+                console.error("Exchange API failed:", err);
+                usdEl.textContent = "-";
+                eurEl.textContent = "-";
+                gbpEl.textContent = "-";
+            }
+        }
+        fetchExchange();
+    }
+
+    // 6. TICKER DATA LOADER
+    const tickerWrap = document.getElementById('ticker-wrap');
+    if (tickerWrap) {
+        async function loadTicker() {
+            try {
+                const res = await fetch('/api/articles?page=0&size=10&sort=publishedAt,desc');
+                const json = await res.json();
+
+                if (json.success && json.data.articles && json.data.articles.length > 0) {
+                    let html = '';
+                    json.data.articles.slice(0, 10).forEach(a => {
+                        html += `<span class="ticker-item"><a href="/haber/${a.articleId}">• ${a.title}</a></span>`;
+                    });
+                    tickerWrap.innerHTML = html + html;
+                }
+            } catch (e) { }
+        }
+        loadTicker();
+    }
+
 });
