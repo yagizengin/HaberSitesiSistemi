@@ -1,5 +1,6 @@
 package HaberSitesiSistemi.Service;
 
+import org.springframework.beans.factory.annotation.Value; // Bunu eklemeyi unutma
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -15,14 +16,20 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
+    // application-secret.properties dosyasındaki değeri buraya çeker
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     @Async
     public void sendActivationEmail(String to, String token) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(to);
             message.setSubject("Hesap Aktivasyonu - Haber Sitesi");
-            // Localhost for development, can be configured in properties for production
-            String activationUrl = "http://localhost:8080/verify-email?token=" + token;
+            
+            // Artık localhost değil, baseUrl kullanıyoruz
+            String activationUrl = baseUrl + "/verify-email?token=" + token;
+            
             message.setText("Merhaba,\n\nHesabınızı aktifleştirmek için lütfen aşağıdaki linke tıklayın:\n" 
                             + activationUrl + "\n\nBu link 24 saat geçerlidir.");
             
@@ -39,8 +46,10 @@ public class EmailService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(to);
             message.setSubject("Şifre Sıfırlama Talebi - Haber Sitesi");
-            // Localhost for development, can be configured in properties for production
-            String resetUrl = "http://localhost:8080/sifre-sifirla?token=" + token; 
+            
+            // Artık localhost değil, baseUrl kullanıyoruz
+            String resetUrl = baseUrl + "/sifre-sifirla?token=" + token; 
+            
             message.setText("Merhaba,\n\nŞifrenizi sıfırlamak için lütfen aşağıdaki linke tıklayın:\n" 
                             + resetUrl + "\n\nBu link 15 dakika geçerlidir. Eğer bu talebi siz yapmadıysanız lütfen bu maili dikkate almayın.");
             
