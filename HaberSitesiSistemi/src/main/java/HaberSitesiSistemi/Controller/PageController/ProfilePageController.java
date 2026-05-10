@@ -55,7 +55,7 @@ public class ProfilePageController {
     @PostMapping("/guncelle")
     public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                 @RequestParam String username,
-                                @RequestParam String email,
+                                @RequestParam(required = false) String email,
                                 RedirectAttributes redirectAttributes) {
         try {
             UserUpdateRequest request = new UserUpdateRequest();

@@ -38,3 +38,4 @@ build/
 
 ### Gizli Ayarlar (Sifreler vs) ###
 application-secret.properties
+boot_log.txt

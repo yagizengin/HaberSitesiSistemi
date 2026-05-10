@@ -178,13 +178,17 @@ public class UserService {
             throw new ConflictException("Username already exists");
         }
 
+        // Email güncelleme şimdilik iptal edildi
+        /*
         if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
             log.warn("Profile update failed: Email {} already exists", request.getEmail());
             throw new ConflictException("Email already exists");
         }
 
-        user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
+        */
+
+        user.setUsername(request.getUsername());
 
         User updatedUser = userRepository.save(user);
         log.info("Profile updated successfully for user ID: {}", userId);
@@ -250,6 +254,17 @@ public class UserService {
                 
         user.getRoles().clear();
         user.getRoles().add(role);
+
+        // Eğer kullanıcı Editör rolünden başka bir role düşürülüyorsa (örneğin geri USER yapılıyorsa)
+        // eski onaylanmış başvurusunu silmeliyiz ki gelecekte tekrar başvuru yapabilsin.
+        if (!roleName.equals("ROLE_EDITOR")) {
+            editorRequestRepository.findByUser(user).ifPresent(req -> {
+                if ("APPROVED".equals(req.getStatus())) {
+                    editorRequestRepository.delete(req);
+                }
+            });
+        }
+
         return userRepository.save(user);
     }
 
