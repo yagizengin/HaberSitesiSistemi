@@ -8,8 +8,13 @@
 
     <main class="main-container" style="max-width: 900px;">
         <article>
-            <span style="color: #D32F2F; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;"
-                  th:text="${article.category != null ? article.category.name : 'GENEL'}">KATEGORİ</span>
+            <a th:if="${article.category != null}"
+               th:href="@{/kategori/{id}(id=${article.category.categoryId})}"
+               style="color: #D32F2F; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; text-decoration: none;">
+                <span th:text="${article.category.name}">KATEGORİ</span>
+            </a>
+            <span th:if="${article.category == null}"
+                style="color: #D32F2F; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">GENEL</span>
 
             <h1 style="font-family: var(--font-heading); font-size: 2.6rem; line-height: 1.2; margin: 15px 0 20px;"
                 th:text="${article.title}">Haber Başlığı</h1>
