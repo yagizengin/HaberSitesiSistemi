@@ -52,7 +52,7 @@ public class UserService {
     public User register(UserRegisterRequest request) {
         log.info("Attempting to register new user with username: {}", request.getUsername());
 
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userRepository.existsByUsernameIgnoreCase(request.getUsername())) {
             log.warn("Registration failed: Username {} already exists", request.getUsername());
             throw new ConflictException("Username already exists");
         }
@@ -63,8 +63,8 @@ public class UserService {
         }
 
         User user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
+        user.setUsername(request.getUsername().toLowerCase());
+        user.setEmail(request.getEmail().toLowerCase());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setActive(false); // Make sure it's false before verification
 

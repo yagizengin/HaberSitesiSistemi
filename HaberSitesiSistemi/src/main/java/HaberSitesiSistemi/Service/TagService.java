@@ -32,7 +32,7 @@ public class TagService {
             throw new ConflictException("Tag name already exists");
         }
         Tag tag = new Tag();
-        tag.setName(HtmlSanitizer.sanitize(request.getName()));
+        tag.setName(HtmlSanitizer.sanitize(request.getName().toUpperCase()));
         Tag saved = tagRepository.save(tag);
         log.info("Tag created with ID: {}", saved.getTagId());
         return saved;
