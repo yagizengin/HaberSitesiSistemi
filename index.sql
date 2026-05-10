@@ -42,7 +42,25 @@ CREATE TABLE articles (
     cover_image_id BIGINT
 );
 
--- 6. Comments Tablosu (user_id NOT NULL yapılarak anonim yorum engellendi)
+-- 6. Verification Tokens
+CREATE TABLE verification_tokens (
+    token_id BIGSERIAL PRIMARY KEY,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    expiry_date TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 7. Password Reset Tokens
+CREATE TABLE password_reset_tokens (
+    token_id BIGSERIAL PRIMARY KEY,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    expiry_date TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 8. Comments Tablosu (user_id NOT NULL yapılarak anonim yorum engellendi)
 CREATE TABLE comments (
     comment_id BIGSERIAL PRIMARY KEY,
     content TEXT NOT NULL,
@@ -52,20 +70,20 @@ CREATE TABLE comments (
     user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- 7. Tags Tablosu
+-- 9. Tags Tablosu
 CREATE TABLE tags (
     tag_id BIGSERIAL PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );
 
--- 8. Article_Tags (Haber-Etiket Çoka Çok İlişki)
+-- 10. Article_Tags (Haber-Etiket Çoka Çok İlişki)
 CREATE TABLE article_tags (
     article_id BIGINT REFERENCES articles(article_id) ON DELETE CASCADE,
     tag_id BIGINT REFERENCES tags(tag_id) ON DELETE CASCADE,
     PRIMARY KEY (article_id, tag_id)
 );
 
--- 9. Media Tablosu (Sadece dosya yolu tutuluyor)
+-- 11. Media Tablosu (Sadece dosya yolu tutuluyor)
 CREATE TABLE media (
     media_id BIGSERIAL PRIMARY KEY,
     file_url VARCHAR(255) NOT NULL,
@@ -78,7 +96,7 @@ CREATE TABLE media (
 ALTER TABLE articles ADD CONSTRAINT fk_articles_cover_image
     FOREIGN KEY (cover_image_id) REFERENCES media(media_id) ON DELETE SET NULL;
 
--- 10. Audit_Logs Tablosu (Admin Paneli İşlem Logları)
+-- 12. Audit_Logs Tablosu (Admin Paneli İşlem Logları)
 CREATE TABLE audit_logs (
     log_id BIGSERIAL PRIMARY KEY,
     action_type VARCHAR(20) NOT NULL,
@@ -88,7 +106,7 @@ CREATE TABLE audit_logs (
     user_id BIGINT REFERENCES users(user_id) ON DELETE SET NULL
 );
 
--- 11. Session_Logs Tablosu (Giriş Logları ve Brute Force Koruması İçin)
+-- 13. Session_Logs Tablosu (Giriş Logları ve Brute Force Koruması İçin)
 CREATE TABLE session_logs (
     session_id BIGSERIAL PRIMARY KEY,
     ip_address VARCHAR(45),
@@ -98,12 +116,20 @@ CREATE TABLE session_logs (
     user_id BIGINT REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- 12. Saved_Articles Tablosu (Kullanıcıların Kaydettiği Haberler)
+-- 14. Saved_Articles Tablosu (Kullanıcıların Kaydettiği Haberler)
 CREATE TABLE saved_articles (
     save_id BIGSERIAL PRIMARY KEY,
     saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id BIGINT REFERENCES users(user_id) ON DELETE CASCADE,
     article_id BIGINT REFERENCES articles(article_id) ON DELETE CASCADE
+);
+
+-- 15. Editor_Requests (Editörlük Başvuruları)
+CREATE TABLE IF NOT EXISTS editor_requests (
+    request_id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL UNIQUE REFERENCES users(user_id) ON DELETE CASCADE,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Backend geliştiricisi için varsayılan roller:

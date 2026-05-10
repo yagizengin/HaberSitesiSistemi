@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şifre Sıfırla - Gündem Türkiye</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <style>
+        body { background-color: #F7F7F7; min-height: 100vh; display: flex; flex-direction: column; }
+        .auth-header { width: 100%; background: #fff; border-bottom: 2px solid #1A1A1A; display: flex; justify-content: center; align-items: center; padding: 18px 30px; position: relative; }
+        .auth-header .logo { font-family: 'Roboto Slab', serif; font-size: 2rem; font-weight: 900; color: #1A1A1A; text-decoration: none; }
+        .auth-header .back-link { position: absolute; left: 30px; font-size: 0.8rem; font-weight: 600; color: #D32F2F; text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; }
+        .auth-header-bottom { width: 100%; text-align: center; padding: 10px; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; background: #fff; }
+        .auth-page { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 60px 20px; }
+        .auth-card { background: #fff; border: 1px solid #ddd; border-top: 4px solid #1A1A1A; width: 100%; max-width: 420px; padding: 40px 40px 50px; }
+        .auth-form-flex { display: flex; flex-direction: column; gap: 14px; }
+    </style>
+</head>
+<body>
+    <header class="auth-header">
+        <a th:href="@{/}" class="back-link">← Ana Sayfa</a>
+        <a th:href="@{/}" class="logo">GÜNDEM TÜRKİYE</a>
+    </header>
+    <div class="auth-header-bottom">YENİ ŞİFRE BELİRLE</div>
+
+    <div class="auth-page">
+        <div class="auth-card">
+            
+            <h2 style="font-family: 'Roboto Slab', serif; font-size: 1.4rem; margin-bottom: 20px; text-align: center;">Şifrenizi Sıfırlayın</h2>
+            
+            <div th:if="${errorMsg}" class="alert-msg error" th:text="${errorMsg}"></div>
+
+            <form th:action="@{/sifre-sifirla}" method="post" class="auth-form-flex">
+                <input type="hidden" name="token" th:value="${token}">
+                
+                <div class="form-group">
+                    <label for="new-pass">Yeni Şifre</label>
+                    <input type="password" id="new-pass" name="newPassword" placeholder="En az 8 karakter" required minlength="8">
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">Şifreyi Güncelle</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

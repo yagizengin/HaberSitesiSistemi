@@ -71,6 +71,6 @@ public class User {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
         }
-        this.active = true;
+        this.active = false; // Changed to false to require email verification
     }
 }

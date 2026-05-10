@@ -65,6 +65,11 @@ public class AdminPageController {
         model.addAttribute("users", users.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", users.getTotalPages());
+        
+        // Editor Requests
+        Page<HaberSitesiSistemi.Model.EditorRequest> pendingReqs = userService.getPendingEditorRequests(PageRequest.of(0, 50));
+        model.addAttribute("pendingRequests", pendingReqs.getContent());
+
         return "admin/kullanicilar";
     }
 
@@ -81,6 +86,39 @@ public class AdminPageController {
             }
         } catch (Exception e) {
             ra.addFlashAttribute("errorMsg", e.getMessage());
+        }
+        return "redirect:/admin/kullanicilar";
+    }
+
+    @PostMapping("/kullanici/{id}/rol-degistir")
+    public String changeUserRole(@PathVariable Long id, @RequestParam String roleName, RedirectAttributes ra) {
+        try {
+            userService.changeUserRole(id, roleName);
+            ra.addFlashAttribute("successMsg", "Kullanıcı rolü başarıyla güncellendi.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMsg", "Rol değiştirilirken hata oluştu: " + e.getMessage());
+        }
+        return "redirect:/admin/kullanicilar";
+    }
+
+    @PostMapping("/editor-basvuru/{id}/onayla")
+    public String approveEditorRequest(@PathVariable Long id, RedirectAttributes ra) {
+        try {
+            userService.approveEditorRequest(id);
+            ra.addFlashAttribute("successMsg", "Editörlük başvurusu onaylandı. Kullanıcı artık bir Editör.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMsg", "Hata: " + e.getMessage());
+        }
+        return "redirect:/admin/kullanicilar";
+    }
+
+    @PostMapping("/editor-basvuru/{id}/reddet")
+    public String rejectEditorRequest(@PathVariable Long id, RedirectAttributes ra) {
+        try {
+            userService.rejectEditorRequest(id);
+            ra.addFlashAttribute("successMsg", "Editörlük başvurusu reddedildi.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMsg", "Hata: " + e.getMessage());
         }
         return "redirect:/admin/kullanicilar";
     }

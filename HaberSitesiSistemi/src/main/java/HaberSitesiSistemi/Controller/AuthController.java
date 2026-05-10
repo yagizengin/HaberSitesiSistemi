@@ -7,10 +7,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import HaberSitesiSistemi.DTO.Request.ForgotPasswordRequest;
+import HaberSitesiSistemi.DTO.Request.ResetPasswordRequest;
 
 import HaberSitesiSistemi.DTO.Request.PasswordChangeRequest;
 import HaberSitesiSistemi.DTO.Request.UserLoginRequest;
@@ -48,7 +52,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<UserResponseDTO>builder()
                         .success(true)
-                        .message("User registered successfully")
+                        .message("Kayıt başarılı. Lütfen giriş yapabilmek için mail adresinize gönderilen aktivasyon linkine tıklayarak hesabınızı onaylayın.")
                         .data(data)
                         .timestamp(System.currentTimeMillis())
                         .build());
@@ -125,6 +129,39 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.<Void>builder()
                 .success(true)
                 .message("Password changed successfully")
+                .timestamp(System.currentTimeMillis())
+                .build());
+    }
+
+    @GetMapping("/verify-email")
+    public ResponseEntity<ApiResponse<Void>> verifyEmail(@RequestParam String token) {
+        userService.verifyEmail(token);
+
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .success(true)
+                .message("Email verified successfully. You can now login.")
+                .timestamp(System.currentTimeMillis())
+                .build());
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        userService.forgotPassword(request.getEmail());
+
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .success(true)
+                .message("If an account exists with that email, a password reset link has been sent.")
+                .timestamp(System.currentTimeMillis())
+                .build());
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        userService.resetPassword(request.getToken(), request.getNewPassword());
+
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .success(true)
+                .message("Password has been reset successfully.")
                 .timestamp(System.currentTimeMillis())
                 .build());
     }

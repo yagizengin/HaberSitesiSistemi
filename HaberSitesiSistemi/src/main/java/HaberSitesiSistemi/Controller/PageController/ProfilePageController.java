@@ -45,6 +45,10 @@ public class ProfilePageController {
         model.addAttribute("savedArticles", savedArticles.getContent());
         model.addAttribute("activeTab", tab);
 
+        userService.getEditorRequestForUser(user.getUserId()).ifPresent(req -> {
+            model.addAttribute("editorRequest", req);
+        });
+
         return "profil";
     }
 
@@ -81,6 +85,36 @@ public class ProfilePageController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
         }
-        return "redirect:/profil";
+        return "redirect:/profil?tab=password";
+    }
+
+    @PostMapping("/sifremi-unuttum")
+    public String forgotPasswordProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                        RedirectAttributes redirectAttributes) {
+        try {
+            User user = userService.getUserById(userDetails.getUserId());
+            userService.forgotPassword(user.getEmail());
+            redirectAttributes.addFlashAttribute("successMsg", "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Mail gönderilirken bir hata oluştu: " + e.getMessage());
+        }
+        return "redirect:/profil?tab=password";
+    }
+
+    @PostMapping("/editor-basvurusu")
+    public String requestEditorRole(@AuthenticationPrincipal CustomUserDetails userDetails, RedirectAttributes ra) {
+        try {
+            userService.submitEditorRequest(userDetails.getUserId());
+            ra.addFlashAttribute("successMsg", "Editörlük başvurunuz başarıyla alındı.");
+        } catch (HaberSitesiSistemi.Exception.ConflictException e) {
+            if (e.getMessage().contains("resubmitted")) {
+                ra.addFlashAttribute("successMsg", "Önceki başvurunuz reddedilmişti. Yeniden başvuru yaptınız.");
+            } else {
+                ra.addFlashAttribute("errorMsg", e.getMessage());
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMsg", "Başvuru sırasında bir hata oluştu: " + e.getMessage());
+        }
+        return "redirect:/profil?tab=personal";
     }
 }

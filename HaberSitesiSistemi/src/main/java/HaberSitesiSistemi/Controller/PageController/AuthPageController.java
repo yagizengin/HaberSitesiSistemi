@@ -51,4 +51,48 @@ public class AuthPageController {
             return "redirect:/giris";
         }
     }
+
+    @GetMapping("/verify-email")
+    public String verifyEmail(@RequestParam String token, RedirectAttributes redirectAttributes) {
+        try {
+            userService.verifyEmail(token);
+            redirectAttributes.addFlashAttribute("successMsg", "E-posta adresiniz doğrulandı. Artık giriş yapabilirsiniz.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Geçersiz veya süresi dolmuş bağlantı.");
+        }
+        return "redirect:/giris";
+    }
+
+    @PostMapping("/sifremi-unuttum")
+    public String forgotPassword(@RequestParam String email, RedirectAttributes redirectAttributes) {
+        try {
+            userService.forgotPassword(email);
+            redirectAttributes.addFlashAttribute("successMsg", "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.");
+            redirectAttributes.addFlashAttribute("activeTab", "forgot");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Bu e-posta adresi sistemde bulunamadı veya bir hata oluştu.");
+            redirectAttributes.addFlashAttribute("activeTab", "forgot");
+        }
+        return "redirect:/giris";
+    }
+
+    @GetMapping("/sifre-sifirla")
+    public String showResetPasswordForm(@RequestParam String token, Model model) {
+        model.addAttribute("token", token);
+        return "sifre-sifirla";
+    }
+
+    @PostMapping("/sifre-sifirla")
+    public String processResetPassword(@RequestParam String token, 
+                                       @RequestParam String newPassword, 
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            userService.resetPassword(token, newPassword);
+            redirectAttributes.addFlashAttribute("successMsg", "Şifreniz başarıyla sıfırlandı. Yeni şifrenizle giriş yapabilirsiniz.");
+            return "redirect:/giris";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Sıfırlama işlemi başarısız. Bağlantı geçersiz veya süresi dolmuş olabilir.");
+            return "redirect:/sifre-sifirla?token=" + token;
+        }
+    }
 }

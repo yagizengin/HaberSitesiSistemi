@@ -13,7 +13,7 @@ Primary Key (PK): user_id
 ## 2. Roles (Roller)
 
 ```
-Sütunlar: role_id, role_name (Örn: ADMIN, EDITOR, USER)
+Sütunlar: role_id, role_name (Örn: ROLE_ADMIN, ROLE_EDITOR, ROLE_USER)
 Primary Key (PK): role_id
 ```
 
@@ -44,7 +44,23 @@ Foreign Key (FK) 3: cover_image_id -> Media.media_id (ALTER TABLE ile eklenir)
 ```
 **Not:** `cover_image_id` FK'sı, Articles ve Media arasındaki döngüsel bağımlılık nedeniyle `ALTER TABLE` ile eklenmektedir.
 
-## 6. Comments (Yorumlar)
+## 6. Verification_Tokens (E-posta Doğrulama)
+
+```
+Sütunlar: token_id, token, user_id, expiry_date, created_at
+Primary Key (PK): token_id
+Foreign Key (FK): user_id -> Users.user_id
+```
+
+## 7. Password_Reset_Tokens (Şifre Sıfırlama)
+
+```
+Sütunlar: token_id, token, user_id, expiry_date, created_at
+Primary Key (PK): token_id
+Foreign Key (FK): user_id -> Users.user_id
+```
+
+## 8. Comments (Yorumlar)
 
 ```
 Sütunlar: comment_id, content, created_at, is_approved, article_id, user_id
@@ -54,14 +70,14 @@ Foreign Key (FK) 2: user_id -> Users.user_id
 ```
 **Not:** `user_id` kolonu `NOT NULL` olmalıdır, böylece sadece üyeler yorum yapabilir.
 
-## 7. Tags (Etiketler)
+## 9. Tags (Etiketler)
 
 ```
 Sütunlar: tag_id, name
 Primary Key (PK): tag_id
 ```
 
-## 8. Article_Tags (Haber-Etiket İlişkisi - Çoka Çok)
+## 10. Article_Tags (Haber-Etiket İlişkisi - Çoka Çok)
 
 ```
 Sütunlar: article_id, tag_id
@@ -70,7 +86,7 @@ Foreign Key (FK) 1: article_id -> Articles.article_id
 Foreign Key (FK) 2: tag_id -> Tags.tag_id
 ```
 
-## 9. Media (Görseller ve Dosyalar)
+## 11. Media (Görseller ve Dosyalar)
 
 ```
 Sütunlar: media_id, file_url, file_type, uploaded_at, article_id
@@ -79,7 +95,7 @@ Foreign Key (FK): article_id -> Articles.article_id
 ```
 **Not:** Dosya fiziksel olarak sunucuda tutulacak, burada sadece `file_url` yolu barınacak.
 
-## 10. Audit_Logs (Yönetim Paneli İşlem Logları)
+## 12. Audit_Logs (Yönetim Paneli İşlem Logları)
 
 ```
 Sütunlar: log_id, action_type (CREATE, UPDATE, DELETE), table_name, record_id, action_date, user_id
@@ -88,7 +104,7 @@ Foreign Key (FK): user_id -> Users.user_id
 ```
 **Not:** Yönergedeki "İşlem loglarının tutulması" maddesi için gereklidir. Kimin, hangi tabloda, ne zaman işlem yaptığını tutar.
 
-## 11. Session_Logs (Oturum ve Giriş Logları)
+## 13. Session_Logs (Oturum ve Giriş Logları)
 
 ```
 Sütunlar: session_id, ip_address, login_time, logout_time, is_success, user_id
@@ -97,7 +113,7 @@ Foreign Key (FK): user_id -> Users.user_id
 ```
 **Not:** Güvenlik ve "brute force koruması" loglamaları için kullanılabilir.
 
-## 12. Saved_Articles (Kaydedilen Haberler)
+## 14. Saved_Articles (Kaydedilen Haberler)
 
 ```
 Sütunlar: save_id, saved_at, user_id, article_id
@@ -106,6 +122,15 @@ Foreign Key (FK) 1: user_id -> Users.user_id
 Foreign Key (FK) 2: article_id -> Articles.article_id
 ```
 **Not:** Standart kullanıcıların haberleri "daha sonra oku" listesine eklemesi için tasarlandı.
+
+## 15. Editor_Requests (Editörlük Başvuruları)
+
+```
+Sütunlar: request_id, user_id, status, created_at
+Primary Key (PK): request_id
+Foreign Key (FK): user_id -> Users.user_id
+```
+**Not:** Kullanıcıların editör olmak için yaptığı başvuruları tutar. Durumu PENDING, APPROVED, REJECTED olabilir.
 
 ## Index Tanımları (Performans Optimizasyonu)
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import HaberSitesiSistemi.DTO.Response.CommentListResponseDTO;
 import HaberSitesiSistemi.DTO.Response.UserDetailResponseDTO;
 import HaberSitesiSistemi.DTO.Response.UserResponseDTO;
 import HaberSitesiSistemi.Mapper.EntityDtoMapper;
+import HaberSitesiSistemi.Security.CustomUserDetails;
 import HaberSitesiSistemi.Model.Article;
 import HaberSitesiSistemi.Model.Comment;
 import HaberSitesiSistemi.Model.User;
@@ -68,8 +70,8 @@ public class UserController {
 
     @GetMapping("/profile/me")
     public ResponseEntity<ApiResponse<UserDetailResponseDTO>> getCurrentUser(
-            @org.springframework.web.bind.annotation.RequestParam Long userId) {
-        User user = userService.getUserById(userId);
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userService.getUserById(userDetails.getUserId());
         UserDetailResponseDTO data = EntityDtoMapper.toUserDetailResponseDTO(user);
 
         return ResponseEntity.ok(ApiResponse.<UserDetailResponseDTO>builder()

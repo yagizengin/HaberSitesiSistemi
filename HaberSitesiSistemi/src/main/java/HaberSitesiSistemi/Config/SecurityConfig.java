@@ -99,7 +99,7 @@ public class SecurityConfig {
 
                 // Public pages
                 .requestMatchers("/", "/haber/**", "/kategori/**", "/ara").permitAll()
-                .requestMatchers("/giris", "/kayit").permitAll()
+                .requestMatchers("/giris", "/kayit", "/verify-email", "/sifremi-unuttum", "/sifre-sifirla").permitAll()
                 .requestMatchers("/error/**").permitAll()
 
                 // Admin panel — ROLE_ADMIN only

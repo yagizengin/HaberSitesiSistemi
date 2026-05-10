@@ -56,6 +56,19 @@
                     </div>
                     <button type="submit" class="btn btn-primary" style="margin-top:10px;">Güncelle</button>
                 </form>
+
+                <div sec:authorize="hasRole('USER') and !hasRole('EDITOR') and !hasRole('ADMIN')" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <h2 style="font-size: 1.1rem; margin-bottom: 15px;">Editörlük Başvurusu</h2>
+                    <div th:if="${editorRequest == null || editorRequest.status == 'REJECTED'}" style="margin-bottom: 10px;">
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;" th:text="${editorRequest != null && editorRequest.status == 'REJECTED' ? 'Önceki başvurunuz reddedildi. Tekrar başvuru gönderebilirsiniz.' : 'Sistemde editör olmak ve içerik üretmek istiyorsanız başvuru gönderebilirsiniz.'}"></p>
+                        <form th:action="@{/profil/editor-basvurusu}" method="post">
+                            <button type="submit" class="btn btn-primary" style="background-color: #28a745; border-color: #28a745;">Editör Olmak İstiyorum</button>
+                        </form>
+                    </div>
+                    <div th:if="${editorRequest != null && editorRequest.status == 'PENDING'}" style="margin-bottom: 10px;">
+                        <p style="font-size: 0.9rem; color: #856404; background-color: #fff3cd; padding: 10px; border-radius: 4px; border: 1px solid #ffeeba; margin:0;">Editörlük başvurunuz yöneticiler tarafından inceleniyor. Lütfen bekleyin.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Saved Articles -->
@@ -71,7 +84,9 @@
             <!-- Password Change -->
             <div th:if="${activeTab == 'password'}">
                 <h1 style="font-size: 1.6rem; margin-bottom: 25px; font-family: serif;">Şifre Değiştir</h1>
-                <form th:action="@{/profil/sifre-degistir}" method="post">
+                
+                <h2 style="font-size: 1.1rem; margin-bottom: 15px;">Seçenek 1: Mevcut Şifre ile Değiştir</h2>
+                <form th:action="@{/profil/sifre-degistir}" method="post" style="margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #eee;">
                     <div class="form-group">
                         <label>Mevcut Şifre</label>
                         <input type="password" name="oldPassword" required>
@@ -85,6 +100,12 @@
                         <input type="password" name="confirmPassword" required minlength="8">
                     </div>
                     <button type="submit" class="btn btn-primary">Şifreyi Değiştir</button>
+                </form>
+
+                <h2 style="font-size: 1.1rem; margin-bottom: 15px;">Seçenek 2: Mail ile Sıfırlama Linki Gönder</h2>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Mevcut şifrenizi hatırlamıyorsanız, kayıtlı e-posta adresinize bir şifre sıfırlama linki gönderebilirsiniz.</p>
+                <form th:action="@{/profil/sifremi-unuttum}" method="post">
+                    <button type="submit" class="btn btn-primary" style="background-color: #555; border-color: #555;">Sıfırlama Linki Gönder</button>
                 </form>
             </div>
         </main>
