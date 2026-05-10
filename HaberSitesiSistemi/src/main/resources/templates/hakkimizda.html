@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head(title='Hakkımızda')}"></head>
+
+<body class="bg-light">
+    <header th:replace="~{fragments/layout :: header}"></header>
+
+    <main class="main-container" style="margin-top: 40px; margin-bottom: 60px;">
+        <div class="static-page-card"
+            style="background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 900px; margin: 0 auto;">
+            <h1
+                style="color: var(--main-accent); font-family: var(--font-heading); font-weight: 900; margin-bottom: 20px; border-bottom: 3px solid var(--main-accent); display: inline-block; padding-bottom: 10px;">
+                Hakkımızda</h1>
+
+            <div style="font-family: var(--font-body); line-height: 1.8; color: #444; font-size: 1.05rem;">
+                <p><strong>Marmara Times</strong>, güncel, doğru ve tarafsız haber anlayışıyla yayın hayatına başlamış
+                    dijital bir haber portalıdır. Amacımız, teknolojiden siyasete, spordan ekonomiye kadar her alanda en
+                    sıcak gelişmeleri okuyucularımıza anlık olarak ulaştırmaktır.</p>
+
+                <h3 style="margin-top: 30px; color: var(--dark-accent);">Geliştirici Ekibi</h3>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <a href="https://github.com/yagizengin" target="_blank"
+                        style="display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); color: var(--dark-accent); font-weight: 600; transition: transform 0.2s;">
+                        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                            style="width: 24px; height: 24px;" alt="GH">
+                        Yağız Engin
+                    </a>
+                    <a href="https://github.com/m3lhsnge" target="_blank"
+                        style="display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); color: var(--dark-accent); font-weight: 600; transition: transform 0.2s;">
+                        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                            style="width: 24px; height: 24px;" alt="GH">
+                        Melih Aka
+                    </a>
+                    <a href="https://github.com/Nealyen" target="_blank"
+                        style="display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); color: var(--dark-accent); font-weight: 600; transition: transform 0.2s;">
+                        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                            style="width: 24px; height: 24px;" alt="GH">
+                        Resul Tarık Yıldırımlı
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/layout :: sidePanel}"></div>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <script th:src="@{/js/global.js}"></script>
+</body>
+
+</html>

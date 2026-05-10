@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head(title='İletişim')}"></head>
+
+<body class="bg-light">
+    <header th:replace="~{fragments/layout :: header}"></header>
+
+    <main class="main-container" style="margin-top: 40px; margin-bottom: 60px;">
+        <div class="static-page-card"
+            style="background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 900px; margin: 0 auto;">
+            <h1
+                style="color: var(--main-accent); font-family: var(--font-heading); font-weight: 900; margin-bottom: 20px; border-bottom: 3px solid var(--main-accent); display: inline-block; padding-bottom: 10px;">
+                İletişim</h1>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px;">
+                <div>
+                    <h3 style="color: var(--dark-accent); margin-bottom: 15px;">Bizimle İletişime Geçin</h3>
+                    <p style="color: #666; line-height: 1.6;">Görüş, öneri veya reklam işbirlikleri için aşağıdaki
+                        kanallar üzerinden bize ulaşabilirsiniz.</p>
+
+                    <ul style="list-style: none; padding: 0; margin-top: 20px;">
+                        <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                            <span style="color: var(--main-accent);">📍</span>
+                            <span>Karadeniz Teknik Üniversitesi, Trabzon, Türkiye</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                            <span style="color: var(--main-accent);">📧</span>
+                            <a href="mailto:[yagizengin06@gmail.com]">yagizengin06@gmail.com</a>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                            <span style="color: var(--main-accent);">📧</span>
+                            <a href="mailto:[m3lhsangue@gmail.com]">m3lhsangue@gmail.com</a>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                            <span style="color: var(--main-accent);">📧</span>
+                            <a href="mailto:[resultarikyildirimli@gmail.com]">resultarikyildirimli@gmail.com</a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <div style="background: var(--light-gray); padding: 25px; border-radius: 12px;">
+                    <h3 style="color: var(--dark-accent); margin-bottom: 15px; font-size: 1.1rem;">Geliştirici Ekibi
+                    </h3>
+                    <p style="font-size: 0.9rem; color: #777; margin-bottom: 20px;">Projemize katkıda bulunan GitHub
+                        profilleri:</p>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <a href="https://github.com/yagizengin" target="_blank"
+                            style="display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); color: var(--dark-accent); font-weight: 600; transition: transform 0.2s;">
+                            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                                style="width: 24px; height: 24px;" alt="GH">
+                            Yağız Engin
+                        </a>
+                        <a href="https://github.com/m3lhsnge" target="_blank"
+                            style="display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); color: var(--dark-accent); font-weight: 600; transition: transform 0.2s;">
+                            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                                style="width: 24px; height: 24px;" alt="GH">
+                            Melih Aka
+                        </a>
+                        <a href="https://github.com/Nealyen" target="_blank"
+                            style="display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); color: var(--dark-accent); font-weight: 600; transition: transform 0.2s;">
+                            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                                style="width: 24px; height: 24px;" alt="GH">
+                            Resul Tarık Yıldırımlı
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/layout :: sidePanel}"></div>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <script th:src="@{/js/global.js}"></script>
+</body>
+
+</html>

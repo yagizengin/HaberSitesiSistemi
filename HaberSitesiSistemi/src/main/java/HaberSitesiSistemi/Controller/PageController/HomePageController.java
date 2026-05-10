@@ -82,4 +82,18 @@ public class HomePageController {
 
         return "arama";
     }
+
+    @GetMapping("/hakkimizda")
+    public String hakkimizdaPage(Model model) {
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("title", "Hakkımızda");
+        return "hakkimizda";
+    }
+
+    @GetMapping("/iletisim")
+    public String iletisimPage(Model model) {
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("title", "İletişim");
+        return "iletisim";
+    }
 }
