@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:,">
     <title th:text="${title} + ' - Marmara Times'">Marmara Times</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Roboto+Slab:wght@700;900&display=swap"
+        rel="stylesheet">
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <link rel="stylesheet" th:href="@{/css/global.css}">
@@ -16,7 +18,7 @@
 
     <!-- ══════════════ HEADER FRAGMENT ══════════════ -->
     <header th:fragment="header" class="main-header">
-        
+
         <!-- TIER 1: Data Bar (Weather & Exchange) -->
         <div class="header-data-bar">
             <div class="weather-widget" id="weather-widget">
@@ -60,10 +62,13 @@
         <!-- TIER 2: Brand Bar -->
         <div class="header-brand-bar">
             <div class="header-left">
-                <form th:action="@{/ara}" method="get" class="search-container" id="global-search-form" style="position:relative;">
+                <form th:action="@{/ara}" method="get" class="search-container" id="global-search-form"
+                    style="position:relative;">
                     <span class="search-icon">🔍</span>
                     <input type="text" name="q" id="global-search-input" placeholder="Haber ara..." autocomplete="off">
-                    <div id="search-results-overlay" class="search-results-dropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ddd; border-top:none; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:1000; max-height:400px; overflow-y:auto; border-radius: 0 0 8px 8px;"></div>
+                    <div id="search-results-overlay" class="search-results-dropdown"
+                        style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ddd; border-top:none; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:1000; max-height:400px; overflow-y:auto; border-radius: 0 0 8px 8px;">
+                    </div>
                 </form>
             </div>
             <div class="header-center">
@@ -80,19 +85,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- TIER 3: Nav Bar -->
-        <nav class="header-nav-bar">
-            <ul class="nav-list">
-                <li class="nav-item"><a th:href="@{/}" th:class="${activeCategory == null} ? 'active' : ''">SON DAKİKA</a></li>
-                <li class="nav-item" th:each="cat : ${categories}">
-                    <a th:href="@{/kategori/{id}(id=${cat.categoryId})}"
-                        th:text="${#strings.toUpperCase(cat.name)}"
-                        th:class="${activeCategory != null and activeCategory.categoryId == cat.categoryId} ? 'active' : ''">KATEGORİ</a>
-                </li>
-            </ul>
-        </nav>
-
+        
         <!-- BREAKING NEWS TICKER -->
         <div class="breaking-ticker">
             <div class="ticker-label">SON DAKİKA</div>
@@ -103,6 +96,20 @@
                 </div>
             </div>
         </div>
+
+        <!-- TIER 3: Nav Bar -->
+        <nav class="header-nav-bar">
+            <ul class="nav-list">
+                <li class="nav-item"><a th:href="@{/}"
+                        th:class="${category == null && query == null && article == null} ? 'active' : ''">SON
+                        DAKİKA</a></li>
+                <li class="nav-item" th:each="cat : ${categories}">
+                    <a th:href="@{/kategori/{id}(id=${cat.categoryId})}" th:text="${#strings.toUpperCase(cat.name)}"
+                        th:class="${category != null && category.categoryId == cat.categoryId} ? 'active' : ''">KATEGORİ</a>
+                </li>
+            </ul>
+        </nav>
+
 
     </header>
 
@@ -119,15 +126,18 @@
                 <hr class="panel-divider">
                 <ul class="panel-menu">
                     <li sec:authorize="isAuthenticated()"><a th:href="@{/profil}">Hesabım <span>&gt;</span></a></li>
-                    <li sec:authorize="hasRole('EDITOR') or hasRole('ADMIN')"><a th:href="@{/editor}">Editör Masası <span>&gt;</span></a></li>
-                    <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Sistem Yönetimi <span>&gt;</span></a></li>
+                    <li sec:authorize="hasRole('EDITOR') or hasRole('ADMIN')"><a th:href="@{/editor}">Editör Masası
+                            <span>&gt;</span></a></li>
+                    <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Sistem Yönetimi <span>&gt;</span></a>
+                    </li>
                     <li><a th:href="@{/}">Ana Sayfa <span>&gt;</span></a></li>
                     <li sec:authorize="isAuthenticated()">
                         <form th:action="@{/cikis}" method="post" style="margin:0;">
                             <button type="submit" class="logout-link">Güvenli Çıkış <span>&gt;</span></button>
                         </form>
                     </li>
-                    <li sec:authorize="!isAuthenticated()"><a th:href="@{/giris}" class="logout-link">Giriş Yap / Kayıt Ol <span>&gt;</span></a></li>
+                    <li sec:authorize="!isAuthenticated()"><a th:href="@{/giris}" class="logout-link">Giriş Yap / Kayıt
+                            Ol <span>&gt;</span></a></li>
                 </ul>
             </div>
         </div>
@@ -138,7 +148,7 @@
     <footer th:fragment="footer" class="main-footer">
         <div class="footer-inner">
             <div class="footer-col">
-                <h4>Kurumsal</h4>
+                <h4>Marmara Times</h4>
                 <a th:href="@{/}">Ana Sayfa</a>
                 <a href="#">Hakkımızda</a>
                 <a href="#">Künye</a>
@@ -146,7 +156,8 @@
             </div>
             <div class="footer-col">
                 <h4>Kategoriler</h4>
-                <a th:each="cat : ${categories}" th:href="@{/kategori/{id}(id=${cat.categoryId})}" th:text="${cat.name}">Kategori</a>
+                <a th:each="cat : ${categories}" th:href="@{/kategori/{id}(id=${cat.categoryId})}"
+                    th:text="${cat.name}">Kategori</a>
             </div>
             <div class="footer-col">
                 <h4>Kullanıcı İşlemleri</h4>
@@ -167,4 +178,5 @@
     </div>
 
 </body>
+
 </html>
