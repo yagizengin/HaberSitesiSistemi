@@ -27,6 +27,7 @@ import HaberSitesiSistemi.Security.CustomUserDetailsService;
 import HaberSitesiSistemi.Security.CustomAuthenticationSuccessHandler;
 import HaberSitesiSistemi.Security.CustomAuthenticationFailureHandler;
 import HaberSitesiSistemi.Security.CustomLogoutSuccessHandler;
+import HaberSitesiSistemi.Security.IpBlockingFilter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CustomUserDetailsService customUserDetailsService;
+    private final IpBlockingFilter ipBlockingFilter;
 
     private final CustomAuthenticationSuccessHandler successHandler;
     private final CustomAuthenticationFailureHandler failureHandler;
@@ -91,6 +93,7 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/**").authenticated())
 
+            .addFilterBefore(ipBlockingFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthenticationFilter,
                     UsernamePasswordAuthenticationFilter.class);
 
@@ -143,6 +146,8 @@ public class SecurityConfig {
                 .userDetailsService(customUserDetailsService)
                 .tokenValiditySeconds(7 * 24 * 60 * 60)
                 .rememberMeParameter("remember-me"))
+
+            .addFilterBefore(ipBlockingFilter, UsernamePasswordAuthenticationFilter.class)
 
             .logout(logout -> logout
                 .logoutUrl("/cikis")

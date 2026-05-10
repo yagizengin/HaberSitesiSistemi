@@ -65,15 +65,6 @@ public class AuthController {
 
         String ipAddress = httpRequest.getRemoteAddr();
 
-        if (sessionLogService.isIPBlocked(ipAddress)) {
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-                    .body(ApiResponse.<LoginResponseDTO>builder()
-                            .success(false)
-                            .message("Too many failed login attempts. Please try again later.")
-                            .timestamp(System.currentTimeMillis())
-                            .build());
-        }
-
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(

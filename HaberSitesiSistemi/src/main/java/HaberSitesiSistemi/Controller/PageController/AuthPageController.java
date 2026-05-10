@@ -21,7 +21,9 @@ public class AuthPageController {
     public String loginPage(@RequestParam(required = false) String error,
                             @RequestParam(required = false) String logout,
                             Model model) {
-        if (error != null) {
+        if ("blocked".equals(error)) {
+            model.addAttribute("errorMsg", "Çok fazla hatalı giriş denemesi. Lütfen daha sonra tekrar deneyiniz.");
+        } else if (error != null) {
             model.addAttribute("errorMsg", "Kullanıcı adı veya şifre hatalı.");
         }
         if (logout != null) {
