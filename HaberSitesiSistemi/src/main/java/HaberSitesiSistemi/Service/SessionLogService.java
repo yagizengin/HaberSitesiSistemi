@@ -62,6 +62,12 @@ public class SessionLogService {
     }
 
     @Transactional(readOnly = true)
+    public Page<SessionLog> getAllSessionLogs(Pageable pageable) {
+        log.info("Fetching all session logs");
+        return sessionLogRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
     public long detectBruteForce(String ipAddress) {
         Timestamp threshold = Timestamp.valueOf(
                 LocalDateTime.now().minusMinutes(BLOCK_DURATION_MINUTES));

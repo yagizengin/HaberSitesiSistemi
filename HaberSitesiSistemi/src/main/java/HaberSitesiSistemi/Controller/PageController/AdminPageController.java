@@ -1,10 +1,7 @@
 package HaberSitesiSistemi.Controller.PageController;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import HaberSitesiSistemi.DTO.Request.CategoryCreateRequest;
-import HaberSitesiSistemi.DTO.Request.CategoryUpdateRequest;
 import HaberSitesiSistemi.DTO.Request.TagCreateRequest;
 import HaberSitesiSistemi.Model.Article;
 import HaberSitesiSistemi.Model.AuditLog;
@@ -30,6 +26,8 @@ import HaberSitesiSistemi.Service.CategoryService;
 import HaberSitesiSistemi.Service.CommentService;
 import HaberSitesiSistemi.Service.TagService;
 import HaberSitesiSistemi.Service.UserService;
+import HaberSitesiSistemi.Model.SessionLog;
+import HaberSitesiSistemi.Service.SessionLogService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -43,6 +41,7 @@ public class AdminPageController {
     private final TagService tagService;
     private final CommentService commentService;
     private final AuditLogService auditLogService;
+    private final SessionLogService sessionLogService;
 
     @GetMapping
     public String dashboard(Model model) {
@@ -243,11 +242,15 @@ public class AdminPageController {
     // ─── Logs ───
     @GetMapping("/loglar")
     public String logsPage(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<AuditLog> logs = auditLogService.getAuditLogs(PageRequest.of(page, 30));
+        Page<AuditLog> auditLogs = auditLogService.getAuditLogs(PageRequest.of(page, 20, Sort.by("actionDate").descending()));
+        Page<SessionLog> sessionLogs = sessionLogService.getAllSessionLogs(PageRequest.of(page, 20, Sort.by("loginTime").descending()));
+
         model.addAttribute("activePage", "logs");
-        model.addAttribute("logs", logs.getContent());
+        model.addAttribute("auditLogs", auditLogs.getContent());
+        model.addAttribute("sessionLogs", sessionLogs.getContent());
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", logs.getTotalPages());
+        model.addAttribute("totalPages", Math.max(auditLogs.getTotalPages(), sessionLogs.getTotalPages()));
+        
         return "admin/loglar";
     }
 }

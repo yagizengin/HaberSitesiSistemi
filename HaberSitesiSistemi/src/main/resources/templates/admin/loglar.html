@@ -9,21 +9,66 @@
 <body>
 <div th:replace="~{fragments/admin-layout :: adminLayout('Sistem Logları', ~{::content})}">
     <div th:fragment="content">
-        <div class="admin-card">
-            <h2>Denetim Logları</h2>
+        
+        <div class="admin-card" style="margin-bottom: 40px;">
+            <h2>Sistem Oturum Logları (Giriş/Çıkış)</h2>
             <table class="data-table">
-                <thead><tr><th>ID</th><th>Kullanıcı</th><th>İşlem</th><th>Tablo</th><th>Zaman</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kullanıcı</th>
+                        <th>IP Adresi</th>
+                        <th>Durum</th>
+                        <th>Giriş Tarihi</th>
+                        <th>Çıkış Tarihi</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <tr th:each="log : ${logs}">
-                        <td th:text="${log.logId}">1</td>
-                        <td th:text="${log.user != null ? log.user.username : '-'}">user</td>
-                        <td><span class="badge badge-info" th:text="${log.actionType}">INSERT</span></td>
-                        <td th:text="${log.tableName}">users</td>
-                        <td th:text="${#temporals.format(log.actionDate, 'dd/MM/yyyy HH:mm')}">Tarih</td>
+                    <tr th:each="slog : ${sessionLogs}">
+                        <td th:text="${slog.sessionId}">1</td>
+                        <td th:text="${slog.user != null ? slog.user.username : '-'}">Anonim</td>
+                        <td th:text="${slog.ipAddress}">127.0.0.1</td>
+                        <td>
+                            <span class="badge" th:classappend="${slog.success ? 'badge-success' : 'badge-danger'}" 
+                                  th:text="${slog.success ? 'BAŞARILI' : 'BAŞARISIZ'}">BAŞARILI</span>
+                        </td>
+                        <td th:text="${#dates.format(slog.loginTime, 'dd/MM/yyyy HH:mm')}">Tarih</td>
+                        <td th:text="${slog.logoutTime != null ? #dates.format(slog.logoutTime, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
                     </tr>
                 </tbody>
             </table>
-            <p th:if="${logs.isEmpty()}" style="color:#888; text-align:center; padding:20px;">Henüz log kaydı bulunmuyor.</p>
+            <p th:if="${sessionLogs.isEmpty()}" style="color:#888; text-align:center; padding:20px;">Henüz oturum kaydı bulunmuyor.</p>
+        </div>
+
+        <div class="admin-card">
+            <h2>Denetim (Audit) Logları</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kullanıcı</th>
+                        <th>İşlem</th>
+                        <th>Tablo</th>
+                        <th>Kayıt ID</th>
+                        <th>Zaman</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="alog : ${auditLogs}">
+                        <td th:text="${alog.logId}">1</td>
+                        <td th:text="${alog.user != null ? alog.user.username : '-'}">sistem</td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${alog.actionType == 'DELETE' ? 'badge-danger' : (alog.actionType == 'CREATE' ? 'badge-success' : 'badge-info')}"
+                                  th:text="${alog.actionType}">INSERT</span>
+                        </td>
+                        <td th:text="${alog.tableName}">articles</td>
+                        <td th:text="${alog.recordId}">-</td>
+                        <td th:text="${#temporals.format(alog.actionDate, 'dd/MM/yyyy HH:mm')}">Tarih</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p th:if="${auditLogs.isEmpty()}" style="color:#888; text-align:center; padding:20px;">Henüz işlem kaydı bulunmuyor.</p>
         </div>
     </div>
 </div>

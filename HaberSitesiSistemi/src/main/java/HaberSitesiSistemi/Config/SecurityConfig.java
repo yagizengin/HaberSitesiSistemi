@@ -2,6 +2,7 @@ package HaberSitesiSistemi.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import HaberSitesiSistemi.Security.JwtAuthenticationEntryPoint;
 import HaberSitesiSistemi.Security.JwtAuthenticationFilter;
 import HaberSitesiSistemi.Security.CustomUserDetailsService;
+import HaberSitesiSistemi.Security.CustomAuthenticationSuccessHandler;
+import HaberSitesiSistemi.Security.CustomAuthenticationFailureHandler;
+import HaberSitesiSistemi.Security.CustomLogoutSuccessHandler;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -30,12 +34,17 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@EnableAspectJAutoProxy
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CustomUserDetailsService customUserDetailsService;
+
+    private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomAuthenticationFailureHandler failureHandler;
+    private final CustomLogoutSuccessHandler logoutSuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -123,8 +132,8 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/giris")
                 .loginProcessingUrl("/giris")
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/giris?error=true")
+                .successHandler(successHandler)
+                .failureHandler(failureHandler)
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .permitAll())
@@ -137,7 +146,7 @@ public class SecurityConfig {
 
             .logout(logout -> logout
                 .logoutUrl("/cikis")
-                .logoutSuccessUrl("/giris?logout=true")
+                .logoutSuccessHandler(logoutSuccessHandler)
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID", "remember-me")
                 .permitAll());     

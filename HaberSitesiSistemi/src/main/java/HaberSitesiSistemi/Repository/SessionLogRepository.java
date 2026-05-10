@@ -1,6 +1,7 @@
 package HaberSitesiSistemi.Repository;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,6 @@ public interface SessionLogRepository extends JpaRepository<SessionLog, Long> {
     long countByIpAddressAndSuccessAndLoginTimeAfter(String ipAddress, boolean success, Timestamp loginTime);
 
     Page<SessionLog> findByIpAddressOrderByLoginTimeDesc(String ipAddress, Pageable pageable);
+
+    Optional<SessionLog> findFirstByUser_UserIdAndIpAddressAndSuccessTrueAndLogoutTimeIsNullOrderByLoginTimeDesc(Long userId, String ipAddress);
 }
