@@ -32,7 +32,7 @@ public class HomePageController {
 
         // Split articles for the grid layout
         Article heroArticle = articles.isEmpty() ? null : articles.get(0);
-        List<Article> leftArticles = articles.size() > 1 ? articles.subList(1, Math.min(3, articles.size())) : List.of();
+        List<Article> leftArticles = articles.size() > 1 ? articles.subList(1, Math.min(4, articles.size())) : List.of();
         List<Article> rightArticles = articles.size() > 3 ? articles.subList(3, Math.min(5, articles.size())) : List.of();
         List<Article> bottomArticles = articles.size() > 5 ? articles.subList(5, articles.size()) : List.of();
 
