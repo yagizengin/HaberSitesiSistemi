@@ -75,7 +75,6 @@ public final class EntityDtoMapper {
         return UserResponseDTO.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())
-                .email(user.getEmail())
                 .active(user.isActive())
                 .createdAt(user.getCreatedAt())
                 .roles(mapRoleNames(user.getRoles()))

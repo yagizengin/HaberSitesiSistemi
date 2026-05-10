@@ -35,3 +35,6 @@ build/
 .DS_Store
 *.log
 *.tmp  
+
+### Gizli Ayarlar (Sifreler vs) ###
+application-secret.properties

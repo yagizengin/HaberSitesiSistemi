@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:,">
-    <title th:text="${title} + ' - Gündem Türkiye'">Gündem Türkiye</title>
+    <title th:text="${title} + ' - Marmara Times'">Marmara Times</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
@@ -28,7 +28,7 @@
                 <span class="date-display" id="date-display"></span>
             </div>
             <div class="header-center">
-                <h1 class="logo"><a th:href="@{/}">GÜNDEM TÜRKİYE</a></h1>
+                <h1 class="logo"><a th:href="@{/}">MARMARA TIMES</a></h1>
             </div>
             <div class="header-right">
                 <!-- Not authenticated -->
@@ -61,7 +61,7 @@
             </div>
             <div class="panel-content">
                 <h2 sec:authorize="isAuthenticated()">Hoş Geldin, <span sec:authentication="name">Kullanıcı</span></h2>
-                <h2 sec:authorize="!isAuthenticated()">Gündem Türkiye</h2>
+                <h2 sec:authorize="!isAuthenticated()">Marmara Times</h2>
                 <p class="panel-desc" sec:authorize="!isAuthenticated()">Haberleri takip etmek için giriş yapın.</p>
                 <hr class="panel-divider">
                 <ul class="panel-menu">
@@ -90,7 +90,7 @@
     <footer th:fragment="footer" class="main-footer">
         <div class="footer-inner">
             <div class="footer-col">
-                <h4>Gündem Türkiye</h4>
+                <h4>Marmara Times</h4>
                 <a th:href="@{/}">Ana Sayfa</a>
                 <a href="#">Hakkımızda</a>
                 <a href="#">İletişim</a>
@@ -107,7 +107,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2026 Gündem Türkiye. Tüm hakları saklıdır.
+            &copy; 2026 Marmara Times. Tüm hakları saklıdır.
         </div>
     </footer>
 
