@@ -43,7 +43,7 @@ public class AuthPageController {
 
             userService.register(request);
 
-            redirectAttributes.addFlashAttribute("successMsg", "Hesap oluşturuldu! Giriş yapabilirsiniz.");
+            redirectAttributes.addFlashAttribute("successMsg", "Hesap oluşturuldu! Lütfen hesabınızı aktifleştirmek için e-posta adresinizi kontrol ediniz.");
             return "redirect:/giris";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
