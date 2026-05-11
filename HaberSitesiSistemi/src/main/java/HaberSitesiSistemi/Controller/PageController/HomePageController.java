@@ -27,14 +27,14 @@ public class HomePageController {
     @GetMapping("/")
     public String homePage(Model model) {
         List<Category> categories = categoryService.getAllCategories();
-        Page<Article> articlePage = articleService.getAllArticles(PageRequest.of(0, 13, Sort.by("publishedAt").descending()));
+        Page<Article> articlePage = articleService.getAllArticles(PageRequest.of(0, 12, Sort.by("publishedAt").descending()));
         List<Article> articles = articlePage.getContent();
 
         // Split articles for the grid layout
         Article heroArticle = articles.isEmpty() ? null : articles.get(0);
         List<Article> leftArticles = articles.size() > 1 ? articles.subList(1, Math.min(4, articles.size())) : List.of();
-        List<Article> rightArticles = articles.size() > 3 ? articles.subList(3, Math.min(5, articles.size())) : List.of();
-        List<Article> bottomArticles = articles.size() > 5 ? articles.subList(5, articles.size()) : List.of();
+        List<Article> rightArticles = articles.size() > 4 ? articles.subList(4, Math.min(6, articles.size())) : List.of();
+        List<Article> bottomArticles = articles.size() > 6 ? articles.subList(6, articles.size()) : List.of();
 
         model.addAttribute("categories", categories);
         model.addAttribute("heroArticle", heroArticle);
