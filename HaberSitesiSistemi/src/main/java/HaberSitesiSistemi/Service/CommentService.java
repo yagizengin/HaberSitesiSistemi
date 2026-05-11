@@ -93,9 +93,13 @@ public class CommentService {
         log.info("Deleting comment ID: {} by user ID: {}", commentId, userId);
 
         Comment comment = getCommentEntityById(commentId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        if (!comment.getUser().getUserId().equals(userId)) {
-            log.warn("Delete denied: User {} is not the owner of comment {}", userId, commentId);
+        boolean isAdmin = user.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
+
+        if (!comment.getUser().getUserId().equals(userId) && !isAdmin) {
+            log.warn("Delete denied: User {} is not the owner of comment {} and not an admin", userId, commentId);
             throw new ForbiddenException("You are not authorized to delete this comment");
         }
 
@@ -133,6 +137,12 @@ public class CommentService {
     public Page<Comment> getUnapprovedComments(Pageable pageable) {
         log.info("Fetching unapproved comments");
         return commentRepository.findByApproved(false, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Comment> getAllComments(Pageable pageable) {
+        log.info("Fetching all comments for admin moderation");
+        return commentRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = true)

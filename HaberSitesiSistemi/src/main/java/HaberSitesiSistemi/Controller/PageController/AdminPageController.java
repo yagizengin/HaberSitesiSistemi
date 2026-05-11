@@ -216,7 +216,7 @@ public class AdminPageController {
     // ─── Comments ───
     @GetMapping("/yorumlar")
     public String commentsPage(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Comment> comments = commentService.getUnapprovedComments(PageRequest.of(page, 20, Sort.by("createdAt").ascending()));
+        Page<Comment> comments = commentService.getAllComments(PageRequest.of(page, 20, Sort.by("createdAt").descending()));
         model.addAttribute("activePage", "comments");
         model.addAttribute("comments", comments.getContent());
         model.addAttribute("currentPage", page);

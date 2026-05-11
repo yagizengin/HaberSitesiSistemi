@@ -25,6 +25,7 @@
                         <th>Makale</th>
                         <th>Yorum</th>
                         <th>Tarih</th>
+                        <th>Durum</th>
                         <th>İşlemler</th>
                     </tr>
                 </thead>
@@ -38,10 +39,14 @@
                         <td th:text="${comment.content}">Yorum...</td>
                         <td th:text="${#temporals.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}">Tarih</td>
                         <td>
-                            <form th:action="@{/admin/yorum-onayla/{id}(id=${comment.commentId})}" method="post" class="ajax-form" style="display:inline;">
+                            <span th:if="${comment.approved}" class="badge badge-success" style="background:#4CAF50; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem;">Onaylandı</span>
+                            <span th:unless="${comment.approved}" class="badge badge-warning" style="background:#ff9800; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem;">Beklemede</span>
+                        </td>
+                        <td>
+                            <form th:if="${!comment.approved}" th:action="@{/admin/yorum-onayla/{id}(id=${comment.commentId})}" method="post" class="ajax-form" style="display:inline;">
                                 <button type="submit" class="btn btn-sm" style="background:#4CAF50;color:#fff;">Onayla</button>
                             </form>
-                            <form th:action="@{/admin/yorum-sil/{id}(id=${comment.commentId})}" method="post" class="ajax-form" style="display:inline;" data-confirm="Emin misiniz?">
+                            <form th:action="@{/admin/yorum-sil/{id}(id=${comment.commentId})}" method="post" class="ajax-form" style="display:inline;" onsubmit="return confirm('Bu yorumu silmek istediğinize emin misiniz?')">
                                 <button type="submit" class="btn btn-sm btn-danger">Sil</button>
                             </form>
                         </td>
