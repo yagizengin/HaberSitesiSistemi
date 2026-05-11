@@ -245,7 +245,19 @@ public class UserService {
         user.setActive(false);
         User deactivatedUser = userRepository.save(user);
 
-        log.info("User ID: {} successfully deactivated", userId);
+        // Kullanıcının aktif olan tüm session'larını bulup geçersiz kıl (logout yapılmış gibi olur)
+        for (Object principal : sessionRegistry.getAllPrincipals()) {
+            if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
+                org.springframework.security.core.userdetails.UserDetails loggedInUser = (org.springframework.security.core.userdetails.UserDetails) principal;
+                if (loggedInUser.getUsername().equals(user.getUsername())) {
+                    for (SessionInformation sessionInfo : sessionRegistry.getAllSessions(principal, false)) {
+                        sessionInfo.expireNow(); // Oturumu anında sonlandır
+                    }
+                }
+            }
+        }
+
+        log.info("User ID: {} successfully deactivated and sessions expired", userId);
         return deactivatedUser;
     }
 
@@ -258,6 +270,18 @@ public class UserService {
                 
         user.getRoles().clear();
         user.getRoles().add(role);
+
+        // Kullanıcının rolü değiştiğinde eski yetkili oturumlarla işlem yapamaması için session'ları expire et
+        for (Object principal : sessionRegistry.getAllPrincipals()) {
+            if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
+                org.springframework.security.core.userdetails.UserDetails loggedInUser = (org.springframework.security.core.userdetails.UserDetails) principal;
+                if (loggedInUser.getUsername().equals(user.getUsername())) {
+                    for (SessionInformation sessionInfo : sessionRegistry.getAllSessions(principal, false)) {
+                        sessionInfo.expireNow();
+                    }
+                }
+            }
+        }
 
         // Eğer kullanıcı Editör rolünden başka bir role düşürülüyorsa (örneğin geri USER yapılıyorsa)
         // eski onaylanmış başvurusunu silmeliyiz ki gelecekte tekrar başvuru yapabilsin.

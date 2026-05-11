@@ -126,9 +126,8 @@
                 <hr class="panel-divider">
                 <ul class="panel-menu">
                     <li sec:authorize="isAuthenticated()"><a th:href="@{/profil}">Hesabım <span>&gt;</span></a></li>
-                    <li sec:authorize="hasRole('EDITOR') or hasRole('ADMIN')"><a th:href="@{/editor}">Editör Masası
-                            <span>&gt;</span></a></li>
-                    <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Sistem Yönetimi <span>&gt;</span></a>
+                    <li sec:authorize="hasRole('EDITOR') or hasRole('ADMIN')"><a th:href="@{/editor}">Editör Paneli <span>&gt;</span></a></li>
+                    <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Admin Paneli <span>&gt;</span></a>
                     </li>
                     <li><a th:href="@{/}">Ana Sayfa <span>&gt;</span></a></li>
                     <li sec:authorize="isAuthenticated()">
