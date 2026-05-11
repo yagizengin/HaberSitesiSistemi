@@ -67,4 +67,13 @@ public class TagService {
         article.getTags().remove(tag);
         return articleRepository.save(article);
     }
+
+    public void deleteTag(Long id) {
+        log.info("Deleting tag with ID: {}", id);
+        if (!tagRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Tag", "id", id);
+        }
+        tagRepository.deleteById(id);
+        log.info("Tag deleted successfully: {}", id);
+    }
 }

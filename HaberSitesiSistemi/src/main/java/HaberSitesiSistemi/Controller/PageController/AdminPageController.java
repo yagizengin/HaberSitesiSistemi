@@ -178,6 +178,17 @@ public class AdminPageController {
         return "redirect:/admin/etiketler";
     }
 
+    @PostMapping("/etiket-sil/{id}")
+    public String deleteTag(@PathVariable Long id, RedirectAttributes ra) {
+        try {
+            tagService.deleteTag(id);
+            ra.addFlashAttribute("successMsg", "Etiket başarıyla silindi.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMsg", "Etiket silinirken hata oluştu: " + e.getMessage());
+        }
+        return "redirect:/admin/etiketler";
+    }
+
     // ─── Articles ───
     @GetMapping("/makaleler")
     public String articlesPage(@RequestParam(defaultValue = "0") int page, Model model) {
