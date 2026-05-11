@@ -109,7 +109,10 @@ public class EditorPageController {
         } catch (Exception e) {
             ra.addFlashAttribute("errorMsg", e.getMessage());
         }
-        return "redirect:/editor";
+        
+        boolean isAdmin = user.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        return isAdmin ? "redirect:/admin/makaleler" : "redirect:/editor";
     }
 
     @PostMapping("/makale-yayinla/{id}")
