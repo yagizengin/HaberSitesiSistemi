@@ -63,7 +63,7 @@ public class AuthController {
             @Valid @RequestBody UserLoginRequest request,
             HttpServletRequest httpRequest) {
 
-        String ipAddress = httpRequest.getRemoteAddr();
+        String ipAddress = getClientIP(httpRequest);
 
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -155,5 +155,13 @@ public class AuthController {
                 .message("Password has been reset successfully.")
                 .timestamp(System.currentTimeMillis())
                 .build());
+    }
+
+    private String getClientIP(HttpServletRequest request) {
+        String xfHeader = request.getHeader("X-Forwarded-For");
+        if (xfHeader == null || xfHeader.isEmpty()) {
+            return request.getRemoteAddr();
+        }
+        return xfHeader.split(",")[0].trim();
     }
 }

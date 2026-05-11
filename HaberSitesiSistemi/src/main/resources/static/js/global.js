@@ -112,21 +112,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        async function fetchLocationByIP() {
+            try {
+                // Using ipapi.co (free, supports HTTPS)
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                
+                if (data && data.latitude && data.longitude) {
+                    const lat = data.latitude.toFixed(2);
+                    const lon = data.longitude.toFixed(2);
+                    
+                    console.info("Detected location by IP:", data.city);
+                    
+                    // Try to match city in dropdown
+                    let matched = false;
+                    for (let i = 0; i < citySelect.options.length; i++) {
+                        const opt = citySelect.options[i];
+                        if (opt.dataset.city && data.city && opt.dataset.city.toLowerCase() === data.city.toLowerCase()) {
+                            citySelect.selectedIndex = i;
+                            matched = true;
+                            break;
+                        }
+                    }
+
+                    if (!matched) {
+                        const autoOpt = document.getElementById('auto-location-option');
+                        if (autoOpt) autoOpt.text = `📍 ${data.city || 'Konumum'}`;
+                        citySelect.value = "auto";
+                    }
+
+                    fetchWeather(lat, lon);
+                } else {
+                    throw new Error("IP location data incomplete");
+                }
+            } catch (err) {
+                console.warn("IP geolocation failed, falling back to Istanbul:", err);
+                citySelect.value = "41.01,28.98"; // Istanbul default
+                fetchWeather("41.01", "28.98");
+            }
+        }
+
         function loadLocationWeather() {
-            if (navigator.geolocation) {
+            // Geolocation requires Secure Context (HTTPS or localhost)
+            if (navigator.geolocation && window.isSecureContext) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude.toFixed(2);
                         const lon = position.coords.longitude.toFixed(2);
 
-                        // Try to find if coords match an existing option (roughly)
                         let matched = false;
                         for (let i = 0; i < citySelect.options.length; i++) {
                             const opt = citySelect.options[i];
                             if (opt.value !== 'auto') {
                                 const [olat, olon] = opt.value.split(',');
-                                // Simple proximity check
-                                if (Math.abs(parseFloat(olat) - lat) < 1 && Math.abs(parseFloat(olon) - lon) < 1) {
+                                if (Math.abs(parseFloat(olat) - lat) < 0.5 && Math.abs(parseFloat(olon) - lon) < 0.5) {
                                     citySelect.selectedIndex = i;
                                     matched = true;
                                     break;
@@ -134,24 +173,22 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
 
-                        // If no match, change the "Auto" option text to show we found location
                         if (!matched) {
                             const autoOpt = document.getElementById('auto-location-option');
-                            autoOpt.text = "📍 Bulunduğum Yer";
+                            if (autoOpt) autoOpt.text = "📍 Bulunduğum Yer";
                             citySelect.value = "auto";
                         }
 
                         fetchWeather(lat, lon);
                     },
                     (error) => {
-                        console.warn("Geolocation denied or failed, falling back to Istanbul");
-                        citySelect.value = "41.01,28.98"; // Istanbul default
-                        fetchWeather("41.01", "28.98");
+                        console.warn("Geolocation denied or failed, using IP-based location");
+                        fetchLocationByIP();
                     }
                 );
             } else {
-                citySelect.value = "41.01,28.98"; // Istanbul default
-                fetchWeather("41.01", "28.98");
+                console.info("Navigator geolocation not available or insecure context, using IP-based location");
+                fetchLocationByIP();
             }
         }
 
