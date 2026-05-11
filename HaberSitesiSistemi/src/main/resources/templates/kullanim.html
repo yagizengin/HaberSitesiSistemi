@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head(title='Kullanım Koşulları')}"></head>
+
+<body class="bg-light">
+    <header th:replace="~{fragments/layout :: header}"></header>
+
+    <main class="main-container" style="margin-top: 40px; margin-bottom: 60px;">
+        <div class="static-page-card"
+            style="background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 900px; margin: 0 auto;">
+            <h1
+                style="color: var(--main-accent); font-family: var(--font-heading); font-weight: 900; margin-bottom: 20px; border-bottom: 3px solid var(--main-accent); display: inline-block; padding-bottom: 10px;">
+                Kullanım Koşulları</h1>
+
+            <div style="font-family: var(--font-body); line-height: 1.8; color: #444; font-size: 1.05rem;">
+                <p>Bu internet sitesine girmeniz veya bu internet sitesindeki herhangi bir bilgiyi kullanmanız aşağıdaki koşulları kabul ettiğiniz anlamına gelir.</p>
+
+                <h3 style="margin-top: 30px; color: var(--dark-accent);">Fikri Mülkiyet Hakları</h3>
+                <p><strong>Marmara Times</strong> web sitesinde yer alan tüm içerikler (metinler, resimler, grafikler, logolar, yazılım kodları vb.) aksi belirtilmediği sürece Marmara Times'a aittir ve ulusal/uluslararası telif hakları yasaları ile korunmaktadır. İçeriklerin izinsiz kopyalanması, çoğaltılması veya ticari amaçla kullanılması yasaktır.</p>
+
+                <h3 style="margin-top: 30px; color: var(--dark-accent);">Kullanıcı Sorumlulukları</h3>
+                <p>Kullanıcılar, siteyi kullanırken yürürlükteki tüm yasal mevzuata uymakla yükümlüdür. Site üzerinde veya site vasıtasıyla yapılan her türlü hukuka aykırı eylem (hakaret, tehdit, yalan, iftira, şiddet teşviki vb.) yasaktır. Yapılan yorumlardan ve paylaşılan içeriklerden bizzat kullanıcı sorumludur.</p>
+
+                <h3 style="margin-top: 30px; color: var(--dark-accent);">Sorumluluğun Sınırlandırılması</h3>
+                <p>Marmara Times, sitede yer alan bilgilerin doğruluğu ve güncelliği konusunda elinden gelen gayreti gösterir ancak bu konuda herhangi bir garanti veya taahhüt vermez. Sitenin kullanımından doğabilecek dolaysız veya dolaylı maddi ve manevi zararlardan sitemiz sorumlu tutulamaz.</p>
+                
+                <br><br>
+                <div style="background-color: #f8f9fa; padding: 20px; border-left: 4px solid var(--main-accent); border-radius: 4px;">
+                    <p style="margin: 0;">Sitemizi kullanımla ilgili herhangi bir sorunuz, öneriniz veya karşılaştığınız teknik/hukuki bir sorun varsa, lütfen <a th:href="@{/iletisim}" style="color: var(--main-accent); font-weight: bold; text-decoration: underline;">İletişim</a> sayfamız üzerinden bizimle irtibata geçin.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/layout :: sidePanel}"></div>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+
+</html>

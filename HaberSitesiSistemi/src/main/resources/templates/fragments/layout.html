@@ -162,8 +162,8 @@
                 <h4>Kullanıcı İşlemleri</h4>
                 <a th:href="@{/giris}" sec:authorize="!isAuthenticated()">Giriş Yap / Üye Ol</a>
                 <a th:href="@{/profil}" sec:authorize="isAuthenticated()">Profilim</a>
-                <a href="#">Gizlilik Politikası</a>
-                <a href="#">Kullanım Koşulları</a>
+                <a th:href="@{/gizlilik}">Gizlilik Politikası</a>
+                <a th:href="@{/kullanim}">Kullanım Koşulları</a>
             </div>
         </div>
         <div class="footer-bottom">

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head(title='Gizlilik Politikası')}"></head>
+
+<body class="bg-light">
+    <header th:replace="~{fragments/layout :: header}"></header>
+
+    <main class="main-container" style="margin-top: 40px; margin-bottom: 60px;">
+        <div class="static-page-card"
+            style="background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); max-width: 900px; margin: 0 auto;">
+            <h1
+                style="color: var(--main-accent); font-family: var(--font-heading); font-weight: 900; margin-bottom: 20px; border-bottom: 3px solid var(--main-accent); display: inline-block; padding-bottom: 10px;">
+                Gizlilik Politikası</h1>
+
+            <div style="font-family: var(--font-body); line-height: 1.8; color: #444; font-size: 1.05rem;">
+                <p><strong>Marmara Times</strong> olarak kişisel verilerinizin güvenliği hususuna azami hassasiyet göstermekteyiz. Bu bilinçle, sizlere sunduğumuz hizmetler sırasında paylaştığınız kişisel verilerin 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK")'na uygun olarak işlenmesine ve muhafaza edilmesine büyük önem veriyoruz.</p>
+
+                <h3 style="margin-top: 30px; color: var(--dark-accent);">Kişisel Verilerin Toplanması, İşlenmesi ve İşleme Amaçları</h3>
+                <p>Kişisel verileriniz, sitemize üye olurken, bültenimize abone olurken veya iletişim formunu doldururken toplanabilir. Bu veriler, sizlere daha iyi hizmet sunabilmek, içeriklerimizi ilgi alanlarınıza göre özelleştirmek ve yasal yükümlülüklerimizi yerine getirmek amacıyla işlenmektedir.</p>
+                
+                <h3 style="margin-top: 30px; color: var(--dark-accent);">Çerezler (Cookies)</h3>
+                <p>Sitemiz, kullanıcı deneyimini artırmak, site trafiğini analiz etmek ve anonim istatistiki veriler toplamak amacıyla çerezler kullanmaktadır. Tarayıcı ayarlarınızı değiştirerek çerezleri reddedebilir veya silebilirsiniz.</p>
+
+                <br><br>
+                <div style="background-color: #f8f9fa; padding: 20px; border-left: 4px solid var(--main-accent); border-radius: 4px;">
+                    <p style="margin: 0;">Gizlilik politikamızla ilgili herhangi bir sorunuz, öneriniz veya şikayetiniz varsa, lütfen <a th:href="@{/iletisim}" style="color: var(--main-accent); font-weight: bold; text-decoration: underline;">İletişim</a> sayfamızdan bizimle irtibata geçmekte tereddüt etmeyin.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div th:replace="~{fragments/layout :: sidePanel}"></div>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+
+</html>

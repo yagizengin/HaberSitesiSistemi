@@ -96,4 +96,18 @@ public class HomePageController {
         model.addAttribute("title", "İletişim");
         return "iletisim";
     }
+
+    @GetMapping("/gizlilik")
+    public String gizlilikPage(Model model) {
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("title", "Gizlilik Politikası");
+        return "gizlilik";
+    }
+
+    @GetMapping("/kullanim")
+    public String kullanimPage(Model model) {
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("title", "Kullanım Koşulları");
+        return "kullanim";
+    }
 }
