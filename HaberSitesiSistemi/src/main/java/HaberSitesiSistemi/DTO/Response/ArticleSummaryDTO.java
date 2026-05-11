@@ -21,4 +21,5 @@ public class ArticleSummaryDTO {
     private LocalDateTime publishedAt;
     private int viewCount;
     private String firstMediaUrl;
+    private MediaResponseDTO coverImage;
 }

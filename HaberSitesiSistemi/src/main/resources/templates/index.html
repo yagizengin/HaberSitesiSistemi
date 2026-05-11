@@ -141,7 +141,7 @@
                                 observer.disconnect();
                             } else {
                                 articles.forEach(article => {
-                                    const imgUrl = article.coverImage ? article.coverImage.fileUrl : `https://picsum.photos/seed/${article.articleId}/300/200`;
+                                    const imgUrl = (article.coverImage && article.coverImage.fileUrl) ? article.coverImage.fileUrl : (article.firstMediaUrl ? article.firstMediaUrl : `https://picsum.photos/seed/${article.articleId}/300/200`);
                                     const categoryName = article.category ? article.category.name : 'GENEL';
                                     
                                     const articleHtml = `

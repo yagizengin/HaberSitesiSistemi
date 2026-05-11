@@ -303,6 +303,7 @@ public final class EntityDtoMapper {
                 .publishedAt(article.getPublishedAt())
                 .viewCount(article.getViewCount())
                 .firstMediaUrl(firstMediaUrl(article.getMediaFiles()))
+                .coverImage(toMediaResponseDTO(article.getCoverImage()))
                 .build();
     }
 
