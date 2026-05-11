@@ -1,6 +1,7 @@
 package HaberSitesiSistemi.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,18 @@ public class CategoryService {
         log.info("Creating category with name: '{}'", request.getName());
 
         if (categoryRepository.existsByNameIgnoreCase(request.getName())) {
+            Optional<Category> existingOpt = categoryRepository.findByNameIgnoreCase(request.getName());
+            if (existingOpt.isPresent()) {
+                Category existing = existingOpt.get();
+                if (!existing.isActive()) {
+                    log.info("Reactivating existing inactive category ID: {}", existing.getCategoryId());
+                    existing.setActive(true);
+                    existing.setDescription(HtmlSanitizer.sanitize(request.getDescription()));
+                    Category reactivated = categoryRepository.save(existing);
+                    log.info("Category reactivated successfully with ID: {}", reactivated.getCategoryId());
+                    return reactivated;
+                }
+            }
             log.warn("Category creation failed: Name '{}' already exists", request.getName());
             throw new ConflictException("Category name already exists");
         }
