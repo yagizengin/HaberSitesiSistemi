@@ -28,6 +28,7 @@
             <ul class="side-menu">
                 <li th:classappend="${activeTab == 'personal'} ? 'active'"><a th:href="@{/profil(tab=personal)}">Kişisel Bilgiler</a></li>
                 <li th:classappend="${activeTab == 'saved'} ? 'active'"><a th:href="@{/profil(tab=saved)}">Kaydedilen Makaleler</a></li>
+                <li th:classappend="${activeTab == 'comments'} ? 'active'"><a th:href="@{/profil(tab=comments)}">Yorumlarım</a></li>
                 <li th:classappend="${activeTab == 'password'} ? 'active'"><a th:href="@{/profil(tab=password)}">Şifre Değiştir</a></li>
             </ul>
         </aside>
@@ -75,9 +76,37 @@
             <div th:if="${activeTab == 'saved'}">
                 <h1 style="font-size: 1.6rem; margin-bottom: 25px; font-family: serif;">Kaydedilen Makaleler</h1>
                 <p th:if="${savedArticles.isEmpty()}" style="color:#666;">Henüz kaydedilmiş bir makaleniz bulunmuyor.</p>
-                <div th:each="saved : ${savedArticles}" class="saved-item">
-                    <a th:href="@{/haber/{id}(id=${saved.article.articleId})}" th:text="${saved.article.title}">Makale Başlığı</a>
-                    <div style="font-size:0.8rem; color:#888; margin-top:4px;" th:text="'Kaydedildi: ' + ${#temporals.format(saved.savedAt, 'dd MMM yyyy')}"></div>
+                <div th:each="saved : ${savedArticles}" class="saved-item" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <a th:href="@{/haber/{id}(id=${saved.article.articleId})}" th:text="${saved.article.title}">Makale Başlığı</a>
+                        <div style="font-size:0.8rem; color:#888; margin-top:4px;" th:text="'Kaydedildi: ' + ${#temporals.format(saved.savedAt, 'dd MMM yyyy')}"></div>
+                    </div>
+                    <form th:action="@{/profil/kaydi-sil}" method="post" style="margin:0;" onsubmit="return confirm('Bu makaleyi kayıtlarınızdan çıkarmak istediğinize emin misiniz?')">
+                        <input type="hidden" name="articleId" th:value="${saved.article.articleId}">
+                        <button type="submit" class="btn btn-sm" style="background:#eee; color:#666; border:1px solid #ddd;">Kaydı Sil</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- My Comments -->
+            <div th:if="${activeTab == 'comments'}">
+                <h1 style="font-size: 1.6rem; margin-bottom: 25px; font-family: serif;">Yorumlarım</h1>
+                <p th:if="${userComments.isEmpty()}" style="color:#666;">Henüz bir yorum yapmamışsınız.</p>
+                <div th:each="comment : ${userComments}" class="saved-item" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1; padding-right: 20px;">
+                        <div style="font-size: 0.75rem; color: #D32F2F; font-weight: bold; margin-bottom: 5px;">
+                             Haber: <a th:href="@{/haber/{id}(id=${comment.article.articleId})}" th:text="${comment.article.title}" style="color: #D32F2F; font-size: 0.75rem;">Haber Başlığı</a>
+                        </div>
+                        <p th:text="${comment.content}" style="font-size: 0.9rem; color: #333; margin: 0; line-height: 1.4;"></p>
+                        <div style="font-size:0.7rem; color:#999; margin-top:8px;">
+                            <span th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy HH:mm')}">Tarih</span>
+                            <span th:if="${!comment.approved}" style="margin-left: 10px; color: #ff9800; font-style: italic;">(Onay Bekliyor)</span>
+                        </div>
+                    </div>
+                    <form th:action="@{/profil/yorum-sil}" method="post" style="margin:0;" onsubmit="return confirm('Bu yorumu silmek istediğinize emin misiniz?')">
+                        <input type="hidden" name="commentId" th:value="${comment.commentId}">
+                        <button type="submit" class="btn btn-sm btn-danger" style="padding: 4px 8px;">Sil</button>
+                    </form>
                 </div>
             </div>
 

@@ -29,6 +29,7 @@ public class ProfilePageController {
     private final UserService userService;
     private final SavedArticleService savedArticleService;
     private final CategoryService categoryService;
+    private final HaberSitesiSistemi.Service.CommentService commentService;
 
     @GetMapping
     public String profilePage(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -37,10 +38,13 @@ public class ProfilePageController {
         User user = userService.getUserById(userDetails.getUserId());
         Page<SavedArticle> savedArticles = savedArticleService.getUserSavedArticles(
                 userDetails.getUserId(), PageRequest.of(0, 50));
+        Page<HaberSitesiSistemi.Model.Comment> userComments = commentService.getCommentsByUser(
+                userDetails.getUserId(), PageRequest.of(0, 50, org.springframework.data.domain.Sort.by("createdAt").descending()));
 
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("user", user);
         model.addAttribute("savedArticles", savedArticles.getContent());
+        model.addAttribute("userComments", userComments.getContent());
         model.addAttribute("activeTab", tab);
 
         userService.getEditorRequestForUser(user.getUserId()).ifPresent(req -> {
@@ -48,6 +52,32 @@ public class ProfilePageController {
         });
 
         return "profil";
+    }
+
+    @PostMapping("/yorum-sil")
+    public String deleteUserComment(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                    @RequestParam Long commentId,
+                                    RedirectAttributes ra) {
+        try {
+            commentService.deleteComment(commentId, userDetails.getUserId());
+            ra.addFlashAttribute("successMsg", "Yorumunuz silindi.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMsg", "Yorum silinemedi: " + e.getMessage());
+        }
+        return "redirect:/profil?tab=comments";
+    }
+
+    @PostMapping("/kaydi-sil")
+    public String unsaveArticle(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                @RequestParam Long articleId,
+                                RedirectAttributes ra) {
+        try {
+            savedArticleService.unsaveArticle(userDetails.getUserId(), articleId);
+            ra.addFlashAttribute("successMsg", "Makale kayıtlarınızdan kaldırıldı.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMsg", "İşlem başarısız: " + e.getMessage());
+        }
+        return "redirect:/profil?tab=saved";
     }
 
     @PostMapping("/guncelle")
