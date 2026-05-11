@@ -11,19 +11,88 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <style>
-        .editor-wrapper { max-width: 900px; margin: 40px auto; padding: 0 30px; }
-        .editor-card { background: #fff; border: 1px solid #ddd; border-top: 4px solid #1A1A1A; padding: 40px; }
-        .tag-checkboxes { display: flex; flex-wrap: wrap; gap: 10px; }
-        .tag-checkboxes label { display: flex; align-items: center; gap: 5px; padding: 6px 14px; border: 1px solid #ddd; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
-        .tag-checkboxes label:hover { border-color: #1A1A1A; }
+        .editor-wrapper { max-width: 1000px; margin: 50px auto; padding: 0 20px; }
+        .editor-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+        .editor-title { font-family:'Roboto Slab',serif; font-size:2.2rem; font-weight: 900; color: #1A1A1A; }
+        .editor-card { 
+            background: #ffffff; 
+            border: none; 
+            border-radius: 12px; 
+            padding: 50px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+            position: relative;
+            overflow: hidden;
+        }
+        .editor-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, #D32F2F, #FF5252);
+        }
+        
+        .form-group label { font-weight: 600; color: #333; margin-bottom: 8px; display: block; font-size: 0.95rem; }
+        .form-group input[type="text"], .form-group select {
+            width: 100%; padding: 14px 16px; border: 1px solid #E0E0E0; border-radius: 8px;
+            font-size: 1rem; font-family: 'Inter', sans-serif; transition: all 0.3s ease;
+            background-color: #F9FAFB;
+        }
+        .form-group input[type="text"]:focus, .form-group select:focus {
+            border-color: #D32F2F; outline: none; background-color: #fff; box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.1);
+        }
+
+        .tag-checkboxes { display: flex; flex-wrap: wrap; gap: 12px; }
+        .tag-checkboxes label { 
+            display: flex; align-items: center; gap: 8px; padding: 8px 16px; 
+            background: #F3F4F6; border: 1px solid #E5E7EB; border-radius: 20px;
+            cursor: pointer; font-size: 0.9rem; font-weight: 500; color: #4B5563; transition: all 0.2s ease; 
+        }
+        .tag-checkboxes label:hover { background: #E5E7EB; border-color: #D1D5DB; }
         .tag-checkboxes input:checked + span { color: #D32F2F; font-weight: 700; }
+        .tag-checkboxes input:checked { accent-color: #D32F2F; transform: scale(1.1); }
+
+        .ql-toolbar { border-top-left-radius: 8px; border-top-right-radius: 8px; border-color: #E0E0E0 !important; background: #F9FAFB; padding: 12px !important; }
+        .ql-container { border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; border-color: #E0E0E0 !important; font-family: 'Inter', sans-serif; font-size: 1.1rem; }
+        
+        .btn-save { background: #D32F2F; color: white; border: none; padding: 12px 28px; font-weight: 600; border-radius: 8px; font-size: 1rem; transition: all 0.3s; cursor: pointer; }
+        .btn-save:hover { background: #B71C1C; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3); }
+        .btn-cancel { background: #fff; color: #4B5563; border: 1px solid #D1D5DB; padding: 12px 28px; font-weight: 600; border-radius: 8px; font-size: 1rem; transition: all 0.3s; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-cancel:hover { background: #F3F4F6; color: #111827; }
+        
+        .cover-upload-wrapper {
+            border: 2px dashed #D1D5DB; border-radius: 12px; padding: 25px; text-align: center;
+            background: #F9FAFB; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+        }
+        .cover-upload-wrapper:hover { border-color: #9CA3AF; background: #F3F4F6; }
+
+        /* Custom Toolbar Embed Button */
+        .ql-embedCode {
+            width: auto !important; padding: 0 8px !important; font-weight: 700; color: #444; font-size: 13px; border-radius: 4px; background: #eee;
+        }
+        .ql-embedCode::after { content: "</>"; }
+        .ql-embedCode:hover { background: #ddd; }
+        
+        .custom-embed-block { margin: 20px 0; padding: 15px; border: 1px dashed #ccc; background: #fafafa; border-radius: 8px; }
+
+        /* Quill Punto (Size) Çevirileri */
+        .ql-snow .ql-picker.ql-size { width: 110px; }
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before { content: 'Küçük'; }
+        
+        .ql-snow .ql-picker.ql-size .ql-picker-label::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item::before { content: 'Normal'; }
+        
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="large"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before { content: 'Büyük'; }
+        
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="huge"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="huge"]::before { content: 'Çok Büyük'; }
     </style>
 </head>
 <body>
 <div class="editor-wrapper">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-        <h1 style="font-family:'Roboto Slab',serif; font-size:1.8rem;" th:text="${isEdit} ? 'Makale Düzenle' : 'Yeni Makale Oluştur'">Makale</h1>
-        <a th:href="@{/editor}" class="btn btn-outline btn-sm">← Geri Dön</a>
+    <div class="editor-header">
+        <h1 class="editor-title" th:text="${isEdit} ? 'Makale Düzenle' : 'Yeni Makale Oluştur'">Makale</h1>
+        <a th:href="@{/editor}" class="btn btn-cancel btn-sm">← Geri Dön</a>
     </div>
 
     <div th:if="${errorMsg}" class="alert-msg error" th:text="${errorMsg}"></div>
@@ -32,10 +101,10 @@
         <form th:action="${isEdit} ? @{/editor/makale-duzenle/{id}(id=${article.articleId})} : @{/editor/yeni-makale}" method="post">
             <div class="form-group">
                 <label>Başlık</label>
-                <input type="text" name="title" required maxlength="255" th:value="${isEdit} ? ${article.title} : ''">
+                <input type="text" name="title" required maxlength="255" placeholder="Etkileyici bir başlık girin..." th:value="${isEdit} ? ${article.title} : ''">
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 25px;">
                 <label>Kategori</label>
                 <select name="categoryId" required>
                     <option value="">Kategori seçin...</option>
@@ -44,7 +113,7 @@
                 </select>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 25px;">
                 <label>Etiketler</label>
                 <div class="tag-checkboxes">
                     <label th:each="tag : ${allTags}">
@@ -53,32 +122,33 @@
                         <span th:text="${tag.name}">Etiket</span>
                     </label>
                 </div>
-                <p th:if="${allTags.isEmpty()}" style="color:#888; font-size:0.85rem;">Henüz etiket oluşturulmamış.</p>
+                <p th:if="${allTags.isEmpty()}" style="color:#888; font-size:0.85rem; margin-top:10px;">Henüz etiket oluşturulmamış.</p>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 25px;">
                 <label>Kapak Fotoğrafı</label>
-                <div style="display:flex; align-items:center; gap: 10px;">
-                    <input type="file" id="cover-upload" accept="image/*">
-                    <button type="button" id="remove-cover-btn" class="btn btn-outline btn-sm" style="display:none;" onclick="removeCover()">Kaldır</button>
+                <div class="cover-upload-wrapper">
+                    <input type="file" id="cover-upload" accept="image/*" style="display:none;">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('cover-upload').click()">Görsel Seç</button>
+                    <button type="button" id="remove-cover-btn" class="btn btn-danger btn-sm" style="display:none; margin-top: 10px;" onclick="removeCover()">Kaldır</button>
+                    <div id="cover-preview" style="margin-top:15px; width: 100%;">
+                        <img th:if="${isEdit && article.coverImage != null}" th:src="${article.coverImage.fileUrl}" style="max-width: 100%; max-height: 300px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    </div>
                 </div>
                 <input type="hidden" name="coverImageId" id="coverImageId" th:value="${isEdit && article.coverImage != null} ? ${article.coverImage.mediaId} : ''">
-                <div id="cover-preview" style="margin-top:10px;">
-                    <img th:if="${isEdit && article.coverImage != null}" th:src="${article.coverImage.fileUrl}" style="max-width: 200px; border: 1px solid #ddd;">
-                </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 30px;">
                 <label>İçerik</label>
                 <!-- Hidden input to hold HTML content for form submission -->
                 <input type="hidden" name="content" id="content-input" th:value="${isEdit} ? ${article.content} : ''">
                 <!-- Quill Editor Container -->
-                <div id="editor" style="height: 400px; background: #fff;"></div>
+                <div id="editor" style="height: 500px; background: #fff;"></div>
             </div>
 
-            <div style="display:flex; gap:12px; margin-top:20px;">
-                <button type="submit" class="btn btn-primary" th:text="${isEdit} ? 'Güncelle' : 'Kaydet'">Kaydet</button>
-                <a th:href="@{/editor}" class="btn btn-outline">İptal</a>
+            <div style="display:flex; gap:15px; margin-top:40px;">
+                <button type="submit" class="btn-save" th:text="${isEdit} ? 'Güncelle' : 'Makaleyi Yayınla'">Kaydet</button>
+                <a th:href="@{/editor}" class="btn-cancel">İptal</a>
             </div>
         </form>
     </div>
@@ -120,7 +190,7 @@
             const result = await response.json();
             if (response.ok) {
                 coverIdInput.value = result.mediaId;
-                document.getElementById('cover-preview').innerHTML = '<img src="' + result.fileUrl + '" style="max-width: 200px; border: 1px solid #ddd;">';
+                document.getElementById('cover-preview').innerHTML = '<img src="' + result.fileUrl + '" style="max-width: 100%; max-height: 300px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">';
                 removeBtn.style.display = 'block';
             } else {
                 alert('Yükleme başarısız oldu.');
@@ -131,17 +201,73 @@
         }
     });
 
+    // --- Quill Custom Embed Blot ---
+    var BlockEmbed = Quill.import('blots/block/embed');
+    class RawHtmlBlot extends BlockEmbed {
+        static create(value) {
+            let node = super.create();
+            node.innerHTML = value;
+            return node;
+        }
+        static value(node) {
+            return node.innerHTML;
+        }
+    }
+    RawHtmlBlot.blotName = 'rawHtml';
+    RawHtmlBlot.tagName = 'div';
+    RawHtmlBlot.className = 'custom-embed-block';
+    Quill.register(RawHtmlBlot);
+
     // --- QuillJS Setup ---
     var quill = new Quill('#editor', {
         theme: 'snow',
         modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['link', 'image'],
-                ['clean']
-            ]
+            toolbar: {
+                container: [
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'image', 'video'],
+                    ['embedCode'],
+                    ['clean']
+                ],
+                handlers: {
+                    'embedCode': function() {
+                        const html = prompt('Gömülecek (Embed) HTML kodunu girin (Örn: Twitter, Instagram vb.):');
+                        if (html) {
+                            const range = this.quill.getSelection(true);
+                            this.quill.insertEmbed(range.index, 'rawHtml', html, Quill.sources.USER);
+                            this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
+                        }
+                    },
+                    'video': function(value) {
+                        let url = prompt('YouTube linkini girin:');
+                        if (url) {
+                            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                                url = 'https://' + url;
+                            }
+                            let embedUrl = url;
+                            try {
+                                if (url.includes('youtube.com/watch')) {
+                                    const videoId = new URLSearchParams(new URL(url).search).get('v');
+                                    if (videoId) embedUrl = 'https://www.youtube.com/embed/' + videoId;
+                                } else if (url.includes('youtu.be/')) {
+                                    const videoId = url.split('youtu.be/')[1].split('?')[0];
+                                    if (videoId) embedUrl = 'https://www.youtube.com/embed/' + videoId;
+                                } else if (url.includes('youtube.com/shorts/')) {
+                                    const videoId = url.split('youtube.com/shorts/')[1].split('?')[0];
+                                    if (videoId) embedUrl = 'https://www.youtube.com/embed/' + videoId;
+                                }
+                            } catch(e) {
+                                console.error('URL parse hatası:', e);
+                            }
+                            const range = this.quill.getSelection(true);
+                            this.quill.insertEmbed(range.index, 'video', embedUrl, Quill.sources.USER);
+                            this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
+                        }
+                    }
+                }
+            }
         }
     });
 
