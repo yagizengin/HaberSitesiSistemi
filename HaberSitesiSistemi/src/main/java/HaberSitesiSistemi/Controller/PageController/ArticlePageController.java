@@ -34,7 +34,7 @@ public class ArticlePageController {
     public String articleDetail(@PathVariable Long id,
                                 @AuthenticationPrincipal CustomUserDetails user,
                                 Model model) {
-        Article article = articleService.getArticleById(id);
+        Article article = articleService.getPublishedArticleById(id);
         Page<Comment> comments = commentService.getApprovedComments(id, PageRequest.of(0, 50));
 
         model.addAttribute("categories", categoryService.getAllCategories());

@@ -188,6 +188,21 @@ public class ArticleService {
         return article;
     }
 
+    public Article getPublishedArticleById(Long articleId) {
+        log.info("Fetching published article with ID: {}", articleId);
+
+        Article article = getPublishedArticleEntityById(articleId);
+        article.setViewCount(article.getViewCount() + 1);
+        articleRepository.save(article);
+
+        return article;
+    }
+
+    @Transactional(readOnly = true)
+    public void ensureArticleIsPublished(Long articleId) {
+        getPublishedArticleEntityById(articleId);
+    }
+
     @Transactional(readOnly = true)
     public Page<Article> getAllArticles(Pageable pageable) {
         if (pageable.isPaged()) {
@@ -209,20 +224,20 @@ public class ArticleService {
                     return new ResourceNotFoundException("Category", "id", categoryId);
                 });
 
-        return articleRepository.findByCategory(category, pageable);
+        return articleRepository.findByCategoryAndPublished(category, true, pageable);
     }
 
     @Transactional(readOnly = true)
     public Page<Article> getArticlesByTag(Long tagId, Pageable pageable) {
         log.info("Fetching articles by tag ID: {}", tagId);
-        return articleRepository.findByTags_TagId(tagId, pageable);
+        return articleRepository.findByTags_TagIdAndPublished(tagId, true, pageable);
     }
 
     @Transactional(readOnly = true)
     public Page<Article> searchArticles(String query, Pageable pageable) {
         String sanitizedQuery = HtmlSanitizer.sanitize(query);
         log.info("Searching articles with query: '{}'", sanitizedQuery);
-        return articleRepository.findByTitleContainingIgnoreCase(sanitizedQuery, pageable);
+        return articleRepository.findByTitleContainingIgnoreCaseAndPublished(sanitizedQuery, true, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -248,6 +263,14 @@ public class ArticleService {
         return articleRepository.findById(articleId)
                 .orElseThrow(() -> {
                     log.warn("Article not found with ID: {}", articleId);
+                    return new ResourceNotFoundException("Article", "id", articleId);
+                });
+    }
+
+    private Article getPublishedArticleEntityById(Long articleId) {
+        return articleRepository.findByArticleIdAndPublished(articleId, true)
+                .orElseThrow(() -> {
+                    log.warn("Published article not found with ID: {}", articleId);
                     return new ResourceNotFoundException("Article", "id", articleId);
                 });
     }

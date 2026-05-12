@@ -54,7 +54,7 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ArticleDetailResponseDTO>> getArticleById(@PathVariable Long id) {
-        Article article = articleService.getArticleById(id);
+        Article article = articleService.getPublishedArticleById(id);
         ArticleDetailResponseDTO data = EntityDtoMapper.toArticleDetailResponseDTO(article);
 
         return ResponseEntity.ok(ApiResponse.<ArticleDetailResponseDTO>builder()
@@ -182,6 +182,7 @@ public class ArticleController {
             @PathVariable Long id,
             Pageable pageable) {
 
+        articleService.getPublishedArticleById(id);
         Page<Comment> page = commentService.getApprovedComments(id, pageable);
 
         CommentListResponseDTO data = CommentListResponseDTO.builder()
