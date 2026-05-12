@@ -127,7 +127,7 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
                 // Static resources
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**", "/favicon.svg", "/favicon.ico").permitAll()
 
                 // Public pages
                 .requestMatchers("/", "/haber/**", "/kategori/**", "/ara", "/gizlilik", "/kullanim", "/iletisim", "/hakkimizda").permitAll()

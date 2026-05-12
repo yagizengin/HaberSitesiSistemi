@@ -149,13 +149,15 @@ spring.datasource.username=postgres
 spring.datasource.password=YOUR_DATABASE_PASSWORD
 
 app.jwt.secret=YOUR_LONG_JWT_SECRET
+app.remember-me.key=YOUR_LONG_REMEMBER_ME_SECRET
 app.base-url=http://localhost:8080
 
 spring.mail.username=YOUR_MAIL_ADDRESS
 spring.mail.password=YOUR_MAIL_APP_PASSWORD
 ```
 
-Gerçek veritabanı, mail ve JWT bilgileri GitHub'a yüklenmemelidir.
+`app.jwt.secret` ve `app.remember-me.key` değerleri uzun, rastgele ve birbirinden farklı olmalıdır.
+Gerçek veritabanı, mail, JWT ve remember-me bilgileri GitHub'a yüklenmemelidir.
 
 ### Lokal Çalıştırma
 

@@ -142,22 +142,38 @@
                             } else {
                                 articles.forEach(article => {
                                     const imgUrl = (article.coverImage && article.coverImage.fileUrl) ? article.coverImage.fileUrl : (article.firstMediaUrl ? article.firstMediaUrl : `https://picsum.photos/seed/${article.articleId}/300/200`);
-                                    const categoryName = article.category ? article.category.name : 'GENEL';
+                                    const categoryName = article.categoryName || (article.category ? article.category.name : null) || 'GENEL';
                                     
-                                    const articleHtml = `
-                                        <article class="news-card" onclick="window.location.href='/haber/${article.articleId}'">
-                                            <span class="cat-badge">${categoryName}</span>
-                                            <img src="${imgUrl}" alt="Haber">
-                                            <div class="news-card-content">
-                                                <h4>${article.title}</h4>
-                                            </div>
-                                            <div class="news-card-meta">
-                                                <span>${new Date(article.publishedAt).toLocaleDateString('tr-TR', {day:'2-digit', month:'short', year:'numeric'})}</span>
-                                                <span>📰</span>
-                                            </div>
-                                        </article>
-                                    `;
-                                    grid.insertAdjacentHTML('beforeend', articleHtml);
+                                    const articleCard = document.createElement('article');
+                                    articleCard.className = 'news-card';
+                                    articleCard.addEventListener('click', () => {
+                                        window.location.href = `/haber/${article.articleId}`;
+                                    });
+
+                                    const categoryBadge = document.createElement('span');
+                                    categoryBadge.className = 'cat-badge';
+                                    categoryBadge.textContent = categoryName;
+
+                                    const image = document.createElement('img');
+                                    image.src = imgUrl;
+                                    image.alt = 'Haber';
+
+                                    const content = document.createElement('div');
+                                    content.className = 'news-card-content';
+                                    const title = document.createElement('h4');
+                                    title.textContent = article.title;
+                                    content.appendChild(title);
+
+                                    const meta = document.createElement('div');
+                                    meta.className = 'news-card-meta';
+                                    const date = document.createElement('span');
+                                    date.textContent = new Date(article.publishedAt).toLocaleDateString('tr-TR', {day:'2-digit', month:'short', year:'numeric'});
+                                    const icon = document.createElement('span');
+                                    icon.textContent = '📰';
+                                    meta.append(date, icon);
+
+                                    articleCard.append(categoryBadge, image, content, meta);
+                                    grid.appendChild(articleCard);
                                 });
                                 currentPage++;
                             }
@@ -180,13 +196,23 @@
                         if (json.success && json.data.articles) {
                             const list = document.getElementById('most-read-list');
                             if(list && json.data.articles.length > 0) {
-                                list.innerHTML = ''; // clear initial
+                                list.textContent = ''; // clear initial
                                 json.data.articles.forEach((a, i) => {
-                                    list.innerHTML += `
-                                    <div class="most-read-item" onclick="window.location.href='/haber/${a.articleId}'">
-                                        <span class="most-read-num">${i+1}</span>
-                                        <h4>${a.title}</h4>
-                                    </div>`;
+                                    const item = document.createElement('div');
+                                    item.className = 'most-read-item';
+                                    item.addEventListener('click', () => {
+                                        window.location.href = `/haber/${a.articleId}`;
+                                    });
+
+                                    const number = document.createElement('span');
+                                    number.className = 'most-read-num';
+                                    number.textContent = i + 1;
+
+                                    const title = document.createElement('h4');
+                                    title.textContent = a.title;
+
+                                    item.append(number, title);
+                                    list.appendChild(item);
                                 });
                             }
                         }

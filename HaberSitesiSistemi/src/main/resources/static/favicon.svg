@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Marmara Times">
+  <path d="M11 9h40c2.2 0 4 1.8 4 4v38c0 2.2-1.8 4-4 4H11V9z" fill="#ffffff"/>
+  <path d="M11 9h40c2.2 0 4 1.8 4 4v38c0 2.2-1.8 4-4 4H11V9z" fill="none" stroke="#111111" stroke-width="3"/>
+  <path d="M15 15h31v5H15z" fill="#d32f2f"/>
+  <path d="M15 27h31v3H15zM15 35h31v3H15zM15 43h18v3H15z" fill="#111111" opacity=".16"/>
+  <path d="M51 14h4v37c0 2.2-1.8 4-4 4V14z" fill="#d32f2f"/>
+  <text x="32" y="43" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="24" font-weight="700" fill="#111111">MT</text>
+</svg>
