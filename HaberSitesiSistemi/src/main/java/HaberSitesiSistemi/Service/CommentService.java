@@ -76,6 +76,11 @@ public class CommentService {
         log.info("Approving comment ID: {} by editor ID: {}", commentId, editorUserId);
 
         Comment comment = getCommentEntityById(commentId);
+        User editor = userRepository.findById(editorUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", editorUserId));
+        if (!hasRole(editor, "ROLE_EDITOR") && !hasRole(editor, "ROLE_ADMIN")) {
+            throw new ForbiddenException("You are not authorized to approve comments");
+        }
 
         if (comment.isApproved()) {
             log.warn("Comment {} is already approved", commentId);
@@ -96,7 +101,7 @@ public class CommentService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        boolean isAdmin = user.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
+        boolean isAdmin = hasRole(user, "ROLE_ADMIN");
 
         if (!comment.getUser().getUserId().equals(userId) && !isAdmin) {
             log.warn("Delete denied: User {} is not the owner of comment {} and not an admin", userId, commentId);
@@ -164,5 +169,15 @@ public class CommentService {
                     log.warn("Comment not found with ID: {}", commentId);
                     return new ResourceNotFoundException("Comment", "id", commentId);
                 });
+    }
+
+    private boolean hasRole(User user, String roleName) {
+        return user.getRoles().stream()
+                .anyMatch(role -> roleName.equals(normalizeRole(role.getName())));
+    }
+
+    private String normalizeRole(String roleName) {
+        String upper = roleName == null ? "" : roleName.toUpperCase();
+        return upper.startsWith("ROLE_") ? upper : "ROLE_" + upper;
     }
 }

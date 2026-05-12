@@ -48,6 +48,9 @@ public class ArticleService {
                     log.warn("Article creation failed: Author not found with ID: {}", authorId);
                     return new ResourceNotFoundException("User", "id", authorId);
                 });
+        if (!hasRole(author, "ROLE_EDITOR") && !hasRole(author, "ROLE_ADMIN")) {
+            throw new ForbiddenException("You are not authorized to create articles");
+        }
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> {
@@ -90,7 +93,7 @@ public class ArticleService {
         Article article = getArticleEntityById(articleId);
 
         User actionUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-        boolean isAdmin = actionUser.getRoles().stream().anyMatch(r -> r.getName().equals("ADMIN") || r.getName().equals("ROLE_ADMIN"));
+        boolean isAdmin = hasRole(actionUser, "ROLE_ADMIN");
 
         if (!article.getAuthor().getUserId().equals(userId) && !isAdmin) {
             log.warn("Update denied: User {} is not the author of article {} and is not admin", userId, articleId);
@@ -138,7 +141,7 @@ public class ArticleService {
         Article article = getArticleEntityById(articleId);
 
         User actionUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-        boolean isAdmin = actionUser.getRoles().stream().anyMatch(r -> r.getName().equals("ADMIN") || r.getName().equals("ROLE_ADMIN"));
+        boolean isAdmin = hasRole(actionUser, "ROLE_ADMIN");
 
         if (!article.getAuthor().getUserId().equals(userId) && !isAdmin) {
             log.warn("Delete denied: User {} is not the author of article {} and is not admin", userId, articleId);
@@ -153,6 +156,14 @@ public class ArticleService {
         log.info("Publishing article ID: {} by user ID: {}", articleId, userId);
 
         Article article = getArticleEntityById(articleId);
+        User actionUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        boolean isAdmin = hasRole(actionUser, "ROLE_ADMIN");
+
+        if (!article.getAuthor().getUserId().equals(userId) && !isAdmin) {
+            log.warn("Publish denied: User {} is not the author of article {} and is not admin", userId, articleId);
+            throw new ForbiddenException("You are not authorized to publish this article");
+        }
 
         if (article.isPublished()) {
             log.warn("Article {} is already published", articleId);
@@ -239,6 +250,16 @@ public class ArticleService {
                     log.warn("Article not found with ID: {}", articleId);
                     return new ResourceNotFoundException("Article", "id", articleId);
                 });
+    }
+
+    private boolean hasRole(User user, String roleName) {
+        return user.getRoles().stream()
+                .anyMatch(role -> roleName.equals(normalizeRole(role.getName())));
+    }
+
+    private String normalizeRole(String roleName) {
+        String upper = roleName == null ? "" : roleName.toUpperCase();
+        return upper.startsWith("ROLE_") ? upper : "ROLE_" + upper;
     }
 
     @Transactional(readOnly = true)

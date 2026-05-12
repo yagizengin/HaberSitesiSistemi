@@ -142,7 +142,7 @@ Komutu çalıştırdığınız dizine göre `index.sql` yolu değişebilir.
 
 ### Gizli Ayarlar
 
-Proje `application.properties` içinde `spring.profiles.include=secret` ayarıyla secret profilini dahil eder. Bu nedenle yerel ortamda aşağıdaki gibi bir `application-secret.properties` dosyası oluşturulmalıdır:
+Proje `application.properties` içinde `./config/application-secret.properties` dosyasını opsiyonel olarak içe aktarır. Yerel ortamda `HaberSitesiSistemi/config/application-secret.properties` dosyası oluşturulmalıdır:
 
 ```properties
 spring.datasource.username=postgres
@@ -234,4 +234,3 @@ Proje kapsamında hazırlanan temel dokümanlar:
 - `Project Database Documentation.md`: Veritabanı dokümantasyonu
 - `Deployment._guide.md`: AWS ve Spring Boot deployment rehberi
 - `DB-ER Diagram.png`: Veritabanı ER diyagramı
-

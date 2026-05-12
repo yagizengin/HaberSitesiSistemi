@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import HaberSitesiSistemi.DTO.Response.CommentListResponseDTO;
 import HaberSitesiSistemi.Mapper.EntityDtoMapper;
 import HaberSitesiSistemi.Model.Article;
 import HaberSitesiSistemi.Model.Comment;
+import HaberSitesiSistemi.Security.CustomUserDetails;
 import HaberSitesiSistemi.Service.ArticleService;
 import HaberSitesiSistemi.Service.CommentService;
 import jakarta.validation.Valid;
@@ -66,9 +68,9 @@ public class ArticleController {
     @PostMapping
     public ResponseEntity<ApiResponse<ArticleResponseDTO>> createArticle(
             @Valid @RequestBody ArticleCreateRequest request,
-            @RequestParam Long authorId) {
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Article article = articleService.createArticle(request, authorId);
+        Article article = articleService.createArticle(request, userDetails.getUserId());
         ArticleResponseDTO data = EntityDtoMapper.toArticleResponseDTO(article);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -84,9 +86,9 @@ public class ArticleController {
     public ResponseEntity<ApiResponse<ArticleResponseDTO>> updateArticle(
             @PathVariable Long id,
             @Valid @RequestBody ArticleUpdateRequest request,
-            @RequestParam Long userId) {
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Article article = articleService.updateArticle(id, request, userId);
+        Article article = articleService.updateArticle(id, request, userDetails.getUserId());
         ArticleResponseDTO data = EntityDtoMapper.toArticleResponseDTO(article);
 
         return ResponseEntity.ok(ApiResponse.<ArticleResponseDTO>builder()
@@ -100,9 +102,9 @@ public class ArticleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteArticle(
             @PathVariable Long id,
-            @RequestParam Long userId) {
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        articleService.deleteArticle(id, userId);
+        articleService.deleteArticle(id, userDetails.getUserId());
 
         return ResponseEntity.ok(ApiResponse.<Void>builder()
                 .success(true)
@@ -114,9 +116,9 @@ public class ArticleController {
     @PostMapping("/{id}/publish")
     public ResponseEntity<ApiResponse<ArticleResponseDTO>> publishArticle(
             @PathVariable Long id,
-            @RequestParam Long userId) {
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Article article = articleService.publishArticle(id, userId);
+        Article article = articleService.publishArticle(id, userDetails.getUserId());
         ArticleResponseDTO data = EntityDtoMapper.toArticleResponseDTO(article);
 
         return ResponseEntity.ok(ApiResponse.<ArticleResponseDTO>builder()

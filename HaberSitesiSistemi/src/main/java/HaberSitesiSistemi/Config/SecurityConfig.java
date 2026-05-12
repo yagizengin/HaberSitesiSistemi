@@ -3,6 +3,7 @@ package HaberSitesiSistemi.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,6 +49,9 @@ public class SecurityConfig {
     private final CustomAuthenticationFailureHandler failureHandler;
     private final CustomLogoutSuccessHandler logoutSuccessHandler;
 
+    @Value("${app.remember-me.key:${app.jwt.secret}}")
+    private String rememberMeKey;
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -76,7 +80,9 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint))
 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login",
+                        "/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/auth/verify-email").permitAll()
 
                 .requestMatchers(HttpMethod.GET, "/api/articles/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
@@ -85,6 +91,13 @@ public class SecurityConfig {
                 .requestMatchers("/uploads/**").permitAll()
 
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/users/profile/me").authenticated()
+                .requestMatchers("/api/users/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.POST, "/api/articles/**").hasAnyRole("EDITOR", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/articles/**").hasAnyRole("EDITOR", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/articles/**").hasAnyRole("EDITOR", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/comments/*/approve").hasAnyRole("EDITOR", "ADMIN")
 
                 .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
@@ -117,7 +130,7 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
 
                 // Public pages
-                .requestMatchers("/", "/haber/**", "/kategori/**", "/ara").permitAll()
+                .requestMatchers("/", "/haber/**", "/kategori/**", "/ara", "/gizlilik", "/kullanim", "/iletisim", "/hakkimizda").permitAll()
                 .requestMatchers("/giris", "/kayit", "/verify-email", "/sifremi-unuttum", "/sifre-sifirla").permitAll()
                 .requestMatchers("/error/**").permitAll()
 
@@ -142,7 +155,7 @@ public class SecurityConfig {
                 .permitAll())
 
             .rememberMe(remember -> remember
-                .key("ATATÜRK")
+                .key(rememberMeKey)
                 .userDetailsService(customUserDetailsService)
                 .tokenValiditySeconds(7 * 24 * 60 * 60)
                 .rememberMeParameter("remember-me"))
