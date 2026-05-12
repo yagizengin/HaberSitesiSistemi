@@ -33,6 +33,7 @@ body {
     font-family: var(--font-body);
     overflow-x: hidden;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
 
 h1,
@@ -605,7 +606,7 @@ img {
 }
 
 .btn-primary:hover {
-    background: #A00012;
+    background: #146b91;
 }
 
 .btn-outline {
@@ -621,6 +622,20 @@ img {
 
 .btn-full {
     width: 100%;
+}
+
+.btn-sm {
+    padding: 8px 14px;
+    font-size: 0.75rem;
+}
+
+.btn-danger {
+    background: #C92A2A;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #A61E1E;
 }
 
 /* 11. FORMS */
@@ -720,8 +735,146 @@ img {
 }
 
 @media (max-width: 768px) {
+    body {
+        line-height: 1.5;
+    }
+
+    .header-data-bar {
+        padding: 7px 14px;
+        justify-content: center;
+        min-height: 36px;
+    }
+
+    .weather-widget {
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .weather-info {
+        font-size: 0.78rem;
+    }
+
+    .header-brand-bar {
+        padding: 14px 14px 16px;
+        gap: 12px;
+    }
+
+    .header-center {
+        order: 1;
+    }
+
+    .header-left {
+        order: 3;
+        width: 100%;
+    }
+
+    .header-right {
+        order: 2;
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+        min-height: 36px;
+    }
+
+    .logo {
+        font-size: clamp(1.65rem, 9vw, 2.2rem);
+        letter-spacing: 0;
+        line-height: 1.05;
+    }
+
+    .date-display {
+        display: none;
+    }
+
+    .search-container {
+        width: min(100%, 420px);
+        min-height: 42px;
+        border-radius: 8px;
+        padding: 8px 12px;
+        background-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .search-container input {
+        width: 100%;
+        font-size: 0.95rem;
+    }
+
+    .search-results-dropdown {
+        border-radius: 0 0 8px 8px !important;
+        max-height: 65vh !important;
+    }
+
+    .profile-icon-wrapper {
+        width: 38px;
+        height: 38px;
+    }
+
+    .header-auth-btn {
+        padding: 7px 16px;
+        font-size: 0.75rem;
+    }
+
+    .breaking-ticker {
+        height: 36px;
+    }
+
+    .ticker-label {
+        padding: 0 12px;
+        font-size: 0.68rem;
+    }
+
+    .ticker-item {
+        font-size: 0.8rem;
+        margin-right: 28px;
+    }
+
+    .header-nav-bar {
+        justify-content: flex-start;
+        overflow: hidden;
+        border-bottom-width: 1px;
+    }
+
+    .nav-list {
+        width: 100%;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 8px 14px 10px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .nav-list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-item {
+        padding: 0;
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+    }
+
+    .nav-item>a {
+        display: block;
+        padding: 9px 12px;
+        border-radius: 999px;
+        background: var(--light-gray);
+        font-size: 0.73rem;
+        letter-spacing: 0;
+        white-space: nowrap;
+    }
+
+    .nav-item>a.active {
+        background: var(--main-accent);
+        color: #fff;
+        border-bottom: none;
+        padding-bottom: 9px;
+    }
+
     .main-container {
-        padding: 0 15px;
+        margin: 18px auto 42px;
+        padding: 0 14px;
     }
 
     .side-panel {
@@ -729,6 +882,61 @@ img {
     }
 
     .weather-city-select {
-        max-width: 100px;
+        max-width: 132px;
+        font-size: 0.78rem;
+    }
+
+    .main-footer {
+        margin-top: 42px;
+        padding: 34px 18px 24px;
+    }
+
+    .footer-inner {
+        gap: 24px;
+    }
+
+    .footer-col h4 {
+        margin-bottom: 14px;
+    }
+
+    .btn {
+        width: 100%;
+        min-height: 42px;
+        padding: 11px 16px;
+    }
+
+    .btn-sm {
+        width: auto;
+        min-height: 34px;
+        padding: 8px 12px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        min-height: 44px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-brand-bar {
+        padding-inline: 12px;
+    }
+
+    .weather-icon {
+        display: none;
+    }
+
+    .ticker-label {
+        letter-spacing: 0;
+    }
+
+    .nav-list {
+        padding-inline: 12px;
     }
 }

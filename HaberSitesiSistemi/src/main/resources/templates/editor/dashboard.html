@@ -5,12 +5,42 @@
     <title>Editör Paneli - Marmara Times</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Slab:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/global.css}"><link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        .editor-dashboard-wrapper { max-width:1100px; margin:40px auto; padding:0 30px; }
+        .editor-dashboard-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+        .editor-dashboard-actions { display:flex; gap:12px; }
+        @media (max-width: 768px) {
+            .editor-dashboard-wrapper {
+                margin: 20px auto 36px;
+                padding: 0 14px;
+            }
+            .editor-dashboard-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 14px;
+                margin-bottom: 18px;
+            }
+            .editor-dashboard-header h1 {
+                font-size: 1.45rem !important;
+                line-height: 1.2;
+            }
+            .editor-dashboard-actions {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .editor-dashboard-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-<div style="max-width:1100px; margin:40px auto; padding:0 30px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+<div class="editor-dashboard-wrapper">
+    <div class="editor-dashboard-header">
         <h1 style="font-family:'Roboto Slab',serif; font-size:1.8rem;">Editör Paneli</h1>
-        <div style="display:flex; gap:12px;">
+        <div class="editor-dashboard-actions">
             <a th:href="@{/}" class="btn btn-outline btn-sm">← Siteye Dön</a>
             <a th:href="@{/editor/yeni-makale}" class="btn btn-primary">➕ Yeni Makale</a>
         </div>

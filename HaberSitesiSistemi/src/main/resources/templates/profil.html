@@ -17,6 +17,70 @@
     .saved-item { padding: 14px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 4px; background: #fafafa; }
     .saved-item a { color: #1A1A1A; font-weight: bold; font-size: 1rem; }
     .saved-item a:hover { color: #D32F2F; }
+    @media (max-width: 768px) {
+        .profile-container {
+            display: block;
+            margin: 18px auto 42px;
+            padding: 0 14px;
+        }
+        .profile-sidebar {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+        }
+        .profile-sidebar h2 {
+            margin-bottom: 12px;
+        }
+        .side-menu {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+        }
+        .side-menu::-webkit-scrollbar {
+            display: none;
+        }
+        .side-menu li {
+            flex: 0 0 auto;
+            border-bottom: 0;
+            border: 1px solid #eee;
+            border-radius: 999px;
+            background: #fafafa;
+            font-size: 0.8rem;
+        }
+        .side-menu li.active {
+            border-left: 1px solid #D32F2F;
+            background: #D32F2F;
+            color: #fff;
+        }
+        .side-menu li a {
+            padding: 9px 12px;
+            white-space: nowrap;
+        }
+        .profile-main {
+            padding: 20px 16px;
+        }
+        .profile-main h1 {
+            font-size: 1.35rem !important;
+            margin-bottom: 18px !important;
+        }
+        .info-row {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .saved-item[style] {
+            display: block !important;
+        }
+        .saved-item form {
+            margin-top: 12px !important;
+        }
+        .saved-item .btn {
+            width: 100%;
+        }
+    }
 </style>
 <body>
     <header th:replace="~{fragments/layout :: header}"></header>
